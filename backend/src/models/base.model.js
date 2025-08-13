@@ -54,20 +54,13 @@ class BaseModel {
     if (isInsert) {
       const result = await run(insertQuery, values);
       const savedResult = await get(`SELECT * FROM ${this.constructor.table} WHERE rowid = ?`, [result.lastID]);
-      const prunedResult = Object.fromEntries(
-        Object.keys(savedResult)
-          .filter(key =>
-            keys.includes(key) &&
-            savedResult[key] !== undefined &&
-            savedResult[key] !== null)
-          .map((key) => [key, savedResult[key]])
-      );
+      const prunedResult = pruneObject(savedResult, keys);
       Object.assign(this, prunedResult);
       return this;
     }
+
     values.push(this.id);
     await run(updateQuery, values);
-
     return this;
   }
 
@@ -81,14 +74,7 @@ class BaseModel {
 
     const instance = new this();
     const keys = Object.keys(instance);
-    const prunedResult = Object.fromEntries(
-      Object.keys(result)
-        .filter(key =>
-          keys.includes(key) &&
-          result[key] !== undefined &&
-          result[key] !== null)
-        .map((key) => [key, result[key]])
-    );
+    const prunedResult = pruneObject(result, keys);
     Object.assign(instance, prunedResult);
     return instance;
   }
