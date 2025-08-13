@@ -8,6 +8,13 @@ const UserLogin = z.object({
   password: z.string()
 })
 
+const UserRegister = z.object({
+  username: z.string().min(5),
+  password: z.string().min(8),
+  email: z.string().optional(),
+})
+
+
 class AuthenticationService {
   async login(loginDetails) {
     try {
@@ -25,6 +32,23 @@ class AuthenticationService {
       return {
         error: false,
         data: validatedLoginDetails
+      }
+    } catch (err) {
+      return errorService.handleError(err);
+    }
+  }
+
+  async register(registerDetails) {
+    try {
+      const validatdRegisterDetails = UserRegister.parse(registerDetails)
+      const user = new UserModel(validatdRegisterDetails.username, validatdRegisterDetails.email, validatdRegisterDetails.password, false);
+
+      await user.save();
+
+      return {
+        error: false,
+        code: 200,
+        message: "Register Success"
       }
     } catch (err) {
       return errorService.handleError(err);

@@ -1,5 +1,6 @@
 const z = require('zod');
 const jwt = require('jsonwebtoken');
+const sqlite3 = require('sqlite3');
 
 class ErrorService {
   handleError(err) {
@@ -14,7 +15,13 @@ class ErrorService {
     if (err instanceof jwt.JsonWebTokenError) {
     }
 
-    this.handleHttpError();
+    const sqliteError = this.handleSqliteErrors(err);
+
+    if (sqliteError) {
+      return sqliteError;
+    }
+
+    return this.handleHttpError();
   }
 
   handleHttpError(code = 500, message = "Internal Server Error", body = {}) {
@@ -32,6 +39,14 @@ class ErrorService {
 
   handleJwtExpiredError() {
     return this.handleHttpError(401, 'Access Token Expired');
+  }
+
+  handleSqliteErrors(err) {
+    if (err.errno && err.errno === sqlite3.CONSTRAINT) {
+      return this.handleHttpError(400, "Bad Request");
+    }
+
+    return null;
   }
 }
 

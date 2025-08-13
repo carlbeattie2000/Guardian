@@ -11,7 +11,6 @@ class UserModel {
   password;
   isOfficer;
   createdAt = null;
-  error = null;
 
   constructor(username, email, password, isOfficer) {
     this.username = username;
@@ -38,13 +37,8 @@ class UserModel {
   }
 
   async save() {
-    try {
-      await this.hashPassword()
-      return await run(`INSERT INTO ${this.table} (username, email, password, isOfficer) VALUES (?, ?, ?, ?)`, [this.username, this.email, this.password, this.isOfficer]);
-    } catch (err) {
-      this.error = err;
-      return this;
-    }
+    await this.hashPassword()
+    return await run(`INSERT INTO ${this.table} (username, email, password, isOfficer) VALUES (?, ?, ?, ?)`, [this.username, this.email, this.password, this.isOfficer]);
   }
 
   static async findById(id) {
@@ -62,7 +56,7 @@ class UserModel {
 
     UserModel.initialized = true;
 
-    await run(`CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, email TEXT, password TEXT, isOfficer INTEGER, createdAt DATE DEFAULT current_date, UNIQUE(username, email))`);
+    await run(`CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT, isOfficer INTEGER, createdAt DATE DEFAULT current_date)`);
   }
 }
 
