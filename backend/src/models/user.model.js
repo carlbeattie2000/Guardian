@@ -18,6 +18,8 @@ class UserModel {
     this.email = email;
     this.password = password;
     this.isOfficer = isOfficer;
+
+    this.initialize();
   }
 
   async hashPassword() {
@@ -36,7 +38,6 @@ class UserModel {
   }
 
   async save() {
-    await this.initialize();
     try {
       await this.hashPassword()
       return await run(`INSERT INTO ${this.table} (username, email, password, isOfficer) VALUES (?, ?, ?, ?)`, [this.username, this.email, this.password, this.isOfficer]);
@@ -46,9 +47,12 @@ class UserModel {
     }
   }
 
-  async findById(id) {
-    await this.initialize();
+  static async findById(id) {
     return await run(`SELECT * FROM ${this.table} WHERE id = ? LIMIT 1`, [id]);
+  }
+
+  static async findByUsername(username) {
+    return await run(`SELECT * FROM ${this.table} WHERE username = ? LIMIT 1`, [username]);
   }
 
   async initialize() {

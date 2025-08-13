@@ -1,0 +1,82 @@
+openapi: 3.1.0
+info:
+  title: Police App Mock
+  version: 0.1.0
+  description: Example API with versioned routes and grouped tags
+
+servers:
+  - url: http://localhost:2699/api/v1
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Users
+    description: User management endpoints
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: mysecret
+      responses:
+        '200':
+          description: User login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: janedoe
+                password:
+                  type: string
+                  example: mysecret
+                email:
+                  type: string
+                  example: jane@example.com
+      responses:
+        '201':
+          description: User registered successfully
+
+  /users:
+    get:
+      tags:
+        - Users
+      summary: List all users
