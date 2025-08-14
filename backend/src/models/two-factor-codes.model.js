@@ -20,4 +20,6 @@ class TwoFactorCodesModel extends BaseModel {
 
 }
 
+TwoFactorCodesModel.initialize();
+
 module.exports = TwoFactorCodesModel;

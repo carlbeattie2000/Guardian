@@ -18,4 +18,6 @@ class ReportModel extends BaseModel {
   }
 }
 
+ReportModel.initialize();
+
 module.exports = ReportModel;
