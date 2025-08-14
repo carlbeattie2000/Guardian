@@ -19,9 +19,9 @@ class AuthenticationService {
   async login(loginDetails) {
     try {
       const validatedLoginDetails = UserLogin.parse(loginDetails);
-      const foundUserDetails = await UserModel.findByUsername(validatedLoginDetails.username);
+      const foundUserDetails = await UserModel.findBy('username', validatedLoginDetails.username);
 
-      if (!foundUserDetails || !(foundUserDetails instanceof UserModel)) {
+      if (!foundUserDetails) {
         return errorService.handleHttpError(401, "Incorrect Login Details");
       }
 
@@ -31,7 +31,7 @@ class AuthenticationService {
 
       return {
         error: false,
-        data: validatedLoginDetails
+        data: foundUserDetails
       }
     } catch (err) {
       return errorService.handleError(err);
