@@ -1,46 +1,29 @@
-const { run } = require("../config/database");
+const BaseModel = require("./base.model");
 
-class LostItemModel {
-  static initialized = false;
+class LostItemModel extends BaseModel {
+  static table = "lost_items";
+  static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, personal_details_id INTEGER, name TEXT, description TEXT, serial_number TEXT, color TEXT, model TEXT, created_at DATE DEFAULT current_date)`;
 
-  table = "lost_items";
-  id = -1;
-  personalDetailsId;
+  personal_details_id;
   name;
   description;
-  serialNumber;
+  serial_number;
   color;
   model;
-  createdAt = null;
+  created_at = null;
 
   constructor(personalDetailsId, name, description, serialNumber, color, model) {
-    this.personalDetailsId = personalDetailsId;
+    super();
+
+    this.personal_details_id = personalDetailsId;
     this.name = name;
     this.description = description;
-    this.serialNumber = serialNumber;
+    this.serial_number = serialNumber;
     this.color = color;
     this.model = model;
   }
-
-  async save() {
-    await this.initialize();
-    return await run(`INSERT INTO ${this.table} (personal_details_id, name, description, serialNumber, color, model) VALUES (?, ?, ?, ?, ?, ?)`, [this.personalDetailsId, this.name, this.description, this.serialNumber, this.color, this.model]);
-  }
-
-  async findById(id) {
-    await this.initialize();
-    return await run(`SELECT * FROM ${this.table} WHERE id = ? LIMIT 1`, [id]);
-  }
-
-  async initialize() {
-    if (LostItemModel.initialized) {
-      return;
-    }
-
-    LostItemModel.initialized = true;
-
-    await run(`CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, personal_details_id INTEGER, name TEXT, description TEXT, serialNumber TEXT, color TEXT, model TEXT, createdAt DATE DEFAULT current_date)`);
-  }
 }
+
+LostItemModel.initialize();
 
 module.exports = LostItemModel;

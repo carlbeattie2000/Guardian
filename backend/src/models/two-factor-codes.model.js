@@ -1,40 +1,23 @@
-const { run } = require("../config/database");
+const BaseModel = require("./base.model");
 
-class TwoFactorCodesModel {
-  static initialized = false;
+class TwoFactorCodesModel extends BaseModel {
+  static table = "two_factor_auth_codes";
+  static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, code TEXT, expires_at TEXT, created_at DATE DEFAULT current_date)`;
 
-  table = "two_factor_auth_codes";
-  id = -1;
+
   user_id;
   code;
-  expiresAt;
-  createdAt = null;
+  expires_at;
+  created_at = null;
 
   constructor(user_id, code, expiresAt) {
+    super();
+
     this.user_id = user_id;
     this.code = code;
-    this.expiresAt = expiresAt;
+    this.expires_at = expiresAt;
   }
 
-  async save() {
-    await this.initialize();
-    return await run(`INSERT INTO ${this.table} (user_id, code, expiresAt) VALUES (?, ?, ?)`, [this.user_id, this.code, this.expiresAt]);
-  }
-
-  async findById(id) {
-    await this.initialize();
-    return await run(`SELECT * FROM ${this.table} WHERE id = ? LIMIT 1`, [id]);
-  }
-
-  async initialize() {
-    if (TwoFactorCodesModel.initialized) {
-      return;
-    }
-
-    TwoFactorCodesModel.initialized = true;
-
-    await run(`CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, code TEXT, expiresAt TEXT, createdAt DATE DEFAULT current_date)`);
-  }
 }
 
 module.exports = TwoFactorCodesModel;

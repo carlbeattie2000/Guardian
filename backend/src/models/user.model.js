@@ -1,24 +1,23 @@
-const { run } = require("../config/database");
 const argon2 = require('argon2');
+const BaseModel = require("./base.model");
 
-class UserModel {
-  static initialized = false;
+class UserModel extends BaseModel {
+  static table = 'users';
+  static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT, is_officer INTEGER, created_at DEFAULT current_date)`;
 
-  table = "users";
-  id = -1;
   username;
   email;
   password;
-  isOfficer;
-  createdAt = null;
+  is_officer;
+  created_at = null;
 
   constructor(username, email, password, isOfficer) {
+    super();
+
     this.username = username;
     this.email = email;
     this.password = password;
-    this.isOfficer = isOfficer;
-
-    this.initialize();
+    this.is_officer = isOfficer;
   }
 
   async hashPassword() {
@@ -38,26 +37,10 @@ class UserModel {
 
   async save() {
     await this.hashPassword()
-    return await run(`INSERT INTO ${this.table} (username, email, password, isOfficer) VALUES (?, ?, ?, ?)`, [this.username, this.email, this.password, this.isOfficer]);
-  }
-
-  static async findById(id) {
-    return await run(`SELECT * FROM ${this.table} WHERE id = ? LIMIT 1`, [id]);
-  }
-
-  static async findByUsername(username) {
-    return await run(`SELECT * FROM ${this.table} WHERE username = ? LIMIT 1`, [username]);
-  }
-
-  async initialize() {
-    if (UserModel.initialized) {
-      return;
-    }
-
-    UserModel.initialized = true;
-
-    await run(`CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT, isOfficer INTEGER, createdAt DATE DEFAULT current_date)`);
+    return await super.save();
   }
 }
+
+UserModel.initialize();
 
 module.exports = UserModel;
