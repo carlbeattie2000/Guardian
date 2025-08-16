@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const reportRouter = require("./report.route");
-const AuthorisationMiddleware = require("../../middleware/authorization");
+const AuthorisationMiddleware = require("../../middleware/authorization.middleware");
 
 const reportsRouter = Router();
 

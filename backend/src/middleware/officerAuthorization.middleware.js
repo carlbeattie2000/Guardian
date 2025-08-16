@@ -1,5 +1,6 @@
 const UserModel = require("../models/user.model");
 const authenticationService = require("../services/users/authentication.service");
+const HttpError = require("../utils/httpError");
 
 /**
  * @param {import('express').Request} Request
@@ -19,13 +20,17 @@ async function OfficerAuthenticationMiddleware(req, res, next) {
     return res.sendStatus(401);
   }
 
-  const user = await UserModel.findById(verifiedToken.body.sub);
+  const user = await UserModel.findById(verifiedToken.payload.sub);
 
   if (user === null) {
-    return next();
+    throw new HttpError({ code: 401 });
   }
 
   req.is_officer = user.is_officer;
+
+  if (!req.is_officer) {
+    throw new HttpError({ code: 401 });
+  }
 
   next();
 }

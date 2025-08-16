@@ -34,6 +34,16 @@ class ReportsController {
 
     res.status(report.code).json(report);
   }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async getAll(req, res) {
+    const reports = await reportsService.getAll();
+
+    return res.status(reports.code).json(reports);
+  }
 }
 
 const reportsController = new ReportsController();

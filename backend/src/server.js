@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 
 const registerSwaggerForDevEnv = require("./config/swagger");
 const usePublicDir = require("./config/staticFiles");
-const HttpErrorMiddleware = require("./middleware/errors");
+const HttpErrorMiddleware = require("./middleware/errors.middleware");
 
 const app = express();
 

@@ -70,6 +70,20 @@ class ReportsService {
 
     return user.is_officer || report.user_id === user_id;
   }
+
+  async getAll(limit = 100) {
+    try {
+      const reports = await ReportModel.all(limit);
+
+      return {
+        error: false,
+        code: 200,
+        data: reports,
+      };
+    } catch (err) {
+      errorService.handleError(err);
+    }
+  }
 }
 
 const reportsService = new ReportsService();
