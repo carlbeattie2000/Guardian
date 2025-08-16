@@ -18,6 +18,8 @@ async function AuthorisationMiddleware(req, res, next) {
     return res.sendStatus(validatedJwt.code);
   }
 
+  req.user = validatedJwt.payload.sub;
+
   next();
 }
 
