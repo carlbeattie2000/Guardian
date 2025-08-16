@@ -8,8 +8,8 @@ class ReportsController {
    * @param {Express.Request} req
    * @param {Express.Response} res
    */
-  async createReport(req, res) {
-    const createReportRes = await reportsService.createReport(
+  async create(req, res) {
+    const createReportRes = await reportsService.create(
       req.files,
       req.body,
       req.user,
@@ -22,15 +22,15 @@ class ReportsController {
    * @param {Express.Request} req
    * @param {Express.Response} res
    */
-  async getReportById(req, res) {
+  async getById(req, res) {
     const id = req.params.id;
-    const report = await reportsService.getReportById(id);
+    const report = await reportsService.getById(id);
 
     if (report.error || report.data === null) {
       return res.status(report.code).json(report);
     }
 
-    if (!(await reportsService.canUserViewReport(report.data, req.user))) {
+    if (!(await reportsService.canUserView(report.data, req.user))) {
       return res.sendStatus(401);
     }
 
@@ -53,7 +53,7 @@ class ReportsController {
    */
   async createWitness(req, res) {
     const id = req.params.id;
-    const canModifyReport = await reportsService.canModifyReport(id, req.user);
+    const canModifyReport = await reportsService.canModify(id, req.user);
 
     if (!canModifyReport) {
       throw new HttpError({ code: 401 });

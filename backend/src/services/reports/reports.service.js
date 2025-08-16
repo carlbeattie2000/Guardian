@@ -13,7 +13,7 @@ class ReportsService {
     latitude: z.preprocess((val) => Number(val), z.number()).optional(),
   });
 
-  async createReport(files, body, user_id) {
+  async create(files, body, user_id) {
     try {
       const reportDetailsValidated = this.ReportValidation.parse(body);
       const report = new ReportModel(
@@ -48,7 +48,7 @@ class ReportsService {
     }
   }
 
-  async getReportById(id) {
+  async getById(id) {
     try {
       const report = await ReportModel.findById(id);
 
@@ -68,7 +68,7 @@ class ReportsService {
     }
   }
 
-  async canModifyReport(id, user_id, is_officer = false) {
+  async canModify(id, user_id, is_officer = false) {
     if (is_officer) {
       return true;
     }
@@ -80,7 +80,7 @@ class ReportsService {
     }
   }
 
-  async canUserViewReport(report, user_id) {
+  async canUserView(report, user_id) {
     const user = await UserModel.findById(user_id);
 
     if (user === null) {

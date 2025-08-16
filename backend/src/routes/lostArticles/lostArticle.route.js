@@ -9,7 +9,7 @@ const upload = multer();
 lostArticleRouter.post(
   "/",
   upload.array("photos", 12),
-  lostArticlesControler.createLostArticle,
+  lostArticlesControler.create,
 );
 
 lostArticleRouter.post(

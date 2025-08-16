@@ -14,7 +14,7 @@ class LostArticleService {
     model: z.string().optional(),
   });
 
-  async createLostArticle(files, body, user_id) {
+  async create(files, body, user_id) {
     try {
       const { name, description, serial_number, color, model } =
         this.articleValidation.parse(body);

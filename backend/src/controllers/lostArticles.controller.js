@@ -6,8 +6,8 @@ class LostArticlesController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async createLostArticle(req, res) {
-    const createLostArticleRes = await lostArticleService.createLostArticle(
+  async create(req, res) {
+    const createLostArticleRes = await lostArticleService.create(
       req.files,
       req.body,
       req.user,

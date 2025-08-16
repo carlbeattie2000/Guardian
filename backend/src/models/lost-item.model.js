@@ -2,9 +2,8 @@ const BaseModel = require("./base.model");
 
 class LostItemModel extends BaseModel {
   static table = "lost_items";
-  static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, personal_details_id INTEGER DEFAULT -1, name TEXT, description TEXT, serial_number TEXT, color TEXT, model TEXT, found INTEGER DEFAULT 0, user_id INTEGER, created_at DATE DEFAULT current_date)`;
+  static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, serial_number TEXT, color TEXT, model TEXT, found INTEGER DEFAULT 0, user_id INTEGER, created_at DATE DEFAULT current_date)`;
 
-  personal_details_id;
   name;
   description;
   serial_number;

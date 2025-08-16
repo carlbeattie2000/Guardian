@@ -7,11 +7,7 @@ const OfficerAuthenticationMiddleware = require("../../middleware/officerAuthori
 const reportRouter = Router();
 const upload = multer();
 
-reportRouter.post(
-  "/",
-  upload.array("photos", 12),
-  reportsController.createReport,
-);
+reportRouter.post("/", upload.array("photos", 12), reportsController.create);
 
 reportRouter.get(
   "/all",
@@ -21,7 +17,7 @@ reportRouter.get(
 
 reportRouter.post("/add-witness/:id", reportsController.createWitness);
 
-reportRouter.get("/:id", reportsController.getReportById);
+reportRouter.get("/:id", reportsController.getById);
 
 reportRouter.get("/image/:path", async (req, res) => {
   res.sendFile(FileStorage.getImagePath(req.params.path));

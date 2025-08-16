@@ -1,6 +1,6 @@
 const z = require("zod");
 const errorService = require("../error-service");
-const PersonalDetailsModel = require("../../models/personalDetails.model");
+const PersonalDetailsModel = require("../../models/pensonal-details.model");
 
 class PersonalDetailsService {
   PersonalDetailsValidation = z.object({
@@ -10,7 +10,7 @@ class PersonalDetailsService {
     contact_number: z.string(),
   });
 
-  async createPersonalDetails(body) {
+  async create(body) {
     try {
       const { first_name, last_name, date_of_birth, contact_number } =
         this.PersonalDetailsValidation.parse(body);
@@ -31,7 +31,7 @@ class PersonalDetailsService {
   }
 
   async createReportWitness(body, report_id) {
-    const personalDetails = await this.createPersonalDetails(body);
+    const personalDetails = await this.create(body);
     personalDetails.attachToReport(report_id);
     await personalDetails.save();
 
@@ -43,7 +43,7 @@ class PersonalDetailsService {
   }
 
   async createLostArticlePersonalDetails(body, lost_article_id) {
-    const personalDetails = await this.createPersonalDetails(body);
+    const personalDetails = await this.create(body);
     personalDetails.attachToLostArticle(lost_article_id);
     await personalDetails.save();
 
