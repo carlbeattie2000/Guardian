@@ -2,6 +2,7 @@ const z = require("zod");
 const jwt = require("jsonwebtoken");
 const errorService = require("../error-service");
 const UserModel = require("../../models/user.model");
+const HttpError = require("../../utils/httpError");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -24,11 +25,17 @@ class AuthenticationService {
       );
 
       if (!foundUserDetails) {
-        return errorService.handleHttpError(401, "Incorrect Login Details");
+        throw new HttpError({
+          code: 400,
+          clientMessage: "Bad Login Request",
+        });
       }
 
       if (!foundUserDetails.verifyPassword(validatedLoginDetails.password)) {
-        return errorService.handleHttpError(401, "Incorrect Login Details");
+        throw new HttpError({
+          code: 400,
+          clientMessage: "Bad Login Request",
+        });
       }
 
       return {
@@ -57,6 +64,15 @@ class AuthenticationService {
         code: 200,
         message: "Register Success",
       };
+    } catch (err) {
+      errorService.handleError(err);
+    }
+  }
+
+  async getUserById(id) {
+    try {
+      const user = await UserModel.findById(id);
+      return user;
     } catch (err) {
       errorService.handleError(err);
     }

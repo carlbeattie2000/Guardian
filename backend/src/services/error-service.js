@@ -5,6 +5,9 @@ const HttpError = require("../utils/httpError");
 
 class ErrorService {
   handleError(err) {
+    if (err instanceof HttpError) {
+      throw err;
+    }
     if (err instanceof z.ZodError) {
       this.handleZodError(err);
     }
@@ -50,6 +53,8 @@ class ErrorService {
     if (err.errno && err.errno === sqlite3.CONSTRAINT) {
       throw new HttpError({ code: 400, clientMessage: "Bad Request" }, err);
     }
+
+    return false;
   }
 }
 

@@ -1,0 +1,33 @@
+doctype html
+html(lang="en")
+  head
+    title Login
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous")
+  body.container-sm.p-5.bg-dark
+    form#loginForm
+      .form-group
+        label.text-white(for="username") Username
+        input#username.form-control(type="text", aria-describedby="usernameHelp", name="username")
+      .form-group
+        label.text-white(for="password") Password
+        input#password.form-control(type="password", name="password")
+      button.btn.btn-primary.my-5(type="submit") Login
+    script.
+      document.getElementById('loginForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const body = {};
+        
+        formData.forEach((value, key) => body[key] = value);
+
+        const request = await fetch('/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (request.status === 201) {
+          window.location = '/';
+        }
+      });
