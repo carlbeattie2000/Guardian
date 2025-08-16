@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 
 const registerSwaggerForDevEnv = require("./config/swagger");
 const usePublicDir = require("./config/staticFiles");
+const HttpErrorMiddleware = require("./middleware/errors");
 
 const app = express();
 
@@ -15,5 +16,7 @@ app.use(express.static(usePublicDir()));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);
+
+app.use(HttpErrorMiddleware);
 
 app.listen(2699);
