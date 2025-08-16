@@ -3,6 +3,7 @@ const ReportModel = require("../../models/report.model");
 const FileStorage = require("../../lib/fileStorage");
 const ReportImagesModel = require("../../models/report-images.model");
 const errorService = require("../error-service");
+const UserModel = require("../../models/user.model");
 
 class ReportsService {
   ReportValidation = z.object({
@@ -11,13 +12,14 @@ class ReportsService {
     latitude: z.preprocess((val) => Number(val), z.number()).optional(),
   });
 
-  async createReport(files, body) {
+  async createReport(files, body, user_id) {
     try {
       const reportDetailsValidated = this.ReportValidation.parse(body);
       const report = new ReportModel(
         reportDetailsValidated.description,
         reportDetailsValidated.longitude,
         reportDetailsValidated.latitude,
+        user_id,
       );
 
       await report.save();
@@ -35,10 +37,9 @@ class ReportsService {
 
       return {
         error: false,
-        code: 200,
+        code: 201,
         data: {
-          report_id: report.id,
-          image_names: imageNames,
+          id: report.id,
         },
       };
     } catch (err) {
@@ -58,6 +59,16 @@ class ReportsService {
     } catch (err) {
       return errorService.handleError(err);
     }
+  }
+
+  async canUserViewReport(report, user_id) {
+    const user = await UserModel.findById(user_id);
+
+    if (user === null) {
+      return false;
+    }
+
+    return user.is_officer || report.user_id === user_id;
   }
 }
 
