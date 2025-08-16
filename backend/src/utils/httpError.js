@@ -3,8 +3,21 @@ class HttpError extends Error {
   data;
   clientMessage;
 
-  constructor({ code = 500, clientMessage = "", message = "", data = {} }) {
-    super(message);
+  /**
+   * @param {Object} param0
+   * @param {number} [param0.code=500]
+   * @param {string} [param0.clientMessage=""]
+   * @param {{}} [param0.data={}]
+   * @param {Error} [err=null]
+   */
+  constructor({ code = 500, clientMessage = "", data = {} }, err = null) {
+    super(clientMessage || "");
+
+    if (err) {
+      this.stack = this.stack + `\n${err.stack}`;
+      this.message = err.message;
+      Error.captureStackTrace?.(this, this.constructor);
+    }
 
     this.code = code;
     this.data = data;

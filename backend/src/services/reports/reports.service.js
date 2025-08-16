@@ -43,7 +43,7 @@ class ReportsService {
         },
       };
     } catch (err) {
-      return errorService.handleError(err);
+      errorService.handleError(err);
     }
   }
 
@@ -57,7 +57,7 @@ class ReportsService {
         data: report,
       };
     } catch (err) {
-      return errorService.handleError(err);
+      errorService.handleError(err);
     }
   }
 

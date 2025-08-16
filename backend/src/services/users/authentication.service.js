@@ -36,7 +36,7 @@ class AuthenticationService {
         data: foundUserDetails,
       };
     } catch (err) {
-      return errorService.handleError(err);
+      errorService.handleError(err);
     }
   }
 
@@ -58,7 +58,7 @@ class AuthenticationService {
         message: "Register Success",
       };
     } catch (err) {
-      return errorService.handleError(err);
+      errorService.handleError(err);
     }
   }
 
@@ -88,7 +88,7 @@ class AuthenticationService {
         payload,
       };
     } catch (err) {
-      return errorService.handleError(err);
+      errorService.handleError(err);
     }
   }
 

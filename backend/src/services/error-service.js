@@ -1,59 +1,55 @@
 const z = require("zod");
 const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3");
+const HttpError = require("../utils/httpError");
 
 class ErrorService {
   handleError(err) {
     if (err instanceof z.ZodError) {
-      return this.handleZodError(err);
+      this.handleZodError(err);
     }
 
     if (err instanceof jwt.TokenExpiredError) {
-      return this.handleJwtExpiredError();
+      this.handleJwtExpiredError();
     }
 
     if (err instanceof jwt.JsonWebTokenError) {
+      this.handleJwtError();
     }
 
-    const sqliteError = this.handleSqliteErrors(err);
+    this.handleSqliteErrors(err);
 
-    if (sqliteError) {
-      return sqliteError;
-    }
-
-    return this.handleHttpError();
+    this.handleHttpError(err);
   }
 
-  handleHttpError(code = 500, message = "Internal Server Error", body = {}) {
-    return {
-      error: true,
-      code,
-      message,
-      body,
-    };
+  handleHttpError(
+    err,
+    code = 500,
+    message = "Internal Server Error",
+    body = {},
+  ) {
+    throw new HttpError({ code, clientMessage: message, data: body }, err);
   }
 
   handleZodError(err) {
-    return this.handleHttpError(400, err.message, err.issues);
+    throw new HttpError({ code: 400, data: err.issues }, err);
   }
 
   /**
    * @param {jwt.JsonWebTokenError} err
    */
   handleJwtError(err) {
-    return this.handleHttpError();
+    throw new HttpError({ code: 401 }, err);
   }
 
   handleJwtExpiredError() {
-    return this.handleHttpError(401, "Access Token Expired");
+    throw new HttpError({ code: 401, clientMessage: "Access Token Expired" });
   }
 
   handleSqliteErrors(err) {
     if (err.errno && err.errno === sqlite3.CONSTRAINT) {
-      return this.handleHttpError(400, "Bad Request");
+      throw new HttpError({ code: 400, clientMessage: "Bad Request" }, err);
     }
-
-    return null;
   }
 }
 

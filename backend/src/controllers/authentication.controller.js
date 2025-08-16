@@ -30,7 +30,7 @@ class AuthenticationController {
   async register(req, res) {
     const registerRes = await authenticationService.register(req.body);
 
-    return res.status(registerRes.code).json(registerRes);
+    res.status(registerRes.code).json(registerRes);
   }
 }
 
