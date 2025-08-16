@@ -133,6 +133,46 @@ class BaseModel {
 
     return instanceObjects;
   }
+
+  static async findAllBy(fields, values, limit = 100) {
+    let query = `SELECT * FROM ${this.table} WHERE `;
+    const keysInstance = new this();
+    const keys = Object.keys(keysInstance);
+
+    if (Array.isArray(fields) || Array.isArray(values)) {
+      validWhereClauseArray(fields, values);
+
+      query += `${fields.map((field) => `${field} = ?`).join(" AND ")} LIMIT ?`;
+      const result = await all(query, [values, limit]);
+
+      if (!result) {
+        return null;
+      }
+
+      const instanceObjects = results.map((result) => {
+        const instance = new this();
+        const prunedResult = pruneObject(result, keys);
+        return Object.assign(instance, prunedResult);
+      });
+
+      return instanceObjects;
+    }
+
+    query += `${fields} = ? LIMIT ?`;
+    const results = await all(query, [values, limit]);
+
+    if (!results) {
+      return null;
+    }
+
+    const instanceObjects = results.map((result) => {
+      const instance = new this();
+      const prunedResult = pruneObject(result, keys);
+      return Object.assign(instance, prunedResult);
+    });
+
+    return instanceObjects;
+  }
 }
 
 module.exports = BaseModel;

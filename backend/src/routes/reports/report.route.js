@@ -1,8 +1,6 @@
 const { Router } = require("express");
-const { join } = require("path");
 const multer = require("multer");
 const FileStorage = require("../../lib/fileStorage");
-const reportsService = require("../../services/reports/reports.service");
 const reportsController = require("../../controllers/reports.controller");
 const OfficerAuthenticationMiddleware = require("../../middleware/officerAuthorization.middleware");
 
@@ -20,6 +18,8 @@ reportRouter.get(
   OfficerAuthenticationMiddleware,
   reportsController.getAll,
 );
+
+reportRouter.post("/add-witness/:id", reportsController.createWitness);
 
 reportRouter.get("/:id", reportsController.getReportById);
 

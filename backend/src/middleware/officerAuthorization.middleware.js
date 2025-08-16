@@ -22,15 +22,17 @@ async function OfficerAuthenticationMiddleware(req, res, next) {
 
   const user = await UserModel.findById(verifiedToken.payload.sub);
 
+  console.log(user);
+
   if (user === null) {
     throw new HttpError({ code: 401 });
   }
 
-  req.is_officer = user.is_officer;
-
-  if (!req.is_officer) {
+  if (!user.is_officer) {
     throw new HttpError({ code: 401 });
   }
+
+  req.is_officer = user.is_officer;
 
   next();
 }

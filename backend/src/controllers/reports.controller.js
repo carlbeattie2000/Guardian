@@ -1,5 +1,7 @@
+const personalDetailsService = require("../services/personalDetails/personalDetails.service");
 const reportsService = require("../services/reports/reports.service");
 const authenticationService = require("../services/users/authentication.service");
+const HttpError = require("../utils/httpError");
 
 class ReportsController {
   /**
@@ -43,6 +45,26 @@ class ReportsController {
     const reports = await reportsService.getAll();
 
     return res.status(reports.code).json(reports);
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async createWitness(req, res) {
+    const id = req.params.id;
+    const canModifyReport = await reportsService.canModifyReport(id, req.user);
+
+    if (!canModifyReport) {
+      throw new HttpError({ code: 401 });
+    }
+
+    const createWitnessRes = await personalDetailsService.createReportWitness(
+      req.body,
+      id,
+    );
+
+    return res.status(createWitnessRes.code).json(createWitnessRes);
   }
 }
 

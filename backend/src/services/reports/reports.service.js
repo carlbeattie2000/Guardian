@@ -4,6 +4,7 @@ const FileStorage = require("../../lib/fileStorage");
 const ReportImagesModel = require("../../models/report-images.model");
 const errorService = require("../error-service");
 const UserModel = require("../../models/user.model");
+const personalDetailsService = require("../personalDetails/personalDetails.service");
 
 class ReportsService {
   ReportValidation = z.object({
@@ -51,6 +52,12 @@ class ReportsService {
     try {
       const report = await ReportModel.findById(id);
 
+      if (report !== null) {
+        const personalDetails = await personalDetailsService.findByReportId(id);
+
+        report.personal_details = personalDetails.data;
+      }
+
       return {
         error: false,
         code: 200,
@@ -58,6 +65,18 @@ class ReportsService {
       };
     } catch (err) {
       errorService.handleError(err);
+    }
+  }
+
+  async canModifyReport(id, user_id, is_officer = false) {
+    if (is_officer) {
+      return true;
+    }
+
+    const report = await ReportModel.findById(id);
+
+    if (report && report.user_id === user_id) {
+      return true;
     }
   }
 
