@@ -1,6 +1,6 @@
-const z = require('zod');
-const jwt = require('jsonwebtoken');
-const sqlite3 = require('sqlite3');
+const z = require("zod");
+const jwt = require("jsonwebtoken");
+const sqlite3 = require("sqlite3");
 
 class ErrorService {
   handleError(err) {
@@ -29,16 +29,23 @@ class ErrorService {
       error: true,
       code,
       message,
-      body
-    }
+      body,
+    };
   }
 
   handleZodError(err) {
-    return this.handleHttpError(400, err.message, err.issues)
+    return this.handleHttpError(400, err.message, err.issues);
+  }
+
+  /**
+   * @param {jwt.JsonWebTokenError} err
+   */
+  handleJwtError(err) {
+    return this.handleHttpError();
   }
 
   handleJwtExpiredError() {
-    return this.handleHttpError(401, 'Access Token Expired');
+    return this.handleHttpError(401, "Access Token Expired");
   }
 
   handleSqliteErrors(err) {
@@ -52,4 +59,4 @@ class ErrorService {
 
 const errorService = new ErrorService();
 
-module.exports = errorService
+module.exports = errorService;

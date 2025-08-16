@@ -1,20 +1,24 @@
-const z = require('zod');
-const ReportModel = require('../../models/report.model');
-const FileStorage = require('../../lib/fileStorage');
-const ReportImagesModel = require('../../models/report-images.model');
-const errorService = require('../error-service');
+const z = require("zod");
+const ReportModel = require("../../models/report.model");
+const FileStorage = require("../../lib/fileStorage");
+const ReportImagesModel = require("../../models/report-images.model");
+const errorService = require("../error-service");
 
 class ReportsService {
   ReportValidation = z.object({
     description: z.string(),
     longitude: z.preprocess((val) => Number(val), z.number()).optional(),
     latitude: z.preprocess((val) => Number(val), z.number()).optional(),
-  })
+  });
 
   async createReport(files, body) {
     try {
       const reportDetailsValidated = this.ReportValidation.parse(body);
-      const report = new ReportModel(reportDetailsValidated.description, reportDetailsValidated.longitude, reportDetailsValidated.latitude);
+      const report = new ReportModel(
+        reportDetailsValidated.description,
+        reportDetailsValidated.longitude,
+        reportDetailsValidated.latitude,
+      );
 
       await report.save();
 
@@ -34,9 +38,9 @@ class ReportsService {
         code: 200,
         data: {
           report_id: report.id,
-          image_names: imageNames
-        }
-      }
+          image_names: imageNames,
+        },
+      };
     } catch (err) {
       return errorService.handleError(err);
     }
@@ -49,8 +53,8 @@ class ReportsService {
       return {
         error: false,
         code: 200,
-        data: report
-      }
+        data: report,
+      };
     } catch (err) {
       return errorService.handleError(err);
     }
