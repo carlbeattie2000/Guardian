@@ -58,6 +58,13 @@ class ReportsService {
         report.personal_details = personalDetails.data;
       }
 
+      const imagePaths = await ReportImagesModel.findAllBy(
+        "report_id",
+        report.id,
+      );
+
+      report.images = imagePaths;
+
       return {
         error: false,
         code: 200,
@@ -93,6 +100,20 @@ class ReportsService {
   async getAll(limit = 100) {
     try {
       const reports = await ReportModel.all(limit);
+
+      return {
+        error: false,
+        code: 200,
+        data: reports,
+      };
+    } catch (err) {
+      errorService.handleError(err);
+    }
+  }
+
+  async getAllByUserId(user_id) {
+    try {
+      const reports = await ReportModel.findAllBy("user_id", user_id);
 
       return {
         error: false,

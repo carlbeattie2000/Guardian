@@ -39,7 +39,7 @@ html(lang="en")
       | If you are in immediate danger call 000
     
     .mb-4
-      button.btn.btn-primary.btn-gap New Report
+      a(href="/report").btn.btn-primary.btn-gap New Report
       button.btn.btn-primary New Lost Article
     
     #loading.loading
@@ -49,6 +49,17 @@ html(lang="en")
         div Getting your location...
     
     #map(style="display: none;")
+
+    #userReports.d-flex.flex-column.gap-4.my-4
+      h3 Reports
+      each val in reports
+        div.row.align-items-center.mb-3.border-bottom.p-4
+          div.col-6
+            p.mb-0= val.description
+          div.col-3.badge.rounded-pill.text-bg-warning
+            p.mb-0= val.status
+          div.col-3.text-end
+            a(href="/view-report/" + val.id).btn.btn-primary view
     
     script.
       let userLocation = null;

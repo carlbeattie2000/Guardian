@@ -1,0 +1,44 @@
+doctype html
+html(lang="en")
+  head
+    title Add witness to report #{report_id}
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous")
+  body.container-sm.p-5.bg-dark
+    form#reportForm
+      .form-group
+        label.text-white(for="first_name") First Name
+        input#first_name.form-control(type="text", aria-describedby="firstNameHelp", name="first_name")
+      .form-group
+        label.text-white(for="last_name") Last Name
+        input#last_name.form-control(type="text", aria-describedby="lastNameHelp", name="last_name")
+      .form-group
+        label.text-white(for="date_of_birth") Date of Birth
+        input#date_of_birth.form-control(type="date", aria-describedby="dateOfBirthHelp", name="date_of_birth")
+      .form-group
+        label.text-white(for="contact_number") Contact Number
+        input#contact_number.form-control(type="text", aria-describedby="contactNumberHelp", name="contact_number")
+
+      div.d-flex.gap-4
+        button.btn.btn-primary.my-5(type="submit") Add Witness
+        a(href=`/view-report/${report_id}` class="btn btn-danger my-5") Skip
+    script.
+      document.getElementById('reportForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const body = {};
+
+        formData.forEach((value, key) => body[key] = value);
+
+        const request = await fetch(`/api/v1/reports/add-witness/!{report_id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        const res = await request.json();
+
+        if (request.status >= 200 && request.status < 300) {
+          window.location = '/view-report/!{report_id}';
+        }
+      });
