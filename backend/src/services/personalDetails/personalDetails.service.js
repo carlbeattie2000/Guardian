@@ -1,6 +1,6 @@
 const z = require("zod");
 const errorService = require("../error-service");
-const PersonalDetailsModel = require("../../models/pensonal-details.model");
+const PersonalDetailsModel = require("../../models/personal-details.model");
 
 class PersonalDetailsService {
   PersonalDetailsValidation = z.object({
