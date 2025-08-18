@@ -19,8 +19,15 @@ class AuthenticationController {
 
     res
       .cookie("accessToken", access, cookieOptions)
-      .cookie("refreshToken", refresh, cookieOptions)
-      .sendStatus(201);
+      .cookie("refreshToken", refresh, cookieOptions);
+
+    res.status(200).json({
+      error: false,
+      data: {
+        accessToken: access,
+        refreshToken: refresh,
+      },
+    });
   }
 
   /**
@@ -31,6 +38,14 @@ class AuthenticationController {
     const registerRes = await authenticationService.register(req.body);
 
     res.status(registerRes.code).json(registerRes);
+  }
+
+  async isAuthed(req, res) {
+    if (req.user) {
+      return res.sendStatus(200);
+    }
+
+    res.sendStatus(401);
   }
 }
 
