@@ -1,5 +1,6 @@
 const cookieOptions = require("../config/cookieOptions");
 const authenticationService = require("../services/users/authentication.service");
+const HttpResponse = require("../utils/HttpResponseHelper");
 
 class AuthenticationController {
   /**
@@ -21,13 +22,10 @@ class AuthenticationController {
       .cookie("accessToken", access, cookieOptions)
       .cookie("refreshToken", refresh, cookieOptions);
 
-    res.status(200).json({
-      error: false,
-      data: {
-        accessToken: access,
-        refreshToken: refresh,
-      },
-    });
+    new HttpResponse(200, {
+      accessToken: access,
+      refreshToken: refresh,
+    }).json(res);
   }
 
   /**
@@ -37,15 +35,15 @@ class AuthenticationController {
   async register(req, res) {
     const registerRes = await authenticationService.register(req.body);
 
-    res.status(registerRes.code).json(registerRes);
+    new HttpResponse(registerRes.code, {}, registerRes.message).json(res);
   }
 
   async isAuthed(req, res) {
     if (req.user) {
-      return res.sendStatus(200);
+      return new HttpResponse(200).sendStatus(res);
     }
 
-    res.sendStatus(401);
+    return new HttpResponse(401).sendStatus(res);
   }
 }
 

@@ -1,3 +1,5 @@
+const HttpResponse = require("./HttpResponseHelper");
+
 class HttpError extends Error {
   code;
   data;
@@ -28,9 +30,11 @@ class HttpError extends Error {
    * @param {import("express").Response} res
    */
   handleResponse(res) {
-    res
-      .status(this.code)
-      .json({ code: this.code, message: this.clientMessage, data: this.data });
+    new HttpResponse(
+      this.code,
+      { code: this.code, message: this.clientMessage, data: this.data },
+      this.clientMessage,
+    ).json(res);
   }
 
   handleLogging() {

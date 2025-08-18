@@ -1,5 +1,6 @@
 const lostArticleService = require("../services/lostArticles/lostArticles.service");
 const personalDetailsService = require("../services/personalDetails/personalDetails.service");
+const HttpResponse = require("../utils/HttpResponseHelper");
 
 class LostArticlesController {
   /**
@@ -13,20 +14,25 @@ class LostArticlesController {
       req.user,
     );
 
-    res.status(createLostArticleRes.code).json(createLostArticleRes);
+    new HttpResponse(createLostArticleRes.code, createLostArticleRes.data).json(
+      res,
+    );
   }
 
   async getById(req, res) {
     const id = req.params.id;
     const getLostArticleRes = await lostArticleService.getById(id, req.user);
 
-    res.status(getLostArticleRes.code).json(getLostArticleRes);
+    new HttpResponse(getLostArticleRes.code, getLostArticleRes.data).json(res);
   }
 
   async getAll(_, res) {
     const getAllLostArticlesRes = await lostArticleService.getAll();
 
-    res.status(getAllLostArticlesRes.code).json(getAllLostArticlesRes);
+    new HttpResponse(
+      getAllLostArticlesRes.code,
+      getAllLostArticlesRes.data,
+    ).json(res);
   }
 
   /**
@@ -50,9 +56,10 @@ class LostArticlesController {
         id,
       );
 
-    return res
-      .status(createLostArticlePersonalDetailsRes.code)
-      .json(createLostArticlePersonalDetailsRes);
+    new HttpResponse(
+      createLostArticlePersonalDetailsRes.code,
+      createLostArticlePersonalDetailsRes.data,
+    ).json(res);
   }
 }
 

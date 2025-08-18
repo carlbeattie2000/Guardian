@@ -2,6 +2,7 @@ const personalDetailsService = require("../services/personalDetails/personalDeta
 const reportsService = require("../services/reports/reports.service");
 const authenticationService = require("../services/users/authentication.service");
 const HttpError = require("../utils/httpError");
+const HttpResponse = require("../utils/HttpResponseHelper");
 
 class ReportsController {
   /**
@@ -15,7 +16,7 @@ class ReportsController {
       req.user,
     );
 
-    res.status(createReportRes.code).json(createReportRes);
+    new HttpResponse(createReportRes.code, createReportRes.data).json(res);
   }
 
   /**
@@ -27,14 +28,14 @@ class ReportsController {
     const report = await reportsService.getById(id);
 
     if (report.error || report.data === null) {
-      return res.status(report.code).json(report);
+      return new HttpResponse(401).sendStatus(res);
     }
 
     if (!(await reportsService.canUserView(report.data, req.user))) {
-      return res.sendStatus(401);
+      return new HttpResponse(401).sendStatus(res);
     }
 
-    res.status(report.code).json(report);
+    new HttpResponse(report.code, report.data).json(res);
   }
 
   /**
@@ -44,7 +45,7 @@ class ReportsController {
   async getAll(req, res) {
     const reports = await reportsService.getAll();
 
-    return res.status(reports.code).json(reports);
+    new HttpResponse(reports.code, reports.data).json(res);
   }
 
   /**
@@ -64,7 +65,7 @@ class ReportsController {
       id,
     );
 
-    return res.status(createWitnessRes.code).json(createWitnessRes);
+    new HttpResponse(createWitnessRes.code, createWitnessRes.data).json(res);
   }
 }
 

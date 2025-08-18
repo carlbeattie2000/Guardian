@@ -1,4 +1,5 @@
 const authenticationService = require("../services/users/authentication.service");
+const HttpResponse = require("../utils/HttpResponseHelper");
 
 /**
  * @param {Request} req
@@ -29,7 +30,7 @@ async function HeaderAuthorizationMiddleware(req, res, next) {
   }
 
   if (!accessToken) {
-    return res.sendStatus(401);
+    return new HttpResponse(401).sendStatus(res);
   }
 
   handleToken(req, res, next, accessToken);
@@ -45,7 +46,7 @@ async function handleToken(req, res, next, token) {
   const validatedJwt = authenticationService.verifyToken(token);
 
   if (validatedJwt.error) {
-    return res.sendStatus(validatedJwt.code);
+    return new HttpResponse(validatedJwt.code).sendStatus(res);
   }
 
   req.user = validatedJwt.payload.sub;
