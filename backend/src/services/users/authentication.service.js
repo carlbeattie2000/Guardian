@@ -30,8 +30,9 @@ class AuthenticationService {
           clientMessage: "Bad Login Request",
         });
       }
-
-      if (!foundUserDetails.verifyPassword(validatedLoginDetails.password)) {
+      if (
+        !(await foundUserDetails.verifyPassword(validatedLoginDetails.password))
+      ) {
         throw new HttpError({
           code: 400,
           clientMessage: "Bad Login Request",

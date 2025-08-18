@@ -1,8 +1,8 @@
-const argon2 = require('argon2');
+const argon2 = require("argon2");
 const BaseModel = require("./base.model");
 
 class UserModel extends BaseModel {
-  static table = 'users';
+  static table = "users";
   static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT, is_officer INTEGER, created_at DEFAULT current_date)`;
 
   username;
@@ -26,8 +26,7 @@ class UserModel extends BaseModel {
 
   async verifyPassword(password) {
     try {
-      if (await argon2.verify(this.password, password))
-        return true;
+      if (await argon2.verify(this.password, password)) return true;
 
       return false;
     } catch {
@@ -36,7 +35,7 @@ class UserModel extends BaseModel {
   }
 
   async save() {
-    await this.hashPassword()
+    await this.hashPassword();
     return await super.save();
   }
 }
