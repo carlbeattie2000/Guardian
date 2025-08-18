@@ -4,6 +4,9 @@ const sqlite3 = require("sqlite3");
 const HttpError = require("../utils/httpError");
 
 class ErrorService {
+  /**
+   * @param {Error} err
+   */
   handleError(err) {
     if (err instanceof HttpError) {
       throw err;
@@ -25,6 +28,12 @@ class ErrorService {
     this.handleHttpError(err);
   }
 
+  /**
+   * @param {Error} err
+   * @param {number} [code=500]
+   * @param {string} [message="Internal Server Error"]
+   * @param {{}} [body={}]
+   */
   handleHttpError(
     err,
     code = 500,
@@ -34,6 +43,9 @@ class ErrorService {
     throw new HttpError({ code, clientMessage: message, data: body }, err);
   }
 
+  /**
+   * @param {Error} err
+   */
   handleZodError(err) {
     throw new HttpError({ code: 400, data: err.issues }, err);
   }
@@ -49,6 +61,9 @@ class ErrorService {
     throw new HttpError({ code: 401, clientMessage: "Access Token Expired" });
   }
 
+  /**
+   * @param {Error} err
+   */
   handleSqliteErrors(err) {
     if (err.errno && err.errno === sqlite3.CONSTRAINT) {
       throw new HttpError({ code: 400, clientMessage: "Bad Request" }, err);

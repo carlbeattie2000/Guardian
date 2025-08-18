@@ -54,6 +54,9 @@ class PersonalDetailsService {
     };
   }
 
+  /**
+   * @param {number} report_id
+   */
   async findByReportId(report_id) {
     try {
       const result = await PersonalDetailsModel.findAllBy(
@@ -71,6 +74,9 @@ class PersonalDetailsService {
     }
   }
 
+  /**
+   * @param {number} lost_article_id
+   */
   async findByLostArticleId(lost_article_id) {
     try {
       const result = await PersonalDetailsModel.findAllBy(

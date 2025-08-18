@@ -70,6 +70,9 @@ class AuthenticationService {
     }
   }
 
+  /**
+   * @param {number} id
+   */
   async getUserById(id) {
     try {
       const user = await UserModel.findById(id);
@@ -79,6 +82,9 @@ class AuthenticationService {
     }
   }
 
+  /**
+   * @param {number} userId
+   */
   generateTokens(userId) {
     const access = jwt.sign(
       { sub: userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 },
@@ -92,6 +98,10 @@ class AuthenticationService {
     return [access, refresh];
   }
 
+  /**
+   * @param {string} token
+   * @param {string} [type="access"]
+   */
   verifyToken(token, type = "access") {
     try {
       const payload = jwt.verify(
@@ -109,6 +119,9 @@ class AuthenticationService {
     }
   }
 
+  /**
+   * @param {string} token
+   */
   async refreshToken(token) {
     const tokenVerified = this.verifyToken(token, "refresh");
     if (!tokenVerified.error) {
@@ -118,6 +131,9 @@ class AuthenticationService {
     return tokenVerified;
   }
 
+  /**
+   * @param {string} token
+   */
   async revokeToken(token) {}
 
   async logout() {}

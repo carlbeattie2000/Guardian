@@ -49,6 +49,11 @@ class LostArticleService {
     }
   }
 
+  /**
+   * @param {number} id
+   * @param {number} user_id
+   * @param {boolean} [is_officer=false]
+   */
   async getById(id, user_id, is_officer = false) {
     try {
       const result = is_officer
@@ -71,6 +76,9 @@ class LostArticleService {
     }
   }
 
+  /**
+   * @param {number} [limit=100]
+   */
   async getAll(limit = 100) {
     try {
       const results = await LostItemModel.all(limit);
@@ -85,6 +93,11 @@ class LostArticleService {
     }
   }
 
+  /**
+   * @param {number} id
+   * @param {number} user_id
+   * @param {boolean} [is_officer=false]
+   */
   async canModify(id, user_id, is_officer = false) {
     if (is_officer) {
       return true;

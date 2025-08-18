@@ -2,9 +2,9 @@ const authenticationService = require("../services/users/authentication.service"
 const HttpResponse = require("../utils/HttpResponseHelper");
 
 /**
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  */
 async function AuthorisationMiddleware(req, res, next) {
   const { accessToken } = req.cookies;
@@ -17,9 +17,9 @@ async function AuthorisationMiddleware(req, res, next) {
 }
 
 /**
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  */
 async function HeaderAuthorizationMiddleware(req, res, next) {
   let accessToken;
@@ -37,9 +37,9 @@ async function HeaderAuthorizationMiddleware(req, res, next) {
 }
 
 /**
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @param {string} token
  */
 async function handleToken(req, res, next, token) {

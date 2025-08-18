@@ -6,8 +6,8 @@ const HttpResponse = require("../utils/HttpResponseHelper");
 
 class ReportsController {
   /**
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
    */
   async create(req, res) {
     const createReportRes = await reportsService.create(
@@ -20,8 +20,8 @@ class ReportsController {
   }
 
   /**
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
    */
   async getById(req, res) {
     const id = req.params.id;

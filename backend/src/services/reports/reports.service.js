@@ -48,6 +48,9 @@ class ReportsService {
     }
   }
 
+  /**
+   * @param {number} id
+   */
   async getById(id) {
     try {
       const report = await ReportModel.findById(id);
@@ -75,6 +78,11 @@ class ReportsService {
     }
   }
 
+  /**
+   * @param {number} id
+   * @param {number} user_id
+   * @param {boolean} [is_officer=false]
+   */
   async canModify(id, user_id, is_officer = false) {
     if (is_officer) {
       return true;
@@ -87,6 +95,10 @@ class ReportsService {
     }
   }
 
+  /**
+   * @param {unknown} report
+   * @param {number} user_id
+   */
   async canUserView(report, user_id) {
     const user = await UserModel.findById(user_id);
 
@@ -97,6 +109,9 @@ class ReportsService {
     return user.is_officer || report.user_id === user_id;
   }
 
+  /**
+   * @param {number} [limit=100]
+   */
   async getAll(limit = 100) {
     try {
       const reports = await ReportModel.all(limit);
@@ -111,6 +126,9 @@ class ReportsService {
     }
   }
 
+  /**
+   * @param {number} user_id
+   */
   async getAllByUserId(user_id) {
     try {
       const reports = await ReportModel.findAllBy("user_id", user_id);

@@ -19,6 +19,10 @@ class LostArticlesController {
     );
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async getById(req, res) {
     const id = req.params.id;
     const getLostArticleRes = await lostArticleService.getById(id, req.user);
@@ -26,6 +30,9 @@ class LostArticlesController {
     new HttpResponse(getLostArticleRes.code, getLostArticleRes.data).json(res);
   }
 
+  /**
+   * @param {import('express').Response} res
+   */
   async getAll(_, res) {
     const getAllLostArticlesRes = await lostArticleService.getAll();
 

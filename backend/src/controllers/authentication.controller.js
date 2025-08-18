@@ -4,8 +4,8 @@ const HttpResponse = require("../utils/HttpResponseHelper");
 
 class AuthenticationController {
   /**
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
    */
   async login(req, res) {
     const loginRes = await authenticationService.login(req.body);
@@ -29,8 +29,8 @@ class AuthenticationController {
   }
 
   /**
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
    */
   async register(req, res) {
     const registerRes = await authenticationService.register(req.body);
@@ -38,6 +38,10 @@ class AuthenticationController {
     new HttpResponse(registerRes.code, {}, registerRes.message).json(res);
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async isAuthed(req, res) {
     if (req.user) {
       return new HttpResponse(200).sendStatus(res);
