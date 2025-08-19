@@ -14,68 +14,60 @@ class ReportsService {
   });
 
   async create(files, body, user_id) {
-    try {
-      const reportDetailsValidated = this.ReportValidation.parse(body);
-      const report = new ReportModel(
-        reportDetailsValidated.description,
-        reportDetailsValidated.longitude,
-        reportDetailsValidated.latitude,
-        user_id,
-      );
+    const reportDetailsValidated = this.ReportValidation.parse(body);
+    const report = new ReportModel(
+      reportDetailsValidated.description,
+      reportDetailsValidated.longitude,
+      reportDetailsValidated.latitude,
+      user_id,
+    );
 
-      await report.save();
+    await report.save();
 
-      const imageNames = [];
+    const imageNames = [];
 
-      if (Array.isArray(files) && files.length > 0) {
-        for (const file of files) {
-          const fileName = await FileStorage.saveImage(file);
-          imageNames.push(fileName);
+    if (Array.isArray(files) && files.length > 0) {
+      for (const file of files) {
+        const fileName = await FileStorage.saveImage(file);
+        imageNames.push(fileName);
 
-          new ReportImagesModel(report.id, fileName).save();
-        }
+        new ReportImagesModel(report.id, fileName).save();
       }
-
-      return {
-        error: false,
-        code: 201,
-        data: {
-          id: report.id,
-        },
-      };
-    } catch (err) {
-      errorService.handleError(err);
     }
+
+    return {
+      error: false,
+      code: 201,
+      data: {
+        id: report.id,
+      },
+    };
   }
 
   /**
    * @param {number} id
    */
   async getById(id) {
-    try {
-      const report = await ReportModel.findById(id);
+    const report = await ReportModel.findById(id);
 
-      if (report !== null) {
-        const personalDetails = await personalDetailsService.findByReportId(id);
+    if (report !== null) {
+      const personalDetails = await personalDetailsService.findByReportId(id);
 
-        report.personal_details = personalDetails.data;
-      }
-
-      const imagePaths = await ReportImagesModel.findAllBy(
-        "report_id",
-        report.id,
-      );
-
-      report.images = imagePaths;
-
-      return {
-        error: false,
-        code: 200,
-        data: report,
-      };
-    } catch (err) {
-      errorService.handleError(err);
+      report.personal_details = personalDetails.data;
     }
+
+    const imagePaths = await ReportImagesModel.findAllBy(
+      "report_id",
+      report.id,
+    );
+
+    report.images = imagePaths;
+
+    return {
+      error: false,
+      code: 200,
+      data: report,
+    };
   }
 
   /**
@@ -113,34 +105,26 @@ class ReportsService {
    * @param {number} [limit=100]
    */
   async getAll(limit = 100) {
-    try {
-      const reports = await ReportModel.all(limit);
+    const reports = await ReportModel.all(limit);
 
-      return {
-        error: false,
-        code: 200,
-        data: reports,
-      };
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    return {
+      error: false,
+      code: 200,
+      data: reports,
+    };
   }
 
   /**
    * @param {number} user_id
    */
   async getAllByUserId(user_id) {
-    try {
-      const reports = await ReportModel.findAllBy("user_id", user_id);
+    const reports = await ReportModel.findAllBy("user_id", user_id);
 
-      return {
-        error: false,
-        code: 200,
-        data: reports,
-      };
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    return {
+      error: false,
+      code: 200,
+      data: reports,
+    };
   }
 }
 

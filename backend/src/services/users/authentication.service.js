@@ -17,69 +17,57 @@ const UserRegister = z.object({
 
 class AuthenticationService {
   async login(loginDetails) {
-    try {
-      const validatedLoginDetails = UserLogin.parse(loginDetails);
-      const foundUserDetails = await UserModel.findBy(
-        "username",
-        validatedLoginDetails.username,
-      );
+    const validatedLoginDetails = UserLogin.parse(loginDetails);
+    const foundUserDetails = await UserModel.findBy(
+      "username",
+      validatedLoginDetails.username,
+    );
 
-      if (!foundUserDetails) {
-        throw new HttpError({
-          code: 400,
-          clientMessage: "Bad Login Request",
-        });
-      }
-      if (
-        !(await foundUserDetails.verifyPassword(validatedLoginDetails.password))
-      ) {
-        throw new HttpError({
-          code: 400,
-          clientMessage: "Bad Login Request",
-        });
-      }
-
-      return {
-        error: false,
-        data: foundUserDetails,
-      };
-    } catch (err) {
-      errorService.handleError(err);
+    if (!foundUserDetails) {
+      throw new HttpError({
+        code: 400,
+        clientMessage: "Bad Login Request",
+      });
     }
+    if (
+      !(await foundUserDetails.verifyPassword(validatedLoginDetails.password))
+    ) {
+      throw new HttpError({
+        code: 400,
+        clientMessage: "Bad Login Request",
+      });
+    }
+
+    return {
+      error: false,
+      data: foundUserDetails,
+    };
   }
 
   async register(registerDetails) {
-    try {
-      const validatdRegisterDetails = UserRegister.parse(registerDetails);
-      const user = new UserModel(
-        validatdRegisterDetails.username,
-        validatdRegisterDetails.email,
-        validatdRegisterDetails.password,
-        false,
-      );
+    const validatdRegisterDetails = UserRegister.parse(registerDetails);
+    const user = new UserModel(
+      validatdRegisterDetails.username,
+      validatdRegisterDetails.email,
+      validatdRegisterDetails.password,
+      false,
+    );
 
-      await user.save();
+    await user.save();
 
-      return {
-        error: false,
-        code: 200,
-        message: "Register Success",
-      };
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    return {
+      error: false,
+      code: 200,
+      message: "Register Success",
+    };
   }
 
   /**
    * @param {number} id
    */
   async getUserById(id) {
-    try {
-      const user = await UserModel.findById(id);
-      return user;
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    const user = await UserModel.findById(id);
+    return user;
   }
 
   /**
@@ -103,20 +91,17 @@ class AuthenticationService {
    * @param {string} [type="access"]
    */
   verifyToken(token, type = "access") {
-    try {
-      const payload = jwt.verify(
-        token,
-        type == "refresh"
-          ? process.env.JWT_REFRESH_SECRET
-          : process.env.JWT_ACCESS_SECRET,
-      );
-      return {
-        error: false,
-        payload,
-      };
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    const payload = jwt.verify(
+      token,
+      type == "refresh"
+        ? process.env.JWT_REFRESH_SECRET
+        : process.env.JWT_ACCESS_SECRET,
+    );
+
+    return {
+      error: false,
+      payload,
+    };
   }
 
   /**
@@ -142,12 +127,8 @@ class AuthenticationService {
    * @param {number} id
    */
   async getProfile(id) {
-    try {
-      const userDetails = await UserModel.findById(id);
-      return userDetails;
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    const userDetails = await UserModel.findById(id);
+    return us;
   }
 }
 

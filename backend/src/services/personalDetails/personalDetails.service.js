@@ -11,23 +11,19 @@ class PersonalDetailsService {
   });
 
   async create(body) {
-    try {
-      const { first_name, last_name, date_of_birth, contact_number } =
-        this.PersonalDetailsValidation.parse(body);
+    const { first_name, last_name, date_of_birth, contact_number } =
+      this.PersonalDetailsValidation.parse(body);
 
-      const personalDetails = new PersonalDetailsModel(
-        first_name,
-        last_name,
-        date_of_birth,
-        contact_number,
-      );
+    const personalDetails = new PersonalDetailsModel(
+      first_name,
+      last_name,
+      date_of_birth,
+      contact_number,
+    );
 
-      await personalDetails.save();
+    await personalDetails.save();
 
-      return personalDetails;
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    return personalDetails;
   }
 
   async createReportWitness(body, report_id) {
@@ -58,40 +54,29 @@ class PersonalDetailsService {
    * @param {number} report_id
    */
   async findByReportId(report_id) {
-    try {
-      const result = await PersonalDetailsModel.findAllBy(
-        "report_id",
-        report_id,
-      );
+    const result = await PersonalDetailsModel.findAllBy("report_id", report_id);
 
-      return {
-        error: false,
-        code: 200,
-        data: result,
-      };
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    return {
+      error: false,
+      code: 200,
+      data: result,
+    };
   }
 
   /**
    * @param {number} lost_article_id
    */
   async findByLostArticleId(lost_article_id) {
-    try {
-      const result = await PersonalDetailsModel.findAllBy(
-        "lost_article_id",
-        lost_article_id,
-      );
+    const result = await PersonalDetailsModel.findAllBy(
+      "lost_article_id",
+      lost_article_id,
+    );
 
-      return {
-        error: false,
-        code: 200,
-        data: result,
-      };
-    } catch (err) {
-      errorService.handleError(err);
-    }
+    return {
+      error: false,
+      code: 200,
+      data: result,
+    };
   }
 }
 

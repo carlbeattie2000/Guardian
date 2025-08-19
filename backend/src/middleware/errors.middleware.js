@@ -1,3 +1,4 @@
+const errorService = require("../services/error-service");
 const HttpError = require("../utils/httpError");
 
 /**
@@ -7,13 +8,14 @@ const HttpError = require("../utils/httpError");
  * @param {import('express').NextFunction} NextFunction
  */
 function HttpErrorMiddleware(err, req, res, next) {
+  err = errorService.handleError(err);
+
   if (err instanceof HttpError) {
     err.handleLogging();
 
     return err.handleResponse(res);
   }
 
-  console.error(err);
   res.sendStatus(500);
 }
 

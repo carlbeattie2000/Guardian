@@ -1,3 +1,4 @@
+const errorService = require("../services/error-service");
 const authenticationService = require("../services/users/authentication.service");
 const HttpResponse = require("../utils/HttpResponseHelper");
 
@@ -42,12 +43,8 @@ async function HeaderAuthorizationMiddleware(req, res, next) {
  * @param {import('express').NextFunction} next
  * @param {string} token
  */
-async function handleToken(req, res, next, token) {
+function handleToken(req, res, next, token) {
   const validatedJwt = authenticationService.verifyToken(token);
-
-  if (validatedJwt.error) {
-    return new HttpResponse(validatedJwt.code).sendStatus(res);
-  }
 
   req.user = validatedJwt.payload.sub;
 

@@ -1,16 +1,12 @@
-const { join } = require('path');
-const { mkdirSync, statSync } = require('fs');
+const { join } = require("path");
+const { mkdirSync, statSync } = require("fs");
 
 function usePublicDir() {
-  const path = join(process.cwd(), 'public');
+  const path = join(process.cwd(), "public");
 
-  try {
-    const publicDirStat = statSync(path);
+  const publicDirStat = statSync(path);
 
-    if (!publicDirStat.isDirectory()) {
-      mkdirSync(path);
-    }
-  } catch {
+  if (!publicDirStat.isDirectory()) {
     mkdirSync(path);
   }
 

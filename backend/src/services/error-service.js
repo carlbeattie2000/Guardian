@@ -9,21 +9,21 @@ class ErrorService {
    */
   handleError(err) {
     if (err instanceof HttpError) {
-      throw err;
+      return err;
     }
     if (err instanceof z.ZodError) {
-      this.handleZodError(err);
+      return this.handleZodError(err);
     }
 
     if (err instanceof jwt.TokenExpiredError) {
-      this.handleJwtExpiredError();
+      return this.handleJwtExpiredError();
     }
 
     if (err instanceof jwt.JsonWebTokenError) {
-      this.handleJwtError();
+      return this.handleJwtError();
     }
 
-    this.handleSqliteErrors(err);
+    err = this.handleSqliteErrors(err);
 
     this.handleHttpError(err);
   }
@@ -40,25 +40,29 @@ class ErrorService {
     message = "Internal Server Error",
     body = {},
   ) {
-    throw new HttpError({ code, clientMessage: message, data: body }, err);
+    if (err instanceof HttpError) {
+      return err;
+    }
+
+    return new HttpError({ code, clientMessage: message, data: body }, err);
   }
 
   /**
    * @param {Error} err
    */
   handleZodError(err) {
-    throw new HttpError({ code: 400, data: err.issues }, err);
+    return new HttpError({ code: 400, data: err.issues }, err);
   }
 
   /**
    * @param {jwt.JsonWebTokenError} err
    */
   handleJwtError(err) {
-    throw new HttpError({ code: 401 }, err);
+    return new HttpError({ code: 401 }, err);
   }
 
   handleJwtExpiredError() {
-    throw new HttpError({ code: 401, clientMessage: "Access Token Expired" });
+    return new HttpError({ code: 401, clientMessage: "Access Token Expired" });
   }
 
   /**
@@ -66,10 +70,10 @@ class ErrorService {
    */
   handleSqliteErrors(err) {
     if (err.errno && err.errno === sqlite3.CONSTRAINT) {
-      throw new HttpError({ code: 400, clientMessage: "Bad Request" }, err);
+      return new HttpError({ code: 400, clientMessage: "Bad Request" }, err);
     }
 
-    return false;
+    return err;
   }
 }
 
