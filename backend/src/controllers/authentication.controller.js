@@ -44,10 +44,20 @@ class AuthenticationController {
    */
   async isAuthed(req, res) {
     if (req.user) {
-      return new HttpResponse(200).sendStatus(res);
+      return new HttpResponse(204).sendStatus(res);
     }
 
     return new HttpResponse(401).sendStatus(res);
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async profile(req, res) {
+    const userProfileDetails = await authenticationService.getProfile(req.user);
+
+    new HttpResponse(200, userProfileDetails).json(res);
   }
 }
 

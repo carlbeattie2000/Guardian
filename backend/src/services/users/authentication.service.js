@@ -137,6 +137,18 @@ class AuthenticationService {
   async revokeToken(token) {}
 
   async logout() {}
+
+  /**
+   * @param {number} id
+   */
+  async getProfile(id) {
+    try {
+      const userDetails = await UserModel.findById(id);
+      return userDetails;
+    } catch (err) {
+      errorService.handleError(err);
+    }
+  }
 }
 
 const authenticationService = new AuthenticationService();
