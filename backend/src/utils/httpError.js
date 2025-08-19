@@ -1,4 +1,5 @@
 const HttpResponse = require("./HttpResponseHelper");
+const defaultLogger = require("../config/logging");
 
 class HttpError extends Error {
   code;
@@ -38,7 +39,11 @@ class HttpError extends Error {
   }
 
   handleLogging() {
-    console.error(this.code, this.message, this.stack);
+    defaultLogger.log({
+      date: new Date().toString(),
+      level: "error",
+      message: this.message,
+    });
   }
 }
 
