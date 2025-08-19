@@ -10,13 +10,13 @@ import { apiService } from "~/services/apiService";
 
 interface IAuthContext {
   session: string | null;
-  login: (token: string) => void;
+  login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   session: null,
-  login: async () => {},
+  login: () => {},
   logout: () => {},
 });
 
@@ -30,9 +30,9 @@ async function accessTokenIsValid(token: string | null): Promise<boolean> {
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [[isLoadingAccess, accessTokenSession], setAccessTokenSession] =
-    useStorageState("access-session");
+    useStorageState("accessToken");
   const [[isLoadingRefresh, refreshTokenSession], setRefreshTokenSession] =
-    useStorageState("refresh-session");
+    useStorageState("refreshToken");
 
   const loading = isLoadingAccess || isLoadingRefresh;
 
@@ -43,8 +43,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [loading, accessTokenSession, refreshTokenSession]);
 
   const login = useCallback(
-    (token: string) => {
-      setAccessTokenSession(token);
+    (accessToken: string, refreshToken: string) => {
+      setAccessTokenSession(accessToken);
+      setRefreshTokenSession(refreshToken);
     },
     [setAccessTokenSession, setRefreshTokenSession],
   );

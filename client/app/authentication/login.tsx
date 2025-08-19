@@ -13,6 +13,7 @@ import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 import { AuthContext } from "~/contexts/Auth";
 import { apiService } from "~/services/apiService";
+import { LoginPayload, LoginResponse } from "~/types/responses";
 
 export default function Screen() {
   const router = useRouter();
@@ -26,11 +27,18 @@ export default function Screen() {
       return;
     }
 
-    console.log("sending request", username, password);
-    const request = await apiService.post("/api/v1/auth/login", {
+    const request = await apiService.post<LoginResponse>("/api/v1/auth/login", {
       username,
       password,
     });
+
+    const requestData = request.data;
+
+    if (request.status === 200 && requestData.status === "success") {
+      const payload = requestData.data as LoginPayload;
+
+      login(payload.accessToken, payload.refreshToken);
+    }
   }
 
   return (
