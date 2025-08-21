@@ -1,9 +1,9 @@
 const { Router } = require("express");
-const FileStorage = require("../../lib/fileStorage");
-const OfficerAuthenticationMiddleware = require("../../middleware/officerAuthorization.middleware");
+const FileStorage = require("../lib/fileStorage");
+const OfficerAuthenticationMiddleware = require("../middleware/officerAuthorization.middleware");
 
 const multer = require("multer");
-const reportsController = require("../../controllers/reports.controller");
+const reportsController = require("../controllers/reports.controller");
 
 const reportsRouter = Router();
 const upload = multer();

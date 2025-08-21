@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const multer = require("multer");
-const OfficerAuthenticationMiddleware = require("../../middleware/officerAuthorization.middleware");
+const OfficerAuthenticationMiddleware = require("../middleware/officerAuthorization.middleware");
 
-const lostArticlesControler = require("../../controllers/lostArticles.controller");
+const lostArticlesControler = require("../controllers/lostArticles.controller");
 const upload = multer();
 
 const lostArticlesRouter = Router();

@@ -9,6 +9,7 @@ const HttpErrorMiddleware = require("./middleware/errors.middleware");
 const useTemplateEngine = require("./config/templateEngine");
 const securityHeadersMiddleware = require("./middleware/securityHeaders.middleware");
 const notFoundMiddleware = require("./middleware/notFound.middleware");
+const rateLimitMiddleware = require("./middleware/rateLimiting.middleware");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(securityHeadersMiddleware);
 app.disable("x-powered-by");
 app.use(router);
+app.use(rateLimitMiddleware());
 
 // Only enabled when dev env set to DEVELOPMENT
 useTemplateEngine(app);
