@@ -72,18 +72,27 @@ class AuthenticationService {
     const accessExp = Math.floor(Date.now() / 1000) + 60 * 60;
     const refreshExp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
 
+    const session_id = uuidv4();
+
     const access = jwt.sign(
-      { sub: userId, exp: accessExp },
+      { sub: userId, jti: session_id, exp: accessExp },
       process.env.JWT_ACCESS_SECRET,
     );
     const refresh = jwt.sign(
-      { sub: userId, exp: refreshExp },
+      { sub: userId, jti: session_id, exp: refreshExp },
       process.env.JWT_REFRESH_SECRET,
     );
 
-    await this.saveToken(userId, access, "access", new Date(accessExp * 1000));
     await this.saveToken(
       userId,
+      session_id,
+      access,
+      "access",
+      new Date(accessExp * 1000),
+    );
+    await this.saveToken(
+      userId,
+      session_id,
       refresh,
       "refresh",
       new Date(refreshExp * 1000),
@@ -99,10 +108,10 @@ class AuthenticationService {
    * @param {number} expires_at
    * @returns {Promise<JwtModel>}
    */
-  async saveToken(user_id, token, type, expires_at) {
+  async saveToken(user_id, session_id, token, type, expires_at) {
     return await new JwtModel(
       user_id,
-      uuidv4(),
+      session_id,
       token,
       type,
       new Date(expires_at * 1000),
