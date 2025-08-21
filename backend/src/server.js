@@ -7,6 +7,7 @@ const registerSwaggerForDevEnv = require("./config/swagger");
 const usePublicDir = require("./config/staticFiles");
 const HttpErrorMiddleware = require("./middleware/errors.middleware");
 const useTemplateEngine = require("./config/templateEngine");
+const securityHeadersMiddleware = require("./middleware/securityHeaders");
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(cookieParser());
 app.use(express.static(usePublicDir()));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(securityHeadersMiddleware);
+app.disable("x-powered-by");
 app.use(router);
 
 // Only enabled when dev env set to DEVELOPMENT
