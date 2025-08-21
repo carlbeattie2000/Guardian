@@ -1,6 +1,6 @@
 const errorService = require("../services/error-service");
 const authenticationService = require("../services/authentication.service");
-const HttpResponse = require("../utils/HttpResponseHelper");
+const HttpResponse = require("../utils/http-response-helper");
 
 /**
  * @param {import('express').Request} req

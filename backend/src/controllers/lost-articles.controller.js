@@ -1,6 +1,6 @@
-const lostArticleService = require("../services/lostArticles.service");
-const personalDetailsService = require("../services/personalDetails.service");
-const HttpResponse = require("../utils/HttpResponseHelper");
+const lostArticleService = require("../services/lost-articles.service");
+const personalDetailsService = require("../services/personal-details.service");
+const HttpResponse = require("../utils/http-response-helper");
 
 class LostArticlesController {
   /**

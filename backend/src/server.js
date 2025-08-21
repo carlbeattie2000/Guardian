@@ -4,12 +4,12 @@ const router = require("./routes");
 const cookieParser = require("cookie-parser");
 
 const registerSwaggerForDevEnv = require("./config/swagger");
-const usePublicDir = require("./config/staticFiles");
+const usePublicDir = require("./config/static-files");
 const HttpErrorMiddleware = require("./middleware/errors.middleware");
-const useTemplateEngine = require("./config/templateEngine");
-const securityHeadersMiddleware = require("./middleware/securityHeaders.middleware");
-const notFoundMiddleware = require("./middleware/notFound.middleware");
-const rateLimitMiddleware = require("./middleware/rateLimiting.middleware");
+const useTemplateEngine = require("./config/template-engine");
+const securityHeadersMiddleware = require("./middleware/security-headers.middleware");
+const notFoundMiddleware = require("./middleware/not-found.middleware");
+const rateLimitMiddleware = require("./middleware/rate-limiting.middleware");
 
 const app = express();
 

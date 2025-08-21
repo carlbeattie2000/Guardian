@@ -1,5 +1,5 @@
-const HttpResponse = require("../utils/HttpResponseHelper");
-const { MemoryStores, MemoryStore } = require("../utils/memoryStore");
+const HttpResponse = require("../utils/http-response-helper");
+const { MemoryStores, MemoryStore } = require("../utils/memory-store");
 
 /**
  * @param {Object} param0

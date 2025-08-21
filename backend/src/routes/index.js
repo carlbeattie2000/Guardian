@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const AuthorisationMiddleware = require("../middleware/authorization.middleware");
-const rateLimitMiddleware = require("../middleware/rateLimiting.middleware");
+const rateLimitMiddleware = require("../middleware/rate-limiting.middleware");
 
 const reportsRouter = require("./reports.route");
 const lostArticlesRouter = require("./lost-articles.route");

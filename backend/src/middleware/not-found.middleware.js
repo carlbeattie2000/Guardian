@@ -1,4 +1,4 @@
-const HttpResponse = require("../utils/HttpResponseHelper");
+const HttpResponse = require("../utils/http-response-helper");
 
 /**
  * @param {import('express').Request} Request

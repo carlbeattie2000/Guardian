@@ -1,5 +1,4 @@
 const z = require("zod");
-const errorService = require("./error-service");
 const PersonalDetailsModel = require("../models/personal-details.model");
 
 class PersonalDetailsService {

@@ -1,7 +1,7 @@
 const UserModel = require("../models/user.model");
 const authenticationService = require("../services/authentication.service");
-const HttpError = require("../utils/httpError");
-const HttpResponse = require("../utils/HttpResponseHelper");
+const HttpError = require("../utils/http-error");
+const HttpResponse = require("../utils/http-response-helper");
 
 /**
  * @param {import('express').Request} Request

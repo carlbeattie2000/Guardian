@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const { v4: uuidv4 } = require("uuid");
 const UserModel = require("../models/user.model");
-const HttpError = require("../utils/httpError");
+const HttpError = require("../utils/http-error");
 const JwtModel = require("../models/jwt.model");
 const LoginAttemptsModel = require("../models/login-attempts.model");
 

@@ -1,10 +1,9 @@
 const z = require("zod");
 const ReportModel = require("../models/report.model");
-const FileStorage = require("../lib/fileStorage");
+const FileStorage = require("../lib/file-storage");
 const ReportImagesModel = require("../models/report-images.model");
-const errorService = require("./error-service");
 const UserModel = require("../models/user.model");
-const personalDetailsService = require("./personalDetails.service");
+const personalDetailsService = require("./personal-details.service");
 
 class ReportsService {
   ReportValidation = z.object({

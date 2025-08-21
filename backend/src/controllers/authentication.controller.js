@@ -1,6 +1,6 @@
-const cookieOptions = require("../config/cookieOptions");
+const cookieOptions = require("../config/cookie-options");
 const authenticationService = require("../services/authentication.service");
-const HttpResponse = require("../utils/HttpResponseHelper");
+const HttpResponse = require("../utils/http-response-helper");
 
 class AuthenticationController {
   /**

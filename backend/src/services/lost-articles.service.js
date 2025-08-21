@@ -1,9 +1,8 @@
 const z = require("zod");
 const LostItemModel = require("../models/lost-item.model");
-const FileStorage = require("../lib/fileStorage");
+const FileStorage = require("../lib/file-storage");
 const ReportImagesModel = require("../models/report-images.model");
-const errorService = require("./error-service");
-const personalDetailsService = require("./personalDetails.service");
+const personalDetailsService = require("./personal-details.service");
 
 class LostArticleService {
   articleValidation = z.object({

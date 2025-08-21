@@ -1,7 +1,7 @@
 const z = require("zod");
 const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3");
-const HttpError = require("../utils/httpError");
+const HttpError = require("../utils/http-error");
 
 class ErrorService {
   /**

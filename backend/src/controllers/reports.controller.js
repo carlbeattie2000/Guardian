@@ -1,8 +1,8 @@
-const personalDetailsService = require("../services/personalDetails.service");
+const personalDetailsService = require("../services/personal-details.service");
 const reportsService = require("../services/reports.service");
 const authenticationService = require("../services/authentication.service");
-const HttpError = require("../utils/httpError");
-const HttpResponse = require("../utils/HttpResponseHelper");
+const HttpError = require("../utils/http-error");
+const HttpResponse = require("../utils/http-response-helper");
 
 class ReportsController {
   /**

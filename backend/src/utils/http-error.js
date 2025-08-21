@@ -1,4 +1,4 @@
-const HttpResponse = require("./HttpResponseHelper");
+const HttpResponse = require("./http-response-helper");
 const defaultLogger = require("../config/logging");
 
 class HttpError extends Error {
