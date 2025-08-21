@@ -1,6 +1,7 @@
 const z = require("zod");
 const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
+const { v4: uuidv4 } = require("uuid");
 const UserModel = require("../models/user.model");
 const HttpError = require("../utils/httpError");
 const JwtModel = require("../models/jwt.model");
@@ -101,6 +102,7 @@ class AuthenticationService {
   async saveToken(user_id, token, type, expires_at) {
     return await new JwtModel(
       user_id,
+      uuidv4(),
       token,
       type,
       new Date(expires_at * 1000),
