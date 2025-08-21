@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user.model");
 const HttpError = require("../utils/httpError");
 const JwtModel = require("../models/jwt.model");
+const LoginAttemptsModel = require("../models/login-attempts.model");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -16,11 +17,14 @@ const UserRegister = z.object({
 });
 
 class AuthenticationService {
+  MAX_LOGIN_ATTEMPTS = 5;
+  TIMEOUT_SECONDS = 60 * 10;
   /**
    * @returns {Promise<UserModel | null>}
    */
   async login(loginDetails) {
     const validatedLoginDetails = UserLogin.parse(loginDetails);
+    /** @type {UserModel|null} */
     const foundUserDetails = await UserModel.findBy(
       "username",
       validatedLoginDetails.username,
@@ -36,10 +40,15 @@ class AuthenticationService {
     if (
       !(await foundUserDetails.verifyPassword(validatedLoginDetails.password))
     ) {
+      this.failedLoginAttempt(foundUserDetails.id);
       throw new HttpError({
         code: 400,
         clientMessage: "Bad Login Request",
       });
+    }
+
+    if (await this.userIsLoginBlocked(foundUserDetails.id)) {
+      throw new HttpError({ code: 400, clientMessage: "Bad Login Request" });
     }
 
     return foundUserDetails;
@@ -173,6 +182,47 @@ class AuthenticationService {
   async getProfile(id) {
     const userDetails = await UserModel.findById(id);
     return userDetails;
+  }
+
+  /**
+   * @param {number} user_id
+   */
+  async failedLoginAttempt(user_id) {
+    /** @type {LoginAttemptsModel | null} */
+    const loginAttempt =
+      (await LoginAttemptsModel.findBy("user_id", user_id)) ||
+      (await new LoginAttemptsModel(user_id).save());
+
+    if (loginAttempt) {
+      await loginAttempt.failedLoginAttempt();
+    }
+  }
+
+  /**
+   * @param {number} user_id
+   * @returns {Promise<boolean>}
+   */
+  async userIsLoginBlocked(user_id) {
+    /** @type {LoginAttemptsModel | null} */
+    const loginAttempts = await LoginAttemptsModel.findBy("user_id", user_id);
+
+    if (!loginAttempts) {
+      return false;
+    }
+
+    if (
+      Date.now() - loginAttempts.last_attempt_at >
+      this.TIMEOUT_SECONDS * 1000
+    ) {
+      await loginAttempts.resetAttempts();
+      return false;
+    }
+
+    if (loginAttempts.attempts >= this.MAX_LOGIN_ATTEMPTS) {
+      return true;
+    }
+
+    return false;
   }
 }
 
