@@ -1,0 +1,50 @@
+const argon2 = require("argon2");
+const BaseModel = require("./base.model");
+
+class JwtModel extends BaseModel {
+  static table = "jwts";
+  static schema = `CREATE TABLE IF NOT EXISTS ${this.table} (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, jwt TEXT UNIQUE, type TEXT, expires_at DATE, created_at DEFAULT current_date)`;
+
+  user_id;
+  jwt;
+  type;
+  expires_at;
+  created_at = null;
+
+  /**
+   * @param {number} user_id
+   * @param {string} jwt
+   * @param {('access'|'refresh')} type
+   * @param {number} expires_at
+   */
+  constructor(user_id, jwt, type, expires_at) {
+    super();
+
+    this.user_id = user_id;
+    this.jwt = jwt;
+    this.expires_at = expires_at;
+  }
+
+  async hashJwt() {
+    this.jwt = await argon2.hash(this.jwt);
+  }
+
+  async verifyJwt(jwt) {
+    try {
+      if (await argon2.verify(this.jwt, jwt)) return true;
+
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  async save() {
+    await this.hashJwt();
+    return await super.save();
+  }
+}
+
+JwtModel.initialize();
+
+module.exports = JwtModel;
