@@ -33,6 +33,13 @@ class HttpResponse {
   sendStatus(res) {
     res.sendStatus(this.code);
   }
+
+  /**
+   * @param {import('express').Response} res
+   */
+  send(res) {
+    res.status(this.code).send(this.message);
+  }
 }
 
 module.exports = HttpResponse;

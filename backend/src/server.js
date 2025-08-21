@@ -8,6 +8,7 @@ const usePublicDir = require("./config/staticFiles");
 const HttpErrorMiddleware = require("./middleware/errors.middleware");
 const useTemplateEngine = require("./config/templateEngine");
 const securityHeadersMiddleware = require("./middleware/securityHeaders");
+const notFoundMiddleware = require("./middleware/notFound.middleware");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(router);
 // Only enabled when dev env set to DEVELOPMENT
 useTemplateEngine(app);
 
+app.use(notFoundMiddleware);
 app.use(HttpErrorMiddleware);
 
 app.listen(2699);
