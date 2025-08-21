@@ -14,7 +14,7 @@ class AuthenticationController {
       return res.status(loginRes.code).json(loginRes);
     }
 
-    const [access, refresh] = authenticationService.generateTokens(
+    const [access, refresh] = await authenticationService.generateTokens(
       loginRes.data.id,
     );
 

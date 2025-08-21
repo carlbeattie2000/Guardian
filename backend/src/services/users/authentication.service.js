@@ -1,8 +1,8 @@
 const z = require("zod");
 const jwt = require("jsonwebtoken");
-const errorService = require("../error-service");
 const UserModel = require("../../models/user.model");
 const HttpError = require("../../utils/httpError");
+const JwtModel = require("../../models/jwt.model");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -64,6 +64,7 @@ class AuthenticationService {
 
   /**
    * @param {number} id
+   * @returns {Promise<UserModel | null>}
    */
   async getUserById(id) {
     const user = await UserModel.findById(id);
@@ -72,23 +73,75 @@ class AuthenticationService {
 
   /**
    * @param {number} userId
+   * @returns {Promise<[string, string]>}
    */
-  generateTokens(userId) {
+  async generateTokens(userId) {
+    const accessExp = Math.floor(Date.now() / 1000) + 60 * 60;
+    const refreshExp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+
     const access = jwt.sign(
-      { sub: userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 },
+      { sub: userId, exp: accessExp },
       process.env.JWT_ACCESS_SECRET,
     );
     const refresh = jwt.sign(
-      { sub: userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 },
+      { sub: userId, exp: refreshExp },
       process.env.JWT_REFRESH_SECRET,
+    );
+
+    await this.saveToken(userId, access, "access", new Date(accessExp * 1000));
+    await this.saveToken(
+      userId,
+      refresh,
+      "refresh",
+      new Date(refreshExp * 1000),
     );
 
     return [access, refresh];
   }
 
   /**
+   * @param {number} user_id
    * @param {string} token
-   * @param {string} [type="access"]
+   * @param {('access'|'refresh')} type
+   * @param {number} expires_at
+   * @returns {Promise<JwtModel>}
+   */
+  async saveToken(user_id, token, type, expires_at) {
+    return await new JwtModel(
+      user_id,
+      token,
+      type,
+      new Date(expires_at * 1000),
+    ).save();
+  }
+
+  /**
+   * @param {number} user_id
+   */
+  async deleteTokensForUser(user_id) {
+    const jwts = await JwtModel.findAllBy("user_id", user_id);
+    if (jwts) {
+      jwts.forEach(async (token) => {
+        await token.delete();
+      });
+    }
+  }
+
+  /**
+   * @param {number} user_id
+   * @param {('access'|'refresh')} type
+   */
+  async deleteTokenForUser(user_id, type) {
+    const jwt = await JwtModel.findBy(["user_id", "type"], [user_id, type]);
+
+    if (jwt) {
+      await jwt.delete();
+    }
+  }
+
+  /**
+   * @param {string} token
+   * @param {('access'|'refresh')} [type="access"]
    */
   verifyToken(token, type = "access") {
     const payload = jwt.verify(
@@ -116,19 +169,15 @@ class AuthenticationService {
     return tokenVerified;
   }
 
-  /**
-   * @param {string} token
-   */
-  async revokeToken(token) {}
-
   async logout() {}
 
   /**
    * @param {number} id
+   * @returns {Promise<UserModel | null>}
    */
   async getProfile(id) {
     const userDetails = await UserModel.findById(id);
-    return us;
+    return userDetails;
   }
 }
 
