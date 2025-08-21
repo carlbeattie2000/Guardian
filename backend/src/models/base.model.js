@@ -24,6 +24,9 @@ function pruneObject(object, expectedKeys) {
   );
 }
 
+/**
+ * @template T
+ */
 class BaseModel {
   static table = "";
   static schema = "";
@@ -41,7 +44,7 @@ class BaseModel {
   }
 
   /**
-   * @returns {Promise<BaseModel>}
+   * @returns {Promise<T>}
    */
   async save() {
     const isInsert =
@@ -74,7 +77,7 @@ class BaseModel {
   }
 
   /**
-   * @returns {Promise<BaseModel>}
+   * @returns {Promise<T>}
    */
   async delete() {
     if (this.id < 0 || this.id === null || this.id === undefined) {
@@ -87,7 +90,7 @@ class BaseModel {
 
   /**
    * @param {number} id
-   * @returns {Promise<BaseModel | null>}
+   * @returns {Promise<T | null>}
    */
   static async findById(id) {
     const query = `SELECT * FROM ${this.table} WHERE id = ?`;
@@ -107,7 +110,7 @@ class BaseModel {
   /**
    * @param {string[]} fields
    * @param {unknown[]} values
-   * @returns {Promise<BaseModel | null>}
+   * @returns {Promise<T | null>}
    */
   static async findBy(fields, values) {
     let query = `SELECT * FROM ${this.table} WHERE `;
@@ -125,7 +128,7 @@ class BaseModel {
       }
 
       Object.assign(instance, pruneObject(result, keys));
-      return instance;
+      return /** @type {T} */ (instance);
     }
 
     query += `${fields} = ? LIMIT 1`;
@@ -136,12 +139,12 @@ class BaseModel {
     }
 
     Object.assign(instance, pruneObject(result, keys));
-    return instance;
+    return /** @type {T} */ (instance);
   }
 
   /**
    * @param {number} limit
-   * @returns {Promise<BaseModel[] | null>}
+   * @returns {Promise<T[] | null>}
    */
   static async all(limit) {
     const query = `SELECT * FROM ${this.table} LIMIT ?`;
@@ -166,7 +169,7 @@ class BaseModel {
    * @param {string[]} fields
    * @param {unknown[]} values
    * @param {number} [limit=100]
-   * @returns {Promise<BaseModel[] | null>}
+   * @returns {Promise<T[] | null>}
    */
   static async findAllBy(fields, values, limit = 100) {
     let query = `SELECT * FROM ${this.table} WHERE `;
