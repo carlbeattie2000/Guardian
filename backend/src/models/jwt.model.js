@@ -46,6 +46,14 @@ class JwtModel extends BaseModel {
     await this.hashJwt();
     return await super.save();
   }
+
+  static async deleteAllUserTokens(userId) {
+    return await this.deleteWhere("user_id", userId);
+  }
+
+  static async deleteAllSessionTokens(sessionId) {
+    return await this.deleteWhere("session_id", sessionId);
+  }
 }
 
 JwtModel.initialize();

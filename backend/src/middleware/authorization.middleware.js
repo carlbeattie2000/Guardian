@@ -46,7 +46,7 @@ async function HeaderAuthorizationMiddleware(req, res, next) {
 function handleToken(req, res, next, token) {
   const validatedJwt = authenticationService.verifyToken(token);
 
-  req.user = validatedJwt.payload.sub;
+  req.user = validatedJwt.sub;
 
   next();
 }

@@ -7,6 +7,16 @@ const authenticationRouter = Router();
 
 authenticationRouter.post("/login", authenticationController.login);
 authenticationRouter.post("/register", authenticationController.register);
+authenticationRouter.post(
+  "/logout",
+  AuthorisationMiddleware,
+  authenticationController.logout,
+);
+authenticationRouter.post(
+  "/logout-all",
+  AuthorisationMiddleware,
+  authenticationController.logoutAllSessions,
+);
 
 authenticationRouter.get(
   "/profile",

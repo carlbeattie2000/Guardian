@@ -89,6 +89,27 @@ class BaseModel {
   }
 
   /**
+   * @param {string[]} fields
+   * @param {unknown[]} values
+   * @returns {Promise<*>} values
+   */
+  static async deleteWhere(fields, values) {
+    let statment = `DELETE FROM ${this.table} WHERE `;
+    const instance = new this();
+    const keys = Object.keys(instance);
+
+    if (Array.isArray(fields) || Array.isArray(values)) {
+      validWhereClauseArray(fields, values);
+
+      statment += `${fields.map((field) => `${field} = ?`).join(" AND ")} LIMIT 1`;
+      return await run(statment, values);
+    }
+
+    statment += `${fields} = ?`;
+    return await run(statment, values);
+  }
+
+  /**
    * @param {number} id
    * @returns {Promise<T | null>}
    */

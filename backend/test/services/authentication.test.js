@@ -14,7 +14,7 @@ describe("AuthenticationService", function () {
 
       process.env.JWT_ACCESS_SECRET = "jsonwebtokensecret";
 
-      const tokenPayload = authenticationService.verifyToken(token).payload;
+      const tokenPayload = authenticationService.verifyToken(token);
       assert.equal(tokenPayload.sub, sub);
       assert.equal(tokenPayload.jti, jti);
     });

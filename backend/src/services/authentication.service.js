@@ -154,10 +154,7 @@ class AuthenticationService {
         : process.env.JWT_ACCESS_SECRET,
     );
 
-    return {
-      error: false,
-      payload,
-    };
+    return payload;
   }
 
   /**
@@ -165,14 +162,32 @@ class AuthenticationService {
    */
   async refreshToken(token) {
     const tokenVerified = this.verifyToken(token, "refresh");
-    if (!tokenVerified.error) {
-      const userId = tokenVerified.payload.sub;
-      return this.generateTokens(userId);
-    }
-    return tokenVerified;
+    const userId = tokenVerified.payload.sub;
+    return this.generateTokens(userId);
   }
 
-  async logout() {}
+  /**
+   * @description If accessToken is not provided, all valid sessions are logged out
+   * Otherwise only the session attached to the token is logged out
+   * accessToken must also be valid
+   * @param {number} userId
+   * @param {string} accessToken
+   */
+  async logout(userId, accessToken) {
+    if (!accessToken) {
+      return await JwtModel.deleteAllUserTokens(userId);
+    }
+
+    const tokenValidted = this.verifyToken(accessToken);
+
+    if (tokenValidted.sub !== userId) {
+      return;
+    }
+
+    const sessionId = tokenValidted.jti;
+
+    return await JwtModel.deleteAllSessionTokens(sessionId);
+  }
 
   /**
    * @param {number} id
