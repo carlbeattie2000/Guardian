@@ -6,10 +6,6 @@ const reportsRouter = require("./reports.route");
 const lostArticlesRouter = require("./lost-articles.route");
 const authenticationRouter = require("./authentication.route");
 
-const authenticationViewsRouter = require("./views/authentication.view.route");
-const dashboardViewRouter = require("./views/dashboard.view.route");
-const reportsViewRouter = require("./views/reports.view.route");
-
 const router = Router();
 
 router.use(
@@ -23,9 +19,5 @@ router.use(
   AuthorisationMiddleware,
   lostArticlesRouter,
 );
-
-router.use("/", authenticationViewsRouter);
-router.use("/", AuthorisationMiddleware, dashboardViewRouter);
-router.use("/", AuthorisationMiddleware, reportsViewRouter);
 
 module.exports = router;
