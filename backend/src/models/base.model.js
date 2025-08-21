@@ -40,6 +40,9 @@ class BaseModel {
     await run(this.schema);
   }
 
+  /**
+   * @returns {Promise<BaseModel>}
+   */
   async save() {
     const isInsert =
       this.id === -1 || this.id === undefined || this.id === null;
@@ -70,6 +73,22 @@ class BaseModel {
     return this;
   }
 
+  /**
+   * @returns {Promise<BaseModel>}
+   */
+  async delete() {
+    if (this.id < 0 || this.id === null || this.id === undefined) {
+      return;
+    }
+    await run(`DELETE FROM ${this.constructor.table} WHERE id = ?`, this.id);
+    Object.assign(this, new this());
+    return this;
+  }
+
+  /**
+   * @param {number} id
+   * @returns {Promise<BaseModel | null>}
+   */
   static async findById(id) {
     const query = `SELECT * FROM ${this.table} WHERE id = ?`;
     const result = await get(query, id);
@@ -85,6 +104,11 @@ class BaseModel {
     return instance;
   }
 
+  /**
+   * @param {string[]} fields
+   * @param {unknown[]} values
+   * @returns {Promise<BaseModel | null>}
+   */
   static async findBy(fields, values) {
     let query = `SELECT * FROM ${this.table} WHERE `;
     const instance = new this();
@@ -115,6 +139,10 @@ class BaseModel {
     return instance;
   }
 
+  /**
+   * @param {number} limit
+   * @returns {Promise<BaseModel[] | null>}
+   */
   static async all(limit) {
     const query = `SELECT * FROM ${this.table} LIMIT ?`;
     const instanceCore = new this();
@@ -134,6 +162,12 @@ class BaseModel {
     return instanceObjects;
   }
 
+  /**
+   * @param {string[]} fields
+   * @param {unknown[]} values
+   * @param {number} [limit=100]
+   * @returns {Promise<BaseModel[] | null>}
+   */
   static async findAllBy(fields, values, limit = 100) {
     let query = `SELECT * FROM ${this.table} WHERE `;
     const keysInstance = new this();
