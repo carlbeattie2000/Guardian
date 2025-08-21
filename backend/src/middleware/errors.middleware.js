@@ -1,4 +1,5 @@
 const errorService = require("../services/error-service");
+const defaultLogger = require("../config/logging");
 const HttpError = require("../utils/httpError");
 
 /**

@@ -15,7 +15,7 @@ class AuthenticationController {
     }
 
     const [access, refresh] = await authenticationService.generateTokens(
-      loginRes.data.id,
+      user.id,
     );
 
     res
