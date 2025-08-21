@@ -1,5 +1,5 @@
 const HttpResponse = require("../utils/http-response-helper");
-const { MemoryStores, MemoryStore } = require("../utils/memory-store");
+const MemoryStore = require("../utils/memory-store");
 
 /**
  * @param {Object} param0
@@ -14,8 +14,8 @@ function makeMiddleware({
   ipWindowMs = 1000 * 60 * 60,
   userWindowMs = 1000 * 60,
 } = {}) {
-  const ipStore = MemoryStores.new("rate-limiting-ips");
-  const userStore = MemoryStores.new("rate-limiting-users");
+  const ipStore = new MemoryStore();
+  const userStore = new MemoryStore();
 
   /**
    * @param {MemoryStore} store

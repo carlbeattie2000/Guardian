@@ -20,22 +20,4 @@ class MemoryStore {
   }
 }
 
-class MemoryStores {
-  static stores = {};
-
-  static get(name) {
-    return this.stores[name];
-  }
-
-  static new(name) {
-    const store = new MemoryStore();
-    this.stores[name] = store;
-    return store;
-  }
-
-  static has(name) {
-    return Object.prototype.hasOwnProperty.call(this.stores, name);
-  }
-}
-
-module.exports = { MemoryStore, MemoryStores };
+module.exports = MemoryStore;
