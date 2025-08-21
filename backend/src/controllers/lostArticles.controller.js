@@ -1,5 +1,5 @@
-const lostArticleService = require("../services/lostArticles/lostArticles.service");
-const personalDetailsService = require("../services/personalDetails/personalDetails.service");
+const lostArticleService = require("../services/lostArticles.service");
+const personalDetailsService = require("../services/personalDetails.service");
 const HttpResponse = require("../utils/HttpResponseHelper");
 
 class LostArticlesController {
@@ -8,15 +8,13 @@ class LostArticlesController {
    * @param {import('express').Response} res
    */
   async create(req, res) {
-    const createLostArticleRes = await lostArticleService.create(
+    const lostArticle = await lostArticleService.create(
       req.files,
       req.body,
       req.user,
     );
 
-    new HttpResponse(createLostArticleRes.code, createLostArticleRes.data).json(
-      res,
-    );
+    new HttpResponse(200, lostArticle).json(res);
   }
 
   /**
@@ -25,21 +23,21 @@ class LostArticlesController {
    */
   async getById(req, res) {
     const id = req.params.id;
-    const getLostArticleRes = await lostArticleService.getById(id, req.user);
+    const lostArticle = await lostArticleService.getById(id, req.user);
 
-    new HttpResponse(getLostArticleRes.code, getLostArticleRes.data).json(res);
+    if (!lostArticle) {
+      return new HttpResponse(404).sendStatus(res);
+    }
+
+    new HttpResponse(200, lostArticle).json(res);
   }
 
   /**
    * @param {import('express').Response} res
    */
   async getAll(_, res) {
-    const getAllLostArticlesRes = await lostArticleService.getAll();
-
-    new HttpResponse(
-      getAllLostArticlesRes.code,
-      getAllLostArticlesRes.data,
-    ).json(res);
+    const lostArticles = await lostArticleService.getAll();
+    new HttpResponse(200, lostArticles).json(res);
   }
 
   /**
@@ -57,16 +55,12 @@ class LostArticlesController {
       throw new HttpError({ code: 401 });
     }
 
-    const createLostArticlePersonalDetailsRes =
+    const personalDetails =
       await personalDetailsService.createLostArticlePersonalDetails(
         req.body,
         id,
       );
-
-    new HttpResponse(
-      createLostArticlePersonalDetailsRes.code,
-      createLostArticlePersonalDetailsRes.data,
-    ).json(res);
+    new HttpResponse(200, personalDetails).json(res);
   }
 }
 

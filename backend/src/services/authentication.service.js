@@ -1,8 +1,8 @@
 const z = require("zod");
 const jwt = require("jsonwebtoken");
-const UserModel = require("../../models/user.model");
-const HttpError = require("../../utils/httpError");
-const JwtModel = require("../../models/jwt.model");
+const UserModel = require("../models/user.model");
+const HttpError = require("../utils/httpError");
+const JwtModel = require("../models/jwt.model");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -16,6 +16,9 @@ const UserRegister = z.object({
 });
 
 class AuthenticationService {
+  /**
+   * @returns {Promise<UserModel | null>}
+   */
   async login(loginDetails) {
     const validatedLoginDetails = UserLogin.parse(loginDetails);
     const foundUserDetails = await UserModel.findBy(
@@ -29,6 +32,7 @@ class AuthenticationService {
         clientMessage: "Bad Login Request",
       });
     }
+
     if (
       !(await foundUserDetails.verifyPassword(validatedLoginDetails.password))
     ) {
@@ -38,10 +42,7 @@ class AuthenticationService {
       });
     }
 
-    return {
-      error: false,
-      data: foundUserDetails,
-    };
+    return foundUserDetails;
   }
 
   async register(registerDetails) {
@@ -54,12 +55,6 @@ class AuthenticationService {
     );
 
     await user.save();
-
-    return {
-      error: false,
-      code: 200,
-      message: "Register Success",
-    };
   }
 
   /**

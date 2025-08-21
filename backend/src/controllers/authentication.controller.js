@@ -1,5 +1,5 @@
 const cookieOptions = require("../config/cookieOptions");
-const authenticationService = require("../services/users/authentication.service");
+const authenticationService = require("../services/authentication.service");
 const HttpResponse = require("../utils/HttpResponseHelper");
 
 class AuthenticationController {
@@ -8,10 +8,10 @@ class AuthenticationController {
    * @param {import('express').Response} res
    */
   async login(req, res) {
-    const loginRes = await authenticationService.login(req.body);
+    const user = await authenticationService.login(req.body);
 
-    if (loginRes.error) {
-      return res.status(loginRes.code).json(loginRes);
+    if (!user) {
+      return new HttpResponse(400, {}, "").json(res);
     }
 
     const [access, refresh] = await authenticationService.generateTokens(
@@ -33,9 +33,9 @@ class AuthenticationController {
    * @param {import('express').Response} res
    */
   async register(req, res) {
-    const registerRes = await authenticationService.register(req.body);
+    await authenticationService.register(req.body);
 
-    new HttpResponse(registerRes.code, {}, registerRes.message).json(res);
+    new HttpResponse(200, {}, "").json(res);
   }
 
   /**
@@ -55,7 +55,11 @@ class AuthenticationController {
    * @param {import('express').Response} res
    */
   async profile(req, res) {
-    const userProfileDetails = await authenticationService.getProfile(req.user);
+    const user = await authenticationService.getProfile(req.user);
+
+    if (!user) {
+      return new HttpResponse(400).json(res);
+    }
 
     new HttpResponse(200, userProfileDetails).json(res);
   }

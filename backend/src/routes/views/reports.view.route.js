@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const reportsService = require("../../services/reports/reports.service");
+const reportsService = require("../../services/reports.service");
 
 const reportsViewRouter = Router();
 

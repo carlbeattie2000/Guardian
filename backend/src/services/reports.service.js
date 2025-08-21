@@ -1,10 +1,10 @@
 const z = require("zod");
-const ReportModel = require("../../models/report.model");
-const FileStorage = require("../../lib/fileStorage");
-const ReportImagesModel = require("../../models/report-images.model");
-const errorService = require("../error-service");
-const UserModel = require("../../models/user.model");
-const personalDetailsService = require("../personalDetails/personalDetails.service");
+const ReportModel = require("../models/report.model");
+const FileStorage = require("../lib/fileStorage");
+const ReportImagesModel = require("../models/report-images.model");
+const errorService = require("./error-service");
+const UserModel = require("../models/user.model");
+const personalDetailsService = require("./personalDetails.service");
 
 class ReportsService {
   ReportValidation = z.object({
@@ -13,6 +13,9 @@ class ReportsService {
     latitude: z.preprocess((val) => Number(val), z.number()).optional(),
   });
 
+  /**
+   * @returns {Promise<ReportModel>}
+   */
   async create(files, body, user_id) {
     const reportDetailsValidated = this.ReportValidation.parse(body);
     const report = new ReportModel(
@@ -35,17 +38,12 @@ class ReportsService {
       }
     }
 
-    return {
-      error: false,
-      code: 201,
-      data: {
-        id: report.id,
-      },
-    };
+    return report;
   }
 
   /**
    * @param {number} id
+   * @return {Promise<ReportModel | null>}
    */
   async getById(id) {
     const report = await ReportModel.findById(id);
@@ -53,7 +51,7 @@ class ReportsService {
     if (report !== null) {
       const personalDetails = await personalDetailsService.findByReportId(id);
 
-      report.personal_details = personalDetails.data;
+      report.personal_details = personalDetails;
     }
 
     const imagePaths = await ReportImagesModel.findAllBy(
@@ -63,11 +61,7 @@ class ReportsService {
 
     report.images = imagePaths;
 
-    return {
-      error: false,
-      code: 200,
-      data: report,
-    };
+    return report;
   }
 
   /**
@@ -103,15 +97,10 @@ class ReportsService {
 
   /**
    * @param {number} [limit=100]
+   * @returns {Promise<ReportModel[]>}
    */
   async getAll(limit = 100) {
-    const reports = await ReportModel.all(limit);
-
-    return {
-      error: false,
-      code: 200,
-      data: reports,
-    };
+    return await ReportModel.all(limit);
   }
 
   /**

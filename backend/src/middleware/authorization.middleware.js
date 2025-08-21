@@ -1,5 +1,5 @@
 const errorService = require("../services/error-service");
-const authenticationService = require("../services/users/authentication.service");
+const authenticationService = require("../services/authentication.service");
 const HttpResponse = require("../utils/HttpResponseHelper");
 
 /**

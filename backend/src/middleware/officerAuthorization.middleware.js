@@ -1,5 +1,5 @@
 const UserModel = require("../models/user.model");
-const authenticationService = require("../services/users/authentication.service");
+const authenticationService = require("../services/authentication.service");
 const HttpError = require("../utils/httpError");
 const HttpResponse = require("../utils/HttpResponseHelper");
 

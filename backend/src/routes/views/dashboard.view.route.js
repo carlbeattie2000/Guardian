@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const AuthorisationMiddleware = require("../../middleware/authorization.middleware");
-const authenticationService = require("../../services/users/authentication.service");
-const reportsService = require("../../services/reports/reports.service");
+const authenticationService = require("../../services/authentication.service");
+const reportsService = require("../../services/reports.service");
 
 const dashboardViewRouter = Router();
 

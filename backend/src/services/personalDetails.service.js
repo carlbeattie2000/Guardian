@@ -1,6 +1,6 @@
 const z = require("zod");
-const errorService = require("../error-service");
-const PersonalDetailsModel = require("../../models/personal-details.model");
+const errorService = require("./error-service");
+const PersonalDetailsModel = require("../models/personal-details.model");
 
 class PersonalDetailsService {
   PersonalDetailsValidation = z.object({
@@ -21,46 +21,35 @@ class PersonalDetailsService {
       contact_number,
     );
 
-    await personalDetails.save();
-
-    return personalDetails;
+    return await personalDetails.save();
   }
 
+  /**
+   *  @param {*} body
+   *  @param {number} report_id
+   *  @returns {Promise<PersonalDetailsModel>}
+   */
   async createReportWitness(body, report_id) {
     const personalDetails = await this.create(body);
     personalDetails.attachToReport(report_id);
-    await personalDetails.save();
-
-    return {
-      error: false,
-      code: 200,
-      data: personalDetails,
-    };
+    return await personalDetails.save();
   }
 
+  /**
+   * @returns {Promise<PersonalDetailsModel>}
+   */
   async createLostArticlePersonalDetails(body, lost_article_id) {
     const personalDetails = await this.create(body);
     personalDetails.attachToLostArticle(lost_article_id);
-    await personalDetails.save();
-
-    return {
-      error: false,
-      code: 200,
-      data: personalDetails,
-    };
+    return await personalDetails.save();
   }
 
   /**
    * @param {number} report_id
+   * @returns {Promise<PersonalDetailsModel | null>}
    */
   async findByReportId(report_id) {
-    const result = await PersonalDetailsModel.findAllBy("report_id", report_id);
-
-    return {
-      error: false,
-      code: 200,
-      data: result,
-    };
+    return await PersonalDetailsModel.findAllBy("report_id", report_id);
   }
 
   /**

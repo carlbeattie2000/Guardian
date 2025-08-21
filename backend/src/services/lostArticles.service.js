@@ -1,9 +1,9 @@
 const z = require("zod");
-const LostItemModel = require("../../models/lost-item.model");
-const FileStorage = require("../../lib/fileStorage");
-const ReportImagesModel = require("../../models/report-images.model");
-const errorService = require("../error-service");
-const personalDetailsService = require("../personalDetails/personalDetails.service");
+const LostItemModel = require("../models/lost-item.model");
+const FileStorage = require("../lib/fileStorage");
+const ReportImagesModel = require("../models/report-images.model");
+const errorService = require("./error-service");
+const personalDetailsService = require("./personalDetails.service");
 
 class LostArticleService {
   articleValidation = z.object({
@@ -14,6 +14,9 @@ class LostArticleService {
     model: z.string().optional(),
   });
 
+  /**
+   * @returns {Promise<LostItemModel>}
+   */
   async create(files, body, user_id) {
     const { name, description, serial_number, color, model } =
       this.articleValidation.parse(body);
@@ -36,19 +39,14 @@ class LostArticleService {
       }
     }
 
-    return {
-      error: false,
-      code: 201,
-      data: {
-        id: lostArticle.id,
-      },
-    };
+    return lostArticle;
   }
 
   /**
    * @param {number} id
    * @param {number} user_id
    * @param {boolean} [is_officer=false]
+   * @returns {Promise<LostItemModel | null>}
    */
   async getById(id, user_id, is_officer = false) {
     const result = is_officer
@@ -61,24 +59,15 @@ class LostArticleService {
       result.personal_details = personalDetails.data;
     }
 
-    return {
-      error: false,
-      code: 200,
-      data: result,
-    };
+    return result;
   }
 
   /**
    * @param {number} [limit=100]
+   * @returns {Promise<LostItemModel[]>}
    */
   async getAll(limit = 100) {
-    const results = await LostItemModel.all(limit);
-
-    return {
-      error: false,
-      code: 200,
-      data: results,
-    };
+    return await LostItemModel.all(limit);
   }
 
   /**
