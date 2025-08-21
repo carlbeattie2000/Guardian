@@ -1,5 +1,6 @@
 const z = require("zod");
 const jwt = require("jsonwebtoken");
+const argon2 = require("argon2");
 const UserModel = require("../models/user.model");
 const HttpError = require("../utils/httpError");
 const JwtModel = require("../models/jwt.model");
@@ -17,41 +18,28 @@ const UserRegister = z.object({
 });
 
 class AuthenticationService {
-  MAX_LOGIN_ATTEMPTS = 5;
-  TIMEOUT_SECONDS = 60 * 10;
   /**
    * @returns {Promise<UserModel | null>}
    */
   async login(loginDetails) {
-    const validatedLoginDetails = UserLogin.parse(loginDetails);
+    const validated = UserLogin.parse(loginDetails);
+
     /** @type {UserModel|null} */
-    const foundUserDetails = await UserModel.findBy(
-      "username",
-      validatedLoginDetails.username,
-    );
+    const user = await UserModel.findBy("username", validated.username);
 
-    if (!foundUserDetails) {
-      throw new HttpError({
-        code: 400,
-        clientMessage: "Bad Login Request",
-      });
-    }
+    const validPassword = !user
+      ? await argon2.verify(process.env.DUMMY_HASH, validated.password)
+      : await user.verifyPassword(validated.password);
+    const blocked = await this.userIsLoginBlocked(!user ? null : user.id);
 
-    if (
-      !(await foundUserDetails.verifyPassword(validatedLoginDetails.password))
-    ) {
-      this.failedLoginAttempt(foundUserDetails.id);
-      throw new HttpError({
-        code: 400,
-        clientMessage: "Bad Login Request",
-      });
-    }
-
-    if (await this.userIsLoginBlocked(foundUserDetails.id)) {
+    if (!user || !validPassword || blocked) {
+      if (user) {
+        this.failedLoginAttempt(user.id);
+      }
       throw new HttpError({ code: 400, clientMessage: "Bad Login Request" });
     }
 
-    return foundUserDetails;
+    return user;
   }
 
   async register(registerDetails) {
@@ -204,6 +192,11 @@ class AuthenticationService {
    */
   async userIsLoginBlocked(user_id) {
     /** @type {LoginAttemptsModel | null} */
+    if (user_id === null) {
+      await LoginAttemptsModel.findBy("user_id", -1);
+      return false;
+    }
+
     const loginAttempts = await LoginAttemptsModel.findBy("user_id", user_id);
 
     if (!loginAttempts) {
@@ -212,13 +205,13 @@ class AuthenticationService {
 
     if (
       Date.now() - loginAttempts.last_attempt_at >
-      this.TIMEOUT_SECONDS * 1000
+      process.env.ACCOUNT_LOCKOUT_SECONDS * 1000
     ) {
       await loginAttempts.resetAttempts();
       return false;
     }
 
-    if (loginAttempts.attempts >= this.MAX_LOGIN_ATTEMPTS) {
+    if (loginAttempts.attempts >= process.env.ACCOUNT_LOCK_ATTEMPTS) {
       return true;
     }
 
