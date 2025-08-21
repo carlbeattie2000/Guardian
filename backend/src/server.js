@@ -7,7 +7,7 @@ const registerSwaggerForDevEnv = require("./config/swagger");
 const usePublicDir = require("./config/staticFiles");
 const HttpErrorMiddleware = require("./middleware/errors.middleware");
 const useTemplateEngine = require("./config/templateEngine");
-const securityHeadersMiddleware = require("./middleware/securityHeaders");
+const securityHeadersMiddleware = require("./middleware/securityHeaders.middleware");
 const notFoundMiddleware = require("./middleware/notFound.middleware");
 
 const app = express();
