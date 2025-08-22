@@ -25,7 +25,7 @@ class ErrorService {
 
     err = this.handleSqliteErrors(err);
 
-    this.handleHttpError(err);
+    return this.handleHttpError(err);
   }
 
   /**
