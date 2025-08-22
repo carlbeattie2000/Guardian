@@ -14,7 +14,7 @@ async function AuthorisationMiddleware(req, res, next) {
     return HeaderAuthorizationMiddleware(req, res, next);
   }
 
-  handleToken(req, res, next, accessToken);
+  await handleToken(req, res, next, accessToken);
 }
 
 /**
@@ -34,7 +34,7 @@ async function HeaderAuthorizationMiddleware(req, res, next) {
     return new HttpResponse(401).sendStatus(res);
   }
 
-  handleToken(req, res, next, accessToken);
+  await handleToken(req, res, next, accessToken);
 }
 
 /**
@@ -43,8 +43,8 @@ async function HeaderAuthorizationMiddleware(req, res, next) {
  * @param {import('express').NextFunction} next
  * @param {string} token
  */
-function handleToken(req, res, next, token) {
-  const validatedJwt = authenticationService.verifyToken(token);
+async function handleToken(req, res, next, token) {
+  const validatedJwt = await authenticationService.verifyToken(token);
 
   req.user = validatedJwt.sub;
 

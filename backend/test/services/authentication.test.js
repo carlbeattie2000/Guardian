@@ -6,7 +6,7 @@ const authenticationService = require("../../src/services/authentication.service
 
 describe("AuthenticationService", function () {
   describe("verifyToken", function () {
-    it("given a valid token, it should return it's payload", function () {
+    it("given a valid token, it should return it's payload", async function () {
       const tokenExp = Math.floor(Date.now() / 1000) + 60 * 60;
       const jti = uuidv4();
       const sub = 1;
@@ -14,7 +14,7 @@ describe("AuthenticationService", function () {
 
       process.env.JWT_ACCESS_SECRET = "jsonwebtokensecret";
 
-      const tokenPayload = authenticationService.verifyToken(token);
+      const tokenPayload = await authenticationService.verifyToken(token);
       assert.equal(tokenPayload.sub, sub);
       assert.equal(tokenPayload.jti, jti);
     });

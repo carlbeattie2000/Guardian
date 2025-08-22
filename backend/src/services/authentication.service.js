@@ -153,13 +153,21 @@ class AuthenticationService {
    * @param {string} token
    * @param {('access'|'refresh')} [type="access"]
    */
-  verifyToken(token, type = "access") {
+  async verifyToken(token, type = "access") {
     const payload = jwt.verify(
       token,
       type == "refresh"
         ? process.env.JWT_REFRESH_SECRET
         : process.env.JWT_ACCESS_SECRET,
     );
+
+    const jwtStored = await JwtModel.findBy("session_id", payload.jti);
+
+    console.log(jwtStored);
+
+    if (!jwtStored) {
+      throw new HttpError({ code: 401, clientMessage: "Invalid Token" });
+    }
 
     return payload;
   }
@@ -171,7 +179,7 @@ class AuthenticationService {
   async refreshToken(access, refresh) {
     let accessExpiresAt = null;
     try {
-      const accessTokenVerified = this.verifyToken(access, "access");
+      const accessTokenVerified = await this.verifyToken(access, "access");
       accessExpiresAt = accessTokenVerified.exp;
     } catch {}
 
@@ -183,7 +191,7 @@ class AuthenticationService {
       return null;
     }
 
-    const refreshTokenVerified = this.verifyToken(refresh, "refresh");
+    const refreshTokenVerified = await this.verifyToken(refresh, "refresh");
 
     const userId = refreshTokenVerified.sub;
     const sessionId = refreshTokenVerified.jti;
@@ -205,7 +213,7 @@ class AuthenticationService {
       return await JwtModel.deleteAllUserTokens(userId);
     }
 
-    const tokenValidted = this.verifyToken(accessToken);
+    const tokenValidted = await this.verifyToken(accessToken);
 
     if (tokenValidted.sub !== userId) {
       return;

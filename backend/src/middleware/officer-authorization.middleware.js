@@ -15,7 +15,7 @@ async function OfficerAuthenticationMiddleware(req, res, next) {
     return new HttpResponse(401).sendStatus(res);
   }
 
-  const verifiedToken = authenticationService.verifyToken(accessToken);
+  const verifiedToken = await authenticationService.verifyToken(accessToken);
 
   const user = await UserModel.findById(verifiedToken.sub);
 

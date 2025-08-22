@@ -9,15 +9,9 @@ const HttpError = require("../utils/http-error");
  * @param {import('express').NextFunction} NextFunction
  */
 function HttpErrorMiddleware(err, req, res, next) {
-  err = errorService.handleError(err);
-
-  if (err instanceof HttpError) {
-    err.handleLogging();
-
-    return err.handleResponse(res);
-  }
-
-  res.sendStatus(500);
+  const httpError = errorService.handleError(err);
+  httpError.handleLogging();
+  return httpError.handleResponse(res);
 }
 
 module.exports = HttpErrorMiddleware;
