@@ -6,6 +6,11 @@ const UserModel = require("../models/user.model");
 const HttpError = require("../utils/http-error");
 const JwtModel = require("../models/jwt.model");
 const LoginAttemptsModel = require("../models/login-attempts.model");
+const {
+  ACCESS_TOKEN_WINDOW_SECONDS,
+  REFRESH_TOKEN_WINDOW_SECONDS,
+  REFRESH_TOKEN_ENABLED_WINDOW_SECONDS,
+} = require("../constants/jwts");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -69,8 +74,10 @@ class AuthenticationService {
    * @returns {Promise<[string, string]>}
    */
   async generateTokens(userId) {
-    const accessExp = Math.floor(Date.now() / 1000) + 60 * 60;
-    const refreshExp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+    const accessExp =
+      Math.floor(Date.now() / 1000) + ACCESS_TOKEN_WINDOW_SECONDS;
+    const refreshExp =
+      Math.floor(Date.now() / 1000) + REFRESH_TOKEN_WINDOW_SECONDS;
 
     const session_id = uuidv4();
 
@@ -158,12 +165,32 @@ class AuthenticationService {
   }
 
   /**
-   * @param {string} token
+   * @param {string} access
+   * @param {string} refresh
    */
-  async refreshToken(token) {
-    const tokenVerified = this.verifyToken(token, "refresh");
-    const userId = tokenVerified.payload.sub;
-    return this.generateTokens(userId);
+  async refreshToken(access, refresh) {
+    let accessExpiresAt = null;
+    try {
+      const accessTokenVerified = this.verifyToken(access, "access");
+      accessExpiresAt = accessTokenVerified.exp;
+    } catch {}
+
+    if (
+      accessExpiresAt !== null &&
+      accessExpiresAt - Math.floor(Date.now() / 1000) >
+        REFRESH_TOKEN_ENABLED_WINDOW_SECONDS
+    ) {
+      return null;
+    }
+
+    const refreshTokenVerified = this.verifyToken(refresh, "refresh");
+
+    const userId = refreshTokenVerified.sub;
+    const sessionId = refreshTokenVerified.jti;
+
+    await JwtModel.deleteAllSessionTokens(sessionId);
+
+    return await this.generateTokens(userId);
   }
 
   /**

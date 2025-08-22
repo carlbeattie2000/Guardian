@@ -17,6 +17,7 @@ authenticationRouter.post(
   AuthorisationMiddleware,
   authenticationController.logoutAllSessions,
 );
+authenticationRouter.post("/refresh", authenticationController.refreshToken);
 
 authenticationRouter.get(
   "/profile",
