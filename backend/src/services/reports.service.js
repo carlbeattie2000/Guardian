@@ -52,11 +52,13 @@ class ReportsService {
   async getById(id) {
     const report = await ReportModel.findById(id);
 
-    if (report !== null) {
-      const personalDetails = await personalDetailsService.findByReportId(id);
-
-      report.personal_details = personalDetails;
+    if (report === null) {
+      return null;
     }
+
+    const personalDetails = await personalDetailsService.findByReportId(id);
+
+    report.personal_details = personalDetails;
 
     const imagePaths = await ReportImagesModel.findAllBy(
       "report_id",
