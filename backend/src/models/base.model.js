@@ -95,8 +95,6 @@ class BaseModel {
    */
   static async deleteWhere(fields, values) {
     let statment = `DELETE FROM ${this.table} WHERE `;
-    const instance = new this();
-    const keys = Object.keys(instance);
 
     if (Array.isArray(fields) || Array.isArray(values)) {
       validWhereClauseArray(fields, values);

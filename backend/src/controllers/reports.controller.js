@@ -78,6 +78,19 @@ class ReportsController {
     const report = await reportsService.updateStatus(id, req.body);
     return new HttpResponse(200, report).json(res);
   }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async delete(req, res) {
+    const { id } = req.params;
+    if (!req.is_officer) {
+      throw new HttpError({ code: 401 });
+    }
+    await reportsService.delete(id);
+    return new HttpResponse(204).json(res);
+  }
 }
 
 const reportsController = new ReportsController();

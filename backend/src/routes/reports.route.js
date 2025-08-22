@@ -8,14 +8,17 @@ const reportsController = require("../controllers/reports.controller");
 const reportsRouter = Router();
 const upload = multer();
 
-reportsRouter.post("/", upload.array("photos", 12), reportsController.create);
-
 reportsRouter.get(
   "/all",
   OfficerAuthenticationMiddleware,
   reportsController.getAll,
 );
+reportsRouter.get("/:id", reportsController.getById);
+reportsRouter.get("/image/:path", async (req, res) => {
+  res.sendFile(FileStorage.getImagePath(req.params.path));
+});
 
+reportsRouter.post("/", upload.array("photos", 12), reportsController.create);
 reportsRouter.post("/add-witness/:id", reportsController.createWitness);
 reportsRouter.post(
   "/update-status/:id",
@@ -23,10 +26,10 @@ reportsRouter.post(
   reportsController.updateStatus,
 );
 
-reportsRouter.get("/:id", reportsController.getById);
-
-reportsRouter.get("/image/:path", async (req, res) => {
-  res.sendFile(FileStorage.getImagePath(req.params.path));
-});
+reportsRouter.delete(
+  "/delete/:id",
+  OfficerAuthenticationMiddleware,
+  reportsController.delete,
+);
 
 module.exports = reportsRouter;
