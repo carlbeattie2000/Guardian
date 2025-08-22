@@ -65,6 +65,19 @@ class ReportsController {
 
     new HttpResponse(200, witness).json(res);
   }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async updateStatus(req, res) {
+    const { id } = req.params;
+    if (!req.is_officer) {
+      throw new HttpError({ code: 401 });
+    }
+    const report = await reportsService.updateStatus(id, req.body);
+    return new HttpResponse(200, report).json(res);
+  }
 }
 
 const reportsController = new ReportsController();

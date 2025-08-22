@@ -17,6 +17,11 @@ reportsRouter.get(
 );
 
 reportsRouter.post("/add-witness/:id", reportsController.createWitness);
+reportsRouter.post(
+  "/update-status/:id",
+  OfficerAuthenticationMiddleware,
+  reportsController.updateStatus,
+);
 
 reportsRouter.get("/:id", reportsController.getById);
 

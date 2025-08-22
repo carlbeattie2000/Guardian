@@ -4,12 +4,17 @@ const FileStorage = require("../lib/file-storage");
 const ReportImagesModel = require("../models/report-images.model");
 const UserModel = require("../models/user.model");
 const personalDetailsService = require("./personal-details.service");
+const HttpError = require("../utils/http-error");
 
 class ReportsService {
   ReportValidation = z.object({
     description: z.string(),
     longitude: z.preprocess((val) => Number(val), z.number()).optional(),
     latitude: z.preprocess((val) => Number(val), z.number()).optional(),
+  });
+
+  UpdateStatusValidation = z.object({
+    status: z.enum(["PENDING", "IN-PROGRESS", "COMPLETED", "CLOSED"]),
   });
 
   /**
@@ -106,13 +111,24 @@ class ReportsService {
    * @param {number} user_id
    */
   async getAllByUserId(user_id) {
-    const reports = await ReportModel.findAllBy("user_id", user_id);
+    return await ReportModel.findAllBy("user_id", user_id);
+  }
 
-    return {
-      error: false,
-      code: 200,
-      data: reports,
-    };
+  async updateStatus(id, body) {
+    const validatedBody = this.UpdateStatusValidation.parse(body);
+
+    /** @type {ReportModel|null}*/
+    const report = await ReportModel.findById(id);
+    if (!report) {
+      throw new HttpError({ code: 404 });
+    }
+
+    report.status = validatedBody.status;
+    return await report.save();
+  }
+
+  async delete(id) {
+    await ReportModel.deleteWhere("id", id);
   }
 }
 
