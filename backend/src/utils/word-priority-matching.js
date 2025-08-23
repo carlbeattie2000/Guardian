@@ -71,15 +71,15 @@ function removeSpeicalCharactersFromString(string) {
  */
 function calculateReportPriorityFromDescription(description) {
   const wordCache = {};
-  description = removeSpeicalCharactersFromString(description);
-
-  let priority = 0;
-  const words = description.split(" ");
   const keywords = Object.keys(CRIME_WORD_PRIORITIES);
   const MIN_SIMILARITY = 0.5;
 
-  for (const word of words) {
-    if (wordCache[word]) {
+  let priority = 0;
+
+  description = removeSpeicalCharactersFromString(description);
+
+  for (const word of description.split(" ")) {
+    if (wordCache[word.toLowerCase()]) {
       continue;
     }
 
@@ -100,8 +100,8 @@ function calculateReportPriorityFromDescription(description) {
       highestMatchPercentage >= MIN_SIMILARITY
     ) {
       priority += getWordPriority(highestMatchedKeyword, word);
-      wordCache[word] = true;
     }
+    wordCache[word.toLowerCase()] = true;
   }
 
   return priority;

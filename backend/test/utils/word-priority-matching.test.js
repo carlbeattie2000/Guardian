@@ -42,6 +42,12 @@ describe("Word Priority Matching", function () {
         ),
         429,
       );
+      assert.equal(
+        calculateReportPriorityFromDescription(
+          "I can see a man with a GUN, he ALSO has A BOMB! gun",
+        ),
+        429,
+      );
     });
   });
 });
