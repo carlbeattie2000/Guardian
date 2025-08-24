@@ -27,14 +27,20 @@ export default function Screen() {
         </Button>
 
         <View className="bg-slate-300 h-0.5 w-full"></View>
-        <Button variant="outline" className="bg-zinc-600 w-full">
-          <Text className="font-bold">View Notifications</Text>
+        <Button variant="outline" className="bg-primary w-full">
+          <Text className="font-bold color-primary-foreground">
+            View Notifications
+          </Text>
         </Button>
-        <Button variant="outline" className="bg-zinc-600 w-full">
-          <Text className="font-bold">View Reports</Text>
+        <Button variant="outline" className="bg-primary w-full">
+          <Text className="font-bold color-primary-foreground">
+            View Reports
+          </Text>
         </Button>
-        <Button variant="outline" className="bg-zinc-600 w-full">
-          <Text className="font-bold">View Lost Item Reports</Text>
+        <Button variant="outline" className="bg-primary w-full">
+          <Text className="font-bold color-primary-foreground">
+            View Lost Item Reports
+          </Text>
         </Button>
       </View>
     </View>
