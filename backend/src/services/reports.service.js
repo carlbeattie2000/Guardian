@@ -5,6 +5,9 @@ const ReportImagesModel = require("../models/report-images.model");
 const UserModel = require("../models/user.model");
 const personalDetailsService = require("./personal-details.service");
 const HttpError = require("../utils/http-error");
+const {
+  calculateReportPriorityFromDescription,
+} = require("../utils/word-priority-matching");
 
 class ReportsService {
   ReportValidation = z.object({
@@ -27,6 +30,9 @@ class ReportsService {
       reportDetailsValidated.longitude,
       reportDetailsValidated.latitude,
       user_id,
+      calculateReportPriorityFromDescription(
+        reportDetailsValidated.description,
+      ),
     );
 
     await report.save();
