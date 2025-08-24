@@ -9,25 +9,9 @@ const HttpResponse = require("../utils/http-response-helper");
  * @param {import('express').NextFunction} NextFunction
  */
 async function OfficerAuthenticationMiddleware(req, res, next) {
-  const { accessToken } = req.cookies;
-
-  if (!accessToken) {
-    return new HttpResponse(401).sendStatus(res);
-  }
-
-  const verifiedToken = await authenticationService.verifyToken(accessToken);
-
-  const user = await UserModel.findById(verifiedToken.sub);
-
-  if (user === null) {
+  if (!req.is_officer) {
     throw new HttpError({ code: 401 });
   }
-
-  if (!user.is_officer) {
-    throw new HttpError({ code: 401 });
-  }
-
-  req.is_officer = user.is_officer;
 
   next();
 }
