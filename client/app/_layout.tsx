@@ -65,6 +65,13 @@ function AppStack() {
             headerRight: () => <ThemeToggle />,
           }}
         />
+        <Stack.Screen
+          name="(app)/(reports)/index"
+          options={{
+            title: "New Report",
+            headerRight: () => <ThemeToggle />,
+          }}
+        />
       </Stack.Protected>
 
       <Stack.Protected guard={!session}>
