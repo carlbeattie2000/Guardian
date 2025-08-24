@@ -1,6 +1,7 @@
 const errorService = require("../services/error-service");
 const authenticationService = require("../services/authentication.service");
 const HttpResponse = require("../utils/http-response-helper");
+const UserModel = require("../models/user.model");
 
 /**
  * @param {import('express').Request} req
@@ -47,6 +48,7 @@ async function handleToken(req, res, next, token) {
   const validatedJwt = await authenticationService.verifyToken(token);
 
   req.user = validatedJwt.sub;
+  req.is_officer = validatedJwt.is_officer;
 
   next();
 }

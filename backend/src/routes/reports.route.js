@@ -8,11 +8,7 @@ const reportsController = require("../controllers/reports.controller");
 const reportsRouter = Router();
 const upload = multer();
 
-reportsRouter.get(
-  "/all",
-  OfficerAuthenticationMiddleware,
-  reportsController.getAll,
-);
+reportsRouter.get("/", reportsController.getAll);
 reportsRouter.get("/:id", reportsController.getById);
 reportsRouter.get("/image/:path", async (req, res) => {
   res.sendFile(FileStorage.getImagePath(req.params.path));

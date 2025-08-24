@@ -73,7 +73,7 @@ class AuthenticationService {
    * @param {number} userId
    * @returns {Promise<[string, string]>}
    */
-  async generateTokens(userId) {
+  async generateTokens(userId, is_officer) {
     const accessExp =
       Math.floor(Date.now() / 1000) + ACCESS_TOKEN_WINDOW_SECONDS;
     const refreshExp =
@@ -82,11 +82,16 @@ class AuthenticationService {
     const session_id = uuidv4();
 
     const access = jwt.sign(
-      { sub: userId, jti: session_id, exp: accessExp },
+      {
+        sub: userId,
+        jti: session_id,
+        is_officer,
+        exp: accessExp,
+      },
       process.env.JWT_ACCESS_SECRET,
     );
     const refresh = jwt.sign(
-      { sub: userId, jti: session_id, exp: refreshExp },
+      { sub: userId, jti: session_id, is_officer, exp: refreshExp },
       process.env.JWT_REFRESH_SECRET,
     );
 
@@ -161,11 +166,9 @@ class AuthenticationService {
         : process.env.JWT_ACCESS_SECRET,
     );
 
-    const jwtStored = await JwtModel.findBy("session_id", payload.jti);
+    const jwtSaved = await JwtModel.findBy("session_id", payload.jti);
 
-    console.log(jwtStored);
-
-    if (!jwtStored) {
+    if (!jwtSaved) {
       throw new HttpError({ code: 401, clientMessage: "Invalid Token" });
     }
 
@@ -194,11 +197,12 @@ class AuthenticationService {
     const refreshTokenVerified = await this.verifyToken(refresh, "refresh");
 
     const userId = refreshTokenVerified.sub;
+    const isOfficer = refreshTokenVerified.is_officer;
     const sessionId = refreshTokenVerified.jti;
 
     await JwtModel.deleteAllSessionTokens(sessionId);
 
-    return await this.generateTokens(userId);
+    return await this.generateTokens(userId, isOfficer);
   }
 
   /**

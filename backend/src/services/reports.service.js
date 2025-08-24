@@ -111,8 +111,13 @@ class ReportsService {
    * @param {number} [limit=100]
    * @returns {Promise<ReportModel[]>}
    */
-  async getAll(limit = 100) {
-    return await ReportModel.all(limit);
+  async getAll(userId = null, limit = 100) {
+    const orderByDesc = `ORDER BY priority DESC`;
+    if (userId === null) {
+      return await ReportModel.all(limit, orderByDesc);
+    }
+
+    return await ReportModel.findAllBy("user_id", userId, orderByDesc);
   }
 
   /**

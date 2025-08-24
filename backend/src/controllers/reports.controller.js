@@ -42,7 +42,9 @@ class ReportsController {
    * @param {import('express').Response} res
    */
   async getAll(req, res) {
-    const reports = await reportsService.getAll();
+    const reports = await reportsService.getAll(
+      req.is_officer ? null : req.user,
+    );
     new HttpResponse(200, reports).json(res);
   }
 

@@ -165,8 +165,8 @@ class BaseModel {
    * @param {number} limit
    * @returns {Promise<T[] | null>}
    */
-  static async all(limit) {
-    const query = `SELECT * FROM ${this.table} LIMIT ?`;
+  static async all(limit, orderBy) {
+    const query = `SELECT * FROM ${this.table} ${orderBy} LIMIT ?`;
     const instanceCore = new this();
     const keys = Object.keys(instanceCore);
     const results = await all(query, limit);
@@ -190,7 +190,7 @@ class BaseModel {
    * @param {number} [limit=100]
    * @returns {Promise<T[] | null>}
    */
-  static async findAllBy(fields, values, limit = 100) {
+  static async findAllBy(fields, values, orderBy = "", limit = 100) {
     let query = `SELECT * FROM ${this.table} WHERE `;
     const keysInstance = new this();
     const keys = Object.keys(keysInstance);
@@ -198,7 +198,7 @@ class BaseModel {
     if (Array.isArray(fields) || Array.isArray(values)) {
       validWhereClauseArray(fields, values);
 
-      query += `${fields.map((field) => `${field} = ?`).join(" AND ")} LIMIT ?`;
+      query += `${fields.map((field) => `${field} = ?`).join(" AND ")} ${orderBy} LIMIT ?`;
       const result = await all(query, [values, limit]);
 
       if (!result) {

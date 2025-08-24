@@ -21,6 +21,7 @@ class AuthenticationController {
 
     const [access, refresh] = await authenticationService.generateTokens(
       user.id,
+      user.is_officer,
     );
 
     res
