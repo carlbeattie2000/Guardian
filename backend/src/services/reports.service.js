@@ -8,6 +8,7 @@ const HttpError = require("../utils/http-error");
 const {
   calculateReportPriorityFromDescription,
 } = require("../utils/word-priority-matching");
+const filesService = require("./files.service");
 
 class ReportsService {
   ReportValidation = z.object({
@@ -71,7 +72,11 @@ class ReportsService {
       report.id,
     );
 
-    report.images = imagePaths;
+    report.images = imagePaths.map((image) => {
+      return filesService.generateFileToken(
+        FileStorage.getImagePath(image.image_path),
+      );
+    });
 
     return report;
   }

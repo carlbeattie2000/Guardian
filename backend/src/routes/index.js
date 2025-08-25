@@ -5,6 +5,7 @@ const rateLimitMiddleware = require("../middleware/rate-limiting.middleware");
 const reportsRouter = require("./reports.route");
 const lostArticlesRouter = require("./lost-articles.route");
 const authenticationRouter = require("./authentication.route");
+const fileRouter = require("./files.route");
 
 const router = Router();
 
@@ -19,5 +20,7 @@ router.use(
   AuthorisationMiddleware,
   lostArticlesRouter,
 );
+router.use("/api/v1/map-box", AuthorisationMiddleware, mapBoxRouter);
+router.use("/api/v1/files", fileRouter);
 
 module.exports = router;

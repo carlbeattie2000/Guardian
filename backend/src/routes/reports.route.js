@@ -4,15 +4,13 @@ const OfficerAuthenticationMiddleware = require("../middleware/officer-authoriza
 
 const multer = require("multer");
 const reportsController = require("../controllers/reports.controller");
+const HttpResponse = require("../utils/http-response-helper");
 
 const reportsRouter = Router();
 const upload = multer();
 
 reportsRouter.get("/", reportsController.getAll);
 reportsRouter.get("/:id", reportsController.getById);
-reportsRouter.get("/image/:path", async (req, res) => {
-  res.sendFile(FileStorage.getImagePath(req.params.path));
-});
 
 reportsRouter.post("/", upload.array("photos", 12), reportsController.create);
 reportsRouter.post("/add-witness/:id", reportsController.createWitness);

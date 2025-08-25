@@ -1,5 +1,5 @@
 const { join } = require("path");
-const { mkdirSync, existsSync } = require("fs");
+const { mkdirSync, existsSync, readFileSync } = require("fs");
 const { writeFile, readFile } = require("fs/promises");
 const { v4: uuidv4 } = require("uuid");
 
@@ -79,6 +79,10 @@ class FileStorage {
    */
   static getImagePath(imageName) {
     return join(this.imagesPath, imageName);
+  }
+
+  static readImage(imageName) {
+    return readFileSync(join(this.imagesPath, imageName));
   }
 }
 
