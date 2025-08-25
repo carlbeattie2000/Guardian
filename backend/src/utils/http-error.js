@@ -4,6 +4,8 @@ const defaultLogger = require("../config/logging");
 class HttpError extends Error {
   code;
   data;
+  id;
+  path;
   clientMessage;
 
   /**
@@ -11,9 +13,14 @@ class HttpError extends Error {
    * @param {number} [param0.code=500]
    * @param {string} [param0.clientMessage=""]
    * @param {{}} [param0.data={}]
+   * @param {string} [param0.id=""]
+   * @param {string} [param0.path=""]
    * @param {Error} [err=null]
    */
-  constructor({ code = 500, clientMessage = "", data = {} }, err = null) {
+  constructor(
+    { code = 500, clientMessage = "", data = {}, id = "", path = "" },
+    err = null,
+  ) {
     super(clientMessage || "");
 
     if (err) {
@@ -22,6 +29,7 @@ class HttpError extends Error {
       Error.captureStackTrace?.(this, this.constructor);
     }
 
+    this.path = path;
     this.code = code;
     this.data = data;
     this.clientMessage = clientMessage;
@@ -43,6 +51,7 @@ class HttpError extends Error {
       date: new Date().toString(),
       level: "error",
       message: this.message,
+      path: this.path,
     });
   }
 }

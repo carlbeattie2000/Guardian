@@ -9,7 +9,7 @@ const HttpError = require("../utils/http-error");
  * @param {import('express').NextFunction} NextFunction
  */
 function HttpErrorMiddleware(err, req, res, next) {
-  const httpError = errorService.handleError(err);
+  const httpError = errorService.handleError(err, req.id, req.path);
   httpError.handleLogging();
   return httpError.handleResponse(res);
 }

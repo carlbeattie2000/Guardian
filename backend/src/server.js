@@ -9,6 +9,7 @@ const HttpErrorMiddleware = require("./middleware/errors.middleware");
 const securityHeadersMiddleware = require("./middleware/security-headers.middleware");
 const notFoundMiddleware = require("./middleware/not-found.middleware");
 const rateLimitMiddleware = require("./middleware/rate-limiting.middleware");
+const RequestLoggingMiddleware = require("./middleware/request-logging.middleware");
 
 const app = express();
 const PORT = process.env.PORT || 2699;
@@ -18,8 +19,11 @@ registerSwaggerForDevEnv(app);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(securityHeadersMiddleware);
 app.disable("x-powered-by");
+
+app.use(RequestLoggingMiddleware);
 app.use(router);
 app.use(rateLimitMiddleware());
 

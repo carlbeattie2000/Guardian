@@ -6,26 +6,24 @@ const HttpError = require("../utils/http-error");
 class ErrorService {
   /**
    * @param {Error} err
+   * @param {string} path
    */
-  handleError(err) {
-    if (err instanceof HttpError) {
-      return err;
-    }
+  handleError(err, id = "", path = "") {
     if (err instanceof z.ZodError) {
-      return this.handleZodError(err);
+      err = this.handleZodError(err);
     }
 
     if (err instanceof jwt.TokenExpiredError) {
-      return this.handleJwtExpiredError();
+      err = this.handleJwtExpiredError();
     }
 
     if (err instanceof jwt.JsonWebTokenError) {
-      return this.handleJwtError();
+      err = this.handleJwtError();
     }
 
     err = this.handleSqliteErrors(err);
 
-    return this.handleHttpError(err);
+    return this.handleHttpError(err, id, path);
   }
 
   /**
@@ -36,15 +34,22 @@ class ErrorService {
    */
   handleHttpError(
     err,
+    id = "",
+    path = "",
     code = 500,
     message = "Internal Server Error",
     body = {},
   ) {
     if (err instanceof HttpError) {
+      err.id = id;
+      err.path = path;
       return err;
     }
 
-    return new HttpError({ code, clientMessage: message, data: body }, err);
+    return new HttpError(
+      { code, clientMessage: message, data: body, path: path },
+      err,
+    );
   }
 
   /**

@@ -1,12 +1,21 @@
 const { Router } = require("express");
 const AuthorisationMiddleware = require("../middleware/authorization.middleware");
+const rateLimitMiddleware = require("../middleware/rate-limiting.middleware");
 
 const authenticationController = require("../controllers/authentication.controller");
 
 const authenticationRouter = Router();
 
-authenticationRouter.post("/login", authenticationController.login);
-authenticationRouter.post("/register", authenticationController.register);
+authenticationRouter.post(
+  "/login",
+  rateLimitMiddleware({ ipLimit: 15, ipWindowMs: 1000 * 60 * 5 }),
+  authenticationController.login,
+);
+authenticationRouter.post(
+  "/register",
+  rateLimitMiddleware({ ipLimit: 15, ipWindowMs: 1000 * 60 * 5 }),
+  authenticationController.register,
+);
 authenticationRouter.post(
   "/logout",
   AuthorisationMiddleware,

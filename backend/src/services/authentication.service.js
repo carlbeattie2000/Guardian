@@ -200,7 +200,10 @@ class AuthenticationService {
     const isOfficer = refreshTokenVerified.is_officer;
     const sessionId = refreshTokenVerified.jti;
 
-    await JwtModel.deleteAllSessionTokens(sessionId);
+    // TODO: Well this could easily break the app
+    setTimeout(() => {
+      JwtModel.deleteAllSessionTokens(sessionId);
+    }, 5000);
 
     return await this.generateTokens(userId, isOfficer);
   }

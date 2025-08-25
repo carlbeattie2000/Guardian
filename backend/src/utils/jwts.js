@@ -16,7 +16,9 @@ function getJwtFromRequest(req, type) {
  * @returns {{access: string|null, refresh: string|null}}
  */
 function tryGetTokensFromCookie(req, type) {
-  const { accessToken, refreshToken } = req.cookies;
+  const accessToken = req.cookies.accessToken;
+  const refreshToken = req.cookies.refreshToken;
+
   return type === "all"
     ? !accessToken || !refreshToken
       ? null
@@ -34,20 +36,22 @@ function tryGetTokensFromCookie(req, type) {
  * @returns {{access: string|null, refresh: string|null}}
  */
 function tryGetTokensFromAuthorisationHeader(req, type) {
-  // TODO: I did not think about how I'd handle refresh tokens in the header.
-  // I'll figure that out.
+  const refresh = req.headers["refresh-token"] || null;
   if (type === "refresh") {
-    return null;
+    return { access: null, refresh };
   }
-  let accessToken;
+
+  let access = null;
   const accessTokenHeader = req.headers.authorization;
   if (accessTokenHeader && accessTokenHeader.startsWith("Bearer ")) {
-    accessToken = accessTokenHeader.substring(7);
+    access = accessTokenHeader.substring(7);
   }
-  if (!accessToken) {
-    return null;
+
+  if (type === "access") {
+    return { access, refresh: null };
   }
-  return { access: accessToken, refresh: null };
+
+  return { access, refresh };
 }
 
 module.exports = getJwtFromRequest;
