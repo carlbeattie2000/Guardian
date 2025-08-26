@@ -143,6 +143,10 @@ class AuthenticationService {
    * @param {number} user_id
    */
   async deleteTokensForUser(user_id) {
+    if (!user_id) {
+      throw new HttpError({ code: 400, clientMessage: "Bad Request" });
+    }
+
     const jwts = await JwtModel.findAllBy("user_id", user_id);
     if (jwts) {
       jwts.forEach(async (token) => {

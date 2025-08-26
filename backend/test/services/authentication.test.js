@@ -275,7 +275,7 @@ describe("AuthenticationService", function () {
       let missingUserIdErr;
 
       try {
-        await authenticationService.deleteTokensForUser(1);
+        await authenticationService.deleteTokensForUser();
       } catch (err) {
         missingUserIdErr = err;
       }
