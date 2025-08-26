@@ -307,7 +307,7 @@ describe("AuthenticationService", function () {
 
       await authenticationService.deleteTokenForUser(1, "access");
 
-      expect(modelFindAllByStub).to.be.calledOnceWithExactly(
+      expect(modelFindByStub).to.be.calledOnceWithExactly(
         ["user_id", "type"],
         [1, "access"],
       );

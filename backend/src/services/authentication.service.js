@@ -160,6 +160,10 @@ class AuthenticationService {
    * @param {('access'|'refresh')} type
    */
   async deleteTokenForUser(user_id, type) {
+    if (!user_id || !type) {
+      throw new HttpError({ code: 400, clientMessage: "Bad Request" });
+    }
+
     const jwt = await JwtModel.findBy(["user_id", "type"], [user_id, type]);
 
     if (jwt) {
