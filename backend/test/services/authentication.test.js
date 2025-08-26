@@ -240,17 +240,7 @@ describe("AuthenticationService", function () {
     });
 
     it("should return null when missing any arugment", async () => {
-      const token = jwt.sign({ sub: 1 }, "fakesecret");
-      const fakeJwt = new JwtModel(1, "xxx-xxx", token, "access", 5000);
-      modelSaveStub.resolves(fakeJwt);
-
-      const jwtSaved = await authenticationService.saveToken(
-        1,
-        "xxx-xxx",
-        token,
-        "access",
-        5000,
-      );
+      const jwtSaved = await authenticationService.saveToken(1, 5000);
 
       expect(jwtSaved).to.be.null;
     });

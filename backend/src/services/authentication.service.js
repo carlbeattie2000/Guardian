@@ -122,6 +122,10 @@ class AuthenticationService {
    * @returns {Promise<JwtModel>}
    */
   async saveToken(user_id, session_id, token, type, expires_at) {
+    if (!user_id || !session_id || !token || !type || !expires_at) {
+      return null;
+    }
+
     return await new JwtModel(
       user_id,
       session_id,
