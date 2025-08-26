@@ -80,7 +80,7 @@ class AuthenticationController {
     }
 
     const tokens = await authenticationService.refreshToken(access, refresh);
-    if (tokens === null) {
+    if (tokens.length === 0) {
       return new HttpResponse(
         400,
         {},

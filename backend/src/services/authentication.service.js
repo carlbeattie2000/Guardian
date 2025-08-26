@@ -190,9 +190,9 @@ class AuthenticationService {
     if (
       accessExpiresAt !== null &&
       accessExpiresAt - Math.floor(Date.now() / 1000) >
-        REFRESH_TOKEN_ENABLED_WINDOW_SECONDS
+        refreshTokenEnabledWindowSeconds
     ) {
-      return null;
+      return [];
     }
 
     const refreshTokenVerified = await this.verifyToken(refresh, "refresh");
