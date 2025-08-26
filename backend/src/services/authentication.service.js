@@ -291,7 +291,7 @@ class AuthenticationService {
    */
   async userIsLoginBlocked(user_id) {
     /** @type {LoginAttemptsModel | null} */
-    if (user_id === null) {
+    if (!user_id) {
       await LoginAttemptsModel.findBy("user_id", -1);
       return false;
     }
