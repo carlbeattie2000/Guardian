@@ -180,7 +180,13 @@ class AuthenticationService {
    * @param {string} access
    * @param {string} refresh
    */
-  async refreshToken(access, refresh) {
+  async refreshToken(
+    access,
+    refresh,
+    {
+      refreshTokenEnabledWindowSeconds = REFRESH_TOKEN_ENABLED_WINDOW_SECONDS,
+    } = {},
+  ) {
     let accessExpiresAt = null;
     try {
       const accessTokenVerified = await this.verifyToken(access, "access");
