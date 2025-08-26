@@ -32,15 +32,17 @@ describe("AuthenticationService", function () {
   });
 
   beforeEach(() => {
-    modelSaveStub = sinon.stub(BaseModel.prototype, "save").callsFake(() => {
-      return this;
-    });
+    modelSaveStub = sinon
+      .stub(BaseModel.prototype, "save")
+      .callsFake(function () {
+        return this;
+      });
     modelFindByStub = sinon.stub(BaseModel, "findBy").returns({});
     modelFindByIdStub = sinon.stub(BaseModel, "findById").returns({});
     modelFindAllByStub = sinon.stub(BaseModel, "findAllBy").returns({});
     modelDeleteStub = sinon
       .stub(BaseModel.prototype, "delete")
-      .callsFake(() => {
+      .callsFake(function () {
         return this;
       });
     userIsBlockedStub = sinon.stub(authenticationService, "userIsLoginBlocked");
