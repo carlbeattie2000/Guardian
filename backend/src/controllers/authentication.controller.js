@@ -123,7 +123,7 @@ class AuthenticationController {
       return new HttpResponse(400).json(res);
     }
 
-    new HttpResponse(200, userProfileDetails).json(res);
+    new HttpResponse(200, user).json(res);
   }
 }
 
