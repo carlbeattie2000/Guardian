@@ -240,6 +240,10 @@ class AuthenticationService {
    * @param {string} accessToken
    */
   async logout(userId, accessToken) {
+    if (!userId) {
+      throw new HttpError({ code: 400, clientMessage: "Bad Request" });
+    }
+
     if (!accessToken) {
       return await JwtModel.deleteAllUserTokens(userId);
     }
