@@ -74,7 +74,11 @@ class AuthenticationService {
    * @param {number} userId
    * @returns {Promise<[string, string]>}
    */
-  async generateTokens(userId, is_officer) {
+  async generateTokens(userId, is_officer = 0) {
+    if (!userId) {
+      return [];
+    }
+
     const accessExp =
       Math.floor(Date.now() / 1000) + ACCESS_TOKEN_WINDOW_SECONDS;
     const refreshExp =
