@@ -11,6 +11,7 @@ const {
   REFRESH_TOKEN_WINDOW_SECONDS,
   REFRESH_TOKEN_ENABLED_WINDOW_SECONDS,
 } = require("../constants/jwts");
+const AppError = require("../utils/app-error");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -200,9 +201,10 @@ class AuthenticationService {
     const isOfficer = refreshTokenVerified.is_officer;
     const sessionId = refreshTokenVerified.jti;
 
-    // TODO: Well this could easily break the app
     setTimeout(() => {
-      JwtModel.deleteAllSessionTokens(sessionId);
+      AppError.try(async () => {
+        await JwtModel.deleteAllSessionTokens(sessionId);
+      });
     }, 5000);
 
     return await this.generateTokens(userId, isOfficer);
