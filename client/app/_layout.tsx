@@ -6,7 +6,7 @@ import {
   Theme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useNavigation, usePathname, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
@@ -16,6 +16,9 @@ import { PortalHost } from "@rn-primitives/portal";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { AuthContext, AuthProvider } from "~/contexts/Auth";
+
+import Reactotron from "reactotron-react-native";
+Reactotron.configure({}).useReactNative().connect();
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -53,7 +56,13 @@ export default function RootLayout() {
 }
 
 function AppStack() {
-  const { session } = React.use(AuthContext);
+  const segments = useSegments();
+  const { session, checkAuthed, refreshToken } = React.use(AuthContext);
+
+  React.useEffect(() => {
+    checkAuthed();
+    refreshToken();
+  }, [segments]);
 
   return (
     <Stack>
@@ -68,7 +77,21 @@ function AppStack() {
         <Stack.Screen
           name="(app)/(reports)/index"
           options={{
+            title: "Reports",
+            headerRight: () => <ThemeToggle />,
+          }}
+        />
+        <Stack.Screen
+          name="(app)/(reports)/new"
+          options={{
             title: "New Report",
+            headerRight: () => <ThemeToggle />,
+          }}
+        />
+        <Stack.Screen
+          name="(app)/(reports)/[report_id]"
+          options={{
+            title: "Report",
             headerRight: () => <ThemeToggle />,
           }}
         />

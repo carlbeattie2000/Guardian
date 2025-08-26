@@ -1,102 +1,69 @@
-import { View, Image } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
-import { Text } from "~/components/ui/text";
-import { AlertTriangle } from "~/lib/icons/AlertTriangle";
 import { useRouter } from "expo-router";
-import { Input } from "~/components/ui/input";
+import { useEffect, useState } from "react";
+import { ScrollView, View } from "react-native";
+import ReportBadge from "~/components/ReportBadge";
 import { Button } from "~/components/ui/button";
-import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Text } from "~/components/ui/text";
+import { apiService } from "~/services/apiService";
 
-export default function Screen() {
+interface Report {
+  id: number;
+  description: string;
+  status: "PENDING" | "IN-PROGRESS" | "COMPLETED";
+}
+
+export default function Reports() {
   const router = useRouter();
-  const [images, setImages] = useState<string[]>([]);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      description: "",
-      photos: "",
-    },
-  });
+  const [reports, setReports] = useState<Report[]>([]);
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      aspect: [4, 3],
-      quality: 1,
-      allowsMultipleSelection: true,
-    });
+  useEffect(() => {
+    const getReports = async () => {
+      const request = await apiService.get("/api/v1/reports");
 
-    console.log(result);
+      if (request.status === 200) {
+        setReports(request.data.data);
+      }
+    };
 
-    if (!result.canceled) {
-      const uris = result.assets.map((asset) => asset.uri);
-      setImages(uris);
-    }
-  };
-
+    getReports();
+  }, []);
   return (
-    <View className="flex-1 items-center gap-5 p-6 bg-secondary/30">
-      <Alert icon={AlertTriangle} variant="destructive" className="max-w-xl">
-        <AlertTitle>Is it a emergency?</AlertTitle>
-        <AlertDescription>Call 000 in emergency situations</AlertDescription>
-      </Alert>
+    <ScrollView>
+      <View className="flex-1 gap-6 p-6">
+        {reports.map((report, index) => {
+          return (
+            <Card className="w-full max-w-sm" key={index}>
+              <CardHeader className="flex-row">
+                <View className="flex-1 gap-1.5">
+                  <CardTitle>Report #{report.id} </CardTitle>
+                  <ReportBadge status={report.status} />
+                  <CardDescription>{report.description}</CardDescription>
+                </View>
+              </CardHeader>
 
-      <View className="flex-1 w-full items-center gap-5 p-6">
-        <Text className="text-2xl font-bold">Create a report</Text>
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, value } }) => (
-            <Input
-              placeholder="description"
-              onChangeText={onChange}
-              value={value}
-              className="w-full"
-            />
-          )}
-          name="description"
-        />
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, value } }) => (
-            <Input
-              className="w-full"
-              placeholder="photos"
-              inputMode="url"
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-          name="photos"
-        />
-
-        <Button variant="outline" className="w-full" onPress={pickImage}>
-          <Text className="border-x-white">Add Images</Text>
-        </Button>
-        <View className="flex flex-row gap-5 flex-wrap">
-          {images.length > 0 &&
-            images.map((image, i) => (
-              <Image
-                source={{ uri: image }}
-                style={{ width: 60, height: 60 }}
-                resizeMode="cover"
-                key={i}
-              />
-            ))}
-        </View>
-
-        <Button variant="destructive" className="bg-green-600 w-full mt-5">
-          <Text className="border-x-white">Submit Report</Text>
-        </Button>
+              <CardFooter className="flex-row">
+                <View className="flex gap-1.5 w-full">
+                  <Button
+                    variant="secondary"
+                    className="w-full"
+                    onPress={() => router.navigate(`/${report.id}`)}
+                  >
+                    <Text>View Report</Text>
+                  </Button>
+                </View>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </View>
-    </View>
+    </ScrollView>
   );
 }

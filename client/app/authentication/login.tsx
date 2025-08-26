@@ -1,6 +1,8 @@
 import { useRouter } from "expo-router";
+import { AlertTriangle } from "lucide-react-native";
 import { use, useState } from "react";
 import { View } from "react-native";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -22,8 +24,11 @@ export default function Screen() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const [loginError, setLoginError] = useState<string>("");
+
   async function submitLogin() {
     if (!username || !password) {
+      setLoginError("Please enter both a username and password");
       return;
     }
 
@@ -38,32 +43,42 @@ export default function Screen() {
       const payload = requestData.data as LoginPayload;
 
       login(payload.accessToken, payload.refreshToken);
+      return;
     }
+
+    setLoginError(requestData.message);
   }
 
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
-      <Card className="w-full max-w-sm p-6 rounded-2xl h-1/2">
+      <Card className="w-full max-w-sm p-6 rounded-2xl h-fit">
         <CardHeader className="items-center">
-          <View className="p-3" />
           <CardTitle className="pb-2 text-center">Login</CardTitle>
         </CardHeader>
-        <CardContent>
-          <View className="flex-row justify-around gap-3">
-            <View className="flex-col gap-3 items-center w-full">
-              <Input
-                placeholder="username"
-                className="w-full"
-                value={username}
-                onChangeText={(newUsername) => setUsername(newUsername)}
-              />
-              <Input
-                placeholder="password"
-                className="w-full"
-                value={password}
-                onChangeText={(newPassword) => setPassword(newPassword)}
-              />
-            </View>
+        <CardContent className="flex gap-3">
+          {loginError && (
+            <Alert
+              icon={AlertTriangle}
+              variant="destructive"
+              className="max-w-xl"
+            >
+              <AlertTitle>{loginError}</AlertTitle>
+            </Alert>
+          )}
+
+          <View className="flex-col gap-3 items-center w-full">
+            <Input
+              placeholder="username"
+              className="w-full"
+              value={username}
+              onChangeText={(newUsername) => setUsername(newUsername)}
+            />
+            <Input
+              placeholder="password"
+              className="w-full"
+              value={password}
+              onChangeText={(newPassword) => setPassword(newPassword)}
+            />
           </View>
         </CardContent>
         <CardFooter className="flex-col gap-3 pb-0">
