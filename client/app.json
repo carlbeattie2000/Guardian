@@ -17,13 +17,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.testClient",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to help you report incidents at your current location.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to your location to help you report incidents at your current location."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.anonymous.testClient"
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +45,15 @@
       "expo-router",
       "expo-secure-store",
       "expo-image-picker",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "This app needs access to your location to help you report incidents at your current location.",
+          "locationWhenInUsePermission": "This app needs access to your location to help you report incidents at your current location.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
