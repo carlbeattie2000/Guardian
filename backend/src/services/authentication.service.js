@@ -272,14 +272,17 @@ class AuthenticationService {
    * @param {number} user_id
    */
   async failedLoginAttempt(user_id) {
+    if (!user_id) {
+      throw new HttpError({ code: 400, clientMessage: "Bad Request" });
+    }
+
     /** @type {LoginAttemptsModel | null} */
     const loginAttempt =
       (await LoginAttemptsModel.findBy("user_id", user_id)) ||
       (await new LoginAttemptsModel(user_id).save());
 
-    if (loginAttempt) {
-      await loginAttempt.failedLoginAttempt();
-    }
+    await loginAttempt.failedLoginAttempt();
+    return loginAttempt;
   }
 
   /**
