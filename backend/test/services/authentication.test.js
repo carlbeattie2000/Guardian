@@ -2,8 +2,9 @@ require("dotenv").config();
 const chai = require("chai");
 const sinon = require("sinon");
 const sinonChai = require("sinon-chai").default;
-
+const chaiAsPromised = require("chai-as-promised").default;
 chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 const { expect } = chai;
 
@@ -73,23 +74,17 @@ describe("AuthenticationService", function () {
     it("should throw for non-existing username", async () => {
       modelFindByStub.resolves(null);
 
-      /** @type {HttpError} */
-      let usernameDoesNotExistErr;
-
-      try {
-        await authenticationService.login({
+      await expect(
+        authenticationService.login({
           username: "wrongusername",
           password: "testing123",
+        }),
+      )
+        .to.rejectedWith(HttpError)
+        .then((error) => {
+          expect(error.clientMessage).to.be.equal("Bad Login Request");
+          expect(error.code).to.be.equal(400);
         });
-      } catch (err) {
-        usernameDoesNotExistErr = err;
-      }
-
-      expect(usernameDoesNotExistErr).to.be.instanceOf(HttpError);
-      expect(usernameDoesNotExistErr.clientMessage).to.be.equal(
-        "Bad Login Request",
-      );
-      expect(usernameDoesNotExistErr.code).to.be.equal(400);
     });
 
     it("should throw for invalid password", async () => {
@@ -99,21 +94,17 @@ describe("AuthenticationService", function () {
       modelFindByStub.resolves(fakeUser);
       userIsBlockedStub.resolves(false);
 
-      /** @type {HttpError} */
-      let invalidPasswordErr;
+      const userDetails = {
+        username: "testing123",
+        password: "incorrectpassword",
+      };
 
-      try {
-        await authenticationService.login({
-          username: "testing123",
-          password: "incorrectpassword",
+      await expect(authenticationService.login(userDetails))
+        .to.rejectedWith(HttpError)
+        .then((error) => {
+          expect(error.clientMessage).to.be.equal("Bad Login Request");
+          expect(error.code).to.be.equal(400);
         });
-      } catch (err) {
-        invalidPasswordErr = err;
-      }
-
-      expect(invalidPasswordErr).to.be.instanceOf(HttpError);
-      expect(invalidPasswordErr.clientMessage).to.be.equal("Bad Login Request");
-      expect(invalidPasswordErr.code).to.be.equal(400);
     });
 
     it("should throw if user is blocked", async () => {
@@ -124,21 +115,17 @@ describe("AuthenticationService", function () {
       modelFindByStub.resolves(fakeUser);
       userIsBlockedStub.resolves(true);
 
-      /** @type {HttpError} */
-      let userIsBlockedErr;
+      const userDetails = {
+        username: "testing123",
+        password: "testing123",
+      };
 
-      try {
-        await authenticationService.login({
-          username: "testing123",
-          password: "testing123",
+      await expect(authenticationService.login(userDetails))
+        .to.rejectedWith(HttpError)
+        .then((error) => {
+          expect(error.clientMessage).to.be.equal("Bad Login Request");
+          expect(error.code).to.be.equal(400);
         });
-      } catch (err) {
-        userIsBlockedErr = err;
-      }
-
-      expect(userIsBlockedErr).to.be.instanceOf(HttpError);
-      expect(userIsBlockedErr.clientMessage).to.be.equal("Bad Login Request");
-      expect(userIsBlockedErr.code).to.be.equal(400);
     });
   });
 
@@ -158,11 +145,7 @@ describe("AuthenticationService", function () {
         password: "testing",
       };
 
-      try {
-        await authenticationService.register(userDetails);
-      } catch (err) {
-        expect(err).to.be.instanceOf(Error);
-      }
+      await expect(authenticationService.register(userDetails)).to.rejected;
     });
 
     it("should throw when username already exists", async () => {
@@ -174,11 +157,8 @@ describe("AuthenticationService", function () {
         username: "testing123",
         password: "testing123",
       };
-      try {
-        await authenticationService.register(userDetails);
-      } catch (err) {
-        expect(err).to.be.instanceOf(Error);
-      }
+
+      await expect(authenticationService.register(userDetails)).to.rejected;
     });
   });
 
@@ -273,18 +253,12 @@ describe("AuthenticationService", function () {
     });
 
     it("should throw a error when no userId is provided", async () => {
-      /** @type {HttpError} */
-      let missingUserIdErr;
-
-      try {
-        await authenticationService.deleteTokensForUser();
-      } catch (err) {
-        missingUserIdErr = err;
-      }
-
-      expect(missingUserIdErr).to.be.instanceOf(HttpError);
-      expect(missingUserIdErr.clientMessage).to.be.equal("Bad Request");
-      expect(missingUserIdErr.code).to.be.equal(400);
+      await expect(authenticationService.deleteTokenForUser())
+        .to.rejectedWith(HttpError)
+        .then((error) => {
+          expect(error.clientMessage).to.be.equal("Bad Request");
+          expect(error.code).to.be.equal(400);
+        });
     });
   });
 
@@ -317,33 +291,23 @@ describe("AuthenticationService", function () {
     });
 
     it("should throw a error when no userId is provided", async () => {
-      /** @type {HttpError} */
-      let missingUserIdErr;
-
-      try {
-        await authenticationService.deleteTokenForUser(undefined, "access");
-      } catch (err) {
-        missingUserIdErr = err;
-      }
-
-      expect(missingUserIdErr).to.be.instanceOf(HttpError);
-      expect(missingUserIdErr.clientMessage).to.be.equal("Bad Request");
-      expect(missingUserIdErr.code).to.be.equal(400);
+      await expect(
+        authenticationService.deleteTokenForUser(undefined, "access"),
+      )
+        .to.rejectedWith(HttpError)
+        .then((error) => {
+          expect(error.clientMessage).to.be.equal("Bad Request");
+          expect(error.code).to.be.equal(400);
+        });
     });
 
     it("should throw a error when no type is provided", async () => {
-      /** @type {HttpError} */
-      let missingTypeErr;
-
-      try {
-        await authenticationService.deleteTokenForUser(1);
-      } catch (err) {
-        missingTypeErr = err;
-      }
-
-      expect(missingTypeErr).to.be.instanceOf(HttpError);
-      expect(missingTypeErr.clientMessage).to.be.equal("Bad Request");
-      expect(missingTypeErr.code).to.be.equal(400);
+      await expect(authenticationService.deleteTokenForUser(1))
+        .to.rejectedWith(HttpError)
+        .then((error) => {
+          expect(error.clientMessage).to.be.equal("Bad Request");
+          expect(error.code).to.be.equal(400);
+        });
     });
   });
 
@@ -358,15 +322,9 @@ describe("AuthenticationService", function () {
 
     it("given a invalid token, it should throw", async function () {
       const token = jwt.sign({ sub: 1 }, "incorrectfakesecret");
-      let verifyErr;
-
-      try {
-        await authenticationService.verifyToken(token);
-      } catch (err) {
-        verifyErr = err;
-      }
-
-      expect(verifyErr).to.be.instanceOf(jwt.JsonWebTokenError);
+      await expect(authenticationService.verifyToken(token)).to.rejectedWith(
+        jwt.JsonWebTokenError,
+      );
     });
   });
 
