@@ -237,22 +237,15 @@ class AuthenticationService {
    * Otherwise only the session attached to the token is logged out
    * accessToken must also be valid
    * @param {number} userId
-   * @param {string} accessToken
+   * @param {string} token
+   * @param {('access'|'refresh')} [type="access"]
    */
-  async logout(userId, accessToken) {
-    if (!userId) {
-      throw new HttpError({ code: 400, clientMessage: "Bad Request" });
-    }
-
-    if (!accessToken) {
+  async logout(userId, token, type) {
+    if (userId && !token) {
       return await JwtModel.deleteAllUserTokens(userId);
     }
 
-    const tokenValidted = await this.verifyToken(accessToken);
-
-    if (tokenValidted.sub !== userId) {
-      return;
-    }
+    const tokenValidted = await this.verifyToken(token, type);
 
     const sessionId = tokenValidted.jti;
 

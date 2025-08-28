@@ -475,21 +475,6 @@ describe("AuthenticationService", function () {
       await authenticationService.logout(1);
       expect(jwtDeleteAllUserTokensStub).to.be.calledOnceWithExactly(1);
     });
-
-    it("should throw a error if no userId is given", async () => {
-      /** @type {HttpError} */
-      let missingUserIdErr;
-
-      try {
-        await authenticationService.logout();
-      } catch (err) {
-        missingUserIdErr = err;
-      }
-
-      expect(missingUserIdErr).to.be.instanceOf(HttpError);
-      expect(missingUserIdErr.clientMessage).to.be.equal("Bad Request");
-      expect(missingUserIdErr.code).to.be.equal(400);
-    });
   });
 
   describe("getProfile", () => {

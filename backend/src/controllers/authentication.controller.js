@@ -4,6 +4,7 @@ const {
   REFRESH_TOKEN_COOKIE_NAME,
 } = require("../constants/cookies");
 const authenticationService = require("../services/authentication.service");
+const HttpError = require("../utils/http-error");
 const HttpResponse = require("../utils/http-response-helper");
 const getJwtFromRequest = require("../utils/jwts");
 
@@ -49,8 +50,17 @@ class AuthenticationController {
    * @param {import('express').Response} res
    */
   async logout(req, res) {
-    const { access } = getJwtFromRequest(req, "access");
-    await authenticationService.logout(req.user, access);
+    const { access, refresh } = getJwtFromRequest(req, "all");
+
+    if (!access && !refresh) {
+      throw new HttpError({ code: 401 });
+    }
+
+    await authenticationService.logout(
+      req.user,
+      access || refresh,
+      access ? "access" : "refresh",
+    );
     res
       .clearCookie(ACCESS_TOKEN_COOKIE_NAME)
       .clearCookie(REFRESH_TOKEN_COOKIE_NAME);
@@ -76,16 +86,16 @@ class AuthenticationController {
   async refreshToken(req, res) {
     const { access, refresh } = getJwtFromRequest(req, "all");
     if (!refresh) {
-      return new HttpResponse(400).sendStatus(res);
+      throw new HttpError({ code: 400 });
     }
 
     const tokens = await authenticationService.refreshToken(access, refresh);
     if (tokens.length === 0) {
-      return new HttpResponse(
-        400,
-        {},
-        "Token is not yet eligible for refresh. Retry closer to expiry.",
-      ).json(res);
+      throw new HttpError({
+        code: 400,
+        clientMessage:
+          "Token is not yet eligible for refresh. Retry closer to expiry.",
+      });
     }
 
     const [accessToken, refreshToken] = tokens;
@@ -109,7 +119,7 @@ class AuthenticationController {
       return new HttpResponse(204).sendStatus(res);
     }
 
-    return new HttpResponse(401).sendStatus(res);
+    throw new HttpError({ code: 401 });
   }
 
   /**
@@ -120,7 +130,7 @@ class AuthenticationController {
     const user = await authenticationService.getProfile(req.user);
 
     if (!user) {
-      return new HttpResponse(400).json(res);
+      throw new HttpError({ code: 404 });
     }
 
     new HttpResponse(200, user).json(res);

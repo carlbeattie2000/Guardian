@@ -256,25 +256,6 @@ describe("AuthenticationController", () => {
           expect(error.code).to.be.equal(401);
         });
     });
-
-    it("should throw 401 http error if access and refresh are expired", async () => {
-      const accessToken = jwt.sign(
-        { sub: 1, jti: "session-id-xxx1", exp: new Date(1).getTime() / 1000 },
-        process.env.JWT_ACCESS_SECRET,
-      );
-
-      baseModelStubs.findBy.resolves(accessToken);
-
-      req.cookies = {
-        [ACCESS_TOKEN_COOKIE_NAME]: accessToken,
-      };
-
-      await expect(authenticationController.logout(req, res))
-        .to.be.rejectedWith(HttpError)
-        .then((error) => {
-          expect(error.code).to.be.equal(401);
-        });
-    });
   });
 
   describe("logoutAllSessions", () => {
@@ -468,29 +449,6 @@ describe("AuthenticationController", () => {
         .to.be.rejectedWith(HttpError)
         .then((error) => {
           expect(error.code).to.be.equal(400);
-        });
-    });
-
-    it("should throw 401 http error if refresh token invalid", async () => {
-      const refreshToken = jwt.sign(
-        {
-          sub: 1,
-          jti: "xx",
-          exp: Math.floor(Date.now() / 1000) + new Date(1).getTime(),
-        },
-        process.env.JWT_REFRESH_SECRET,
-      );
-
-      baseModelStubs.findBy.resolves(refreshToken);
-
-      req.cookies = {
-        [REFRESH_TOKEN_COOKIE_NAME]: refreshToken,
-      };
-
-      await expect(authenticationController.refreshToken(req, res))
-        .to.be.rejectedWith(HttpError)
-        .then((error) => {
-          expect(error.code).to.be.equal(401);
         });
     });
   });

@@ -20,7 +20,7 @@ function tryGetTokensFromCookie(req, type) {
   const refreshToken = req.cookies.refreshToken;
 
   return type === "all"
-    ? !accessToken || !refreshToken
+    ? !accessToken && !refreshToken
       ? null
       : { access: accessToken, refresh: refreshToken }
     : type === "access" && accessToken
