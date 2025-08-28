@@ -30,7 +30,30 @@ function serializeCookie(name, value, options = {}) {
 
 cookie.serialize = serializeCookie;
 
+/** @typedef {Object} ResponseMock
+ * @property {number} statusCode
+ * @property {boolean} headersSent
+ * @property {Object} headers
+ * @property {any} body
+ * @property {import("./expressRequest").RequestMock} req
+ *
+ * @property {Function} set
+ * @property {Function} get
+ * @property {Function} append
+ * @property {Function} type
+ * @property {Function} status
+ * @property {Function} sendStatus
+ * @property {Function} json
+ * @property {Function} cookie
+ * @property {Function} clearCookie
+ * @property {Function} send
+ * @property {Function} end
+ */
+
 class ExpressMockResponse {
+  /**
+   * @returns {ResponseMock}
+   */
   static new() {
     return {
       statusCode: 200,
@@ -116,6 +139,13 @@ class ExpressMockResponse {
 
         return this;
       },
+      clearCookie(name, options) {
+        const opts = { path: "/", ...options, expires: new Date(1) };
+
+        delete opts.maxAge;
+
+        return this.cookie(name, "", opts);
+      },
       send(body) {
         const chunk = body;
 
@@ -139,6 +169,27 @@ class ExpressMockResponse {
         return this;
       },
     };
+  }
+
+  /**
+   * @param {ResponseMock} res
+   */
+  static getResponseJsonBody(res) {
+    if (!res.headersSent) {
+      return {};
+    }
+
+    const contentType = res.get("Content-Type");
+
+    if (!contentType || contentType !== "application/json") {
+      return {};
+    }
+
+    try {
+      return JSON.parse(res.body);
+    } catch {
+      return {};
+    }
   }
 }
 

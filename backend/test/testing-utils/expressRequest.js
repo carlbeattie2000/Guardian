@@ -1,7 +1,40 @@
+/** @typedef {Object} RequestMock
+ * @property {boolean} finished
+ * @property {boolean} destroyed
+ * @property {Object} headers
+ * @property {Object|undefined} body
+ * @property {Object} cookies
+ * @property {string} method
+ * @property {Object} params
+ * @property {Object} query
+ * @property {import("./expressResponse").ResponseMock} res
+ * @property {number} maxHeadersCount
+ * @property {string} path
+ * @property {string} host
+ * @property {string} protocol
+ *
+ * @property {Function} getHeader
+ * @property {Function} setHeader
+ * @property {Function} getHeaderNames
+ * @property {Function} getHeaders
+ * @property {Function} getRawHeaderNames
+ * @property {Function} hasHeader
+ * @property {Function} removeHeader
+ * @property {Function} end
+ * @property {Function} destroy
+ *
+ *
+ * @property {boolean} writableFinished
+ * @property {boolean} writableEnded
+ */
+
 class ExpressMockRequest {
+  /**
+   * @returns {RequestMock}
+   */
   static new() {
     const request = {
-      finshed: false,
+      finished: false,
       destroyed: false,
       headers: {},
       body: undefined,
@@ -12,7 +45,6 @@ class ExpressMockRequest {
       res: null,
       maxHeadersCount: 2000,
       path: "",
-      method: "",
       host: "",
       protocol: "",
 
@@ -47,7 +79,7 @@ class ExpressMockRequest {
         }
       },
       end(chunk, encoding, callback) {
-        this.finshed = true;
+        this.finished = true;
       },
       destroy(error) {
         if (this.destroyed) {

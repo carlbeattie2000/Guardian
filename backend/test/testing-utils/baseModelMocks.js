@@ -5,6 +5,21 @@ const sinonChai = require("sinon-chai").default;
 
 chai.use(sinonChai);
 
+/**
+ * @typedef {Object} BaseModelStubs
+ * @property {sinon.SinonStub} init
+ * @property {sinon.SinonStub} save
+ * @property {sinon.SinonStub} delete
+ * @property {sinon.SinonStub} deleteWhere
+ * @property {sinon.SinonStub} findById
+ * @property {sinon.SinonStub} findBy
+ * @property {sinon.SinonStub} all
+ * @property {sinon.SinonStub} findAllBy
+ */
+
+/**
+ * @returns {BaseModelStubs}
+ */
 function setupBaseModelStubs() {
   const stubs = {};
 
