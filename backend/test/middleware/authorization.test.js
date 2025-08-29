@@ -111,6 +111,27 @@ describe("AuthorizationMiddleware", () => {
     });
   });
 
+  it("should set req.tokens when access and refresh are in header", async () => {
+    const accessToken = jwt.sign({ sub: 1 }, process.env.JWT_ACCESS_SECRET);
+    const refreshToken = jwt.sign({ sub: 1 }, process.env.JWT_REFRESH_SECRET);
+
+    req.setHeader("Authorization", "Bearer " + accessToken);
+    req.setHeader("refresh-token", refreshToken);
+
+    const jwtPayload = {
+      sub: 1,
+      jti: "session_id",
+    };
+    verifyTokenStub.resolves(jwtPayload);
+
+    await AuthorisationMiddleware(req, res, next);
+
+    expect(req.tokens).to.be.deep.equal({
+      access: accessToken,
+      refresh: refreshToken,
+    });
+  });
+
   it("should set req.user", async () => {
     const accessToken = jwt.sign({ sub: 1 }, process.env.JWT_ACCESS_SECRET);
     req.cookies = {
@@ -137,6 +158,7 @@ describe("AuthorizationMiddleware", () => {
     const jwtPayload = {
       sub: 1,
       jti: "session_id",
+      is_officer: true,
     };
     verifyTokenStub.resolves(jwtPayload);
 
