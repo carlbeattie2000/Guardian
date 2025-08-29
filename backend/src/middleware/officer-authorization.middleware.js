@@ -8,7 +8,7 @@ const HttpError = require("../utils/http-error");
  * @param {import('express').NextFunction} NextFunction
  */
 async function OfficerAuthorizationMiddleware(req, res, next) {
-  if (!req.is_officer) {
+  if (!req.officer) {
     throw new HttpError({ code: 401 });
   }
 
