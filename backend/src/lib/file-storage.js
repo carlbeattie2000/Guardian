@@ -40,15 +40,10 @@ class FileStorage {
   }
 
   static async validImageFile(file) {
-    if (file.size > this.maxImageSizeMb) {
-      return false;
-    }
-
-    if (!this.acceptedImageFileTypes.includes(file.mimetype)) {
-      return false;
-    }
-
-    return true;
+    return (
+      file.size <= this.maxImageSizeMb &&
+      this.acceptedImageFileTypes.includes(file.mimetype)
+    );
   }
 
   /**
