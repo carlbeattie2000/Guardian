@@ -303,11 +303,7 @@ class AuthenticationService {
       return false;
     }
 
-    if (loginAttempts.attempts >= process.env.ACCOUNT_LOCK_ATTEMPTS) {
-      return true;
-    }
-
-    return false;
+    return loginAttempts.attempts >= process.env.ACCOUNT_LOCK_ATTEMPTS;
   }
 }
 

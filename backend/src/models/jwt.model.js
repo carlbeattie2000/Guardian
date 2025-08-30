@@ -34,9 +34,7 @@ class JwtModel extends BaseModel {
 
   async verifyJwt(jwt) {
     try {
-      if (await argon2.verify(this.jwt, jwt)) return true;
-
-      return false;
+      return await argon2.verify(this.jwt, jwt);
     } catch {
       return false;
     }

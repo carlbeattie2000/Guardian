@@ -26,9 +26,7 @@ class UserModel extends BaseModel {
 
   async verifyPassword(password) {
     try {
-      if (await argon2.verify(this.password, password)) return true;
-
-      return false;
+      return await argon2.verify(this.password, password);
     } catch {
       return false;
     }
