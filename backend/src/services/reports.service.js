@@ -38,12 +38,9 @@ class ReportsService {
 
     await report.save();
 
-    const imageNames = [];
-
     if (Array.isArray(files) && files.length > 0) {
       for (const file of files) {
         const fileName = await FileStorage.saveImage(file);
-        imageNames.push(fileName);
 
         new ReportImagesModel(report.id, fileName).save();
       }
