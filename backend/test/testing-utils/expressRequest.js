@@ -71,7 +71,7 @@ class ExpressMockRequest {
         return Object.keys(this.headers);
       },
       hasHeader(name) {
-        return Object.prototype.hasOwnProperty.call(this.headers, name);
+        return Object.hasOwn(this.headers, name);
       },
       removeHeader(name) {
         if (this.hasHeader(name)) {

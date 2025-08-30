@@ -10,7 +10,7 @@ class MemoryStore {
   }
 
   has(key) {
-    return Object.prototype.hasOwnProperty.call(this.store, key);
+    return Object.hasOwn(this.store, key);
   }
 
   updateKey(key, updateFunction) {
