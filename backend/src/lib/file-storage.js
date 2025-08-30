@@ -39,7 +39,7 @@ class FileStorage {
     return 0;
   }
 
-  static async validImageFile(file) {
+  static validImageFile(file) {
     return (
       file.size <= this.maxImageSizeMb &&
       this.acceptedImageFileTypes.includes(file.mimetype)
