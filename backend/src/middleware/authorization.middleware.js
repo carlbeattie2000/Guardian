@@ -10,14 +10,8 @@ const HttpError = require("../utils/http-error");
  */
 async function AuthorisationMiddleware(req, _, next) {
   const tokens = getJwtFromRequest(req, "all");
-  let payload;
 
-  if (
-    !tokens.access ||
-    !(payload = await authenticationService.verifyToken(tokens.access))
-  ) {
-    throw new HttpError({ code: 401 });
-  }
+  const payload = await authenticationService.verifyToken(tokens.access);
 
   req.user = payload.sub;
   req.officer = payload.is_officer;
