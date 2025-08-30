@@ -12,8 +12,6 @@ class HttpResponse {
     this.code = code || 200;
     this.data = data;
     this.message = message;
-
-    return this;
   }
 
   /**
