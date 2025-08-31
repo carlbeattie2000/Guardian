@@ -357,7 +357,7 @@ describe("AuthenticationService", function () {
     });
 
     it("should refresh when given valid refresh token", async () => {
-      const [_, refresh] = await authenticationService.generateTokens(1, 0);
+      const [, refresh] = await authenticationService.generateTokens(1, 0);
 
       const newTokens = await authenticationService.refreshToken(
         null,
@@ -482,7 +482,7 @@ describe("AuthenticationService", function () {
 
       modelFindByStub.resolves(fakeLoginAttempts);
 
-      const loginAttempts = await authenticationService.failedLoginAttempt(1);
+      await authenticationService.failedLoginAttempt(1);
 
       expect(modelFindByStub).to.be.calledOnceWithExactly("user_id", 1);
       expect(fakeLoginAttempts.attempts).to.be.equal(3);
