@@ -49,8 +49,7 @@ class ExpressMockRequest {
       protocol: "",
 
       getHeader(name) {
-        this.headers[name];
-        return this;
+        return this.headers[name];
       },
       setHeader(name, value) {
         this.headers[name] = value;
