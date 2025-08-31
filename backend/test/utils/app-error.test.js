@@ -202,9 +202,7 @@ describe("AppError", () => {
     it("Take a synchronous function does not throw, should do nothing", () => {
       const handleErrorSpy = sinon.spy(AppError, "handleError");
 
-      function nonThrowingFunction() {}
-
-      AppError.trySync(nonThrowingFunction);
+      AppError.trySync(() => {});
 
       expect(handleErrorSpy).to.not.have.been.called;
       expect(loggerStub).to.not.have.been.called;
