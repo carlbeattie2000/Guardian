@@ -17,22 +17,21 @@
         background: #444445;
       }
       main {
+        position: relative;
         width: 100vw;
         height: 100vh;
         display: flex;
         flex-direction: column;
-        gap: 50px;
         align-items: center;
         padding: .5rem;
+        min-height: 100vh;
+        gap: 2rem;
       }
       #chats {
         display: flex;
         flex-direction: column;
-        gap: .45rem;
-        width: 55vw;
-        height: 85vh;
-        max-height: 50vh;
-        overflow-y: scroll;
+        gap: 1rem;
+        width: 25vw;
       }
       .chat {
         padding: 15px;
@@ -49,34 +48,49 @@
         color: #fdfdfd;
       }
       form {
+        position: sticky;
+        bottom: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 1rem;
         width: 100%;
+        align-self: flex-start;
+        height: auto;
+        padding-bottom: 1rem;
       }
       textarea {
+        max-height: 20vh;
+        resize: none;
         background: rgb(66, 68, 97);
         color: #fdfdfd;
         border: none;
-        padding: 1.35rem;
-        width: 60%;
-        font-size: 1.9rem;
+        padding: 1.5rem;
+        width: 25vw;
+        font-size: 1.2rem;
+        border-radius: 20px;
+        border: 1px solid rgba(100, 100, 100, .8);
+      }
+      textarea:focus {
+        outline: none;
       }
       button {
         width: 10%;
         padding: 1rem;
-        background: rgb(103, 64, 140);
+        background: rgb(66, 68, 97);
         color: #fdfdfd;
         border: none;
         font-weight: 600;
         font-size: 1.4rem;
         border-radius: 2rem;
+        text-transform: uppercase;
+        transition: filter .2s ease-in-out;
+        border: 1px solid rgba(100, 100, 100, .8);
       }
 
       button:hover {
         cursor: pointer;
-        filter: brightness(96%);
+        filter: brightness(120%);
       }
     </style>
     <main>
@@ -84,7 +98,6 @@
       </div>
       <form id="chatForm">
         <textarea id="message" placeholder="Description"></textarea>
-        <button type="submit">send</button>
       </form> 
     </main>
 
@@ -95,9 +108,16 @@
       const newMessage = document.getElementById("message");
       const messagePairs = [];
 
-      chatForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
+      function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        const maxHeight = window.innerHeight * 0.2;
+        textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
+        textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+      }
+      newMessage.addEventListener('input', () => autoResize(newMessage));
+      autoResize(newMessage);
+
+      async function sendForm() {
         if (newMessage.value === "") {
           return;
         }
@@ -115,7 +135,7 @@
 
         newChat(messagePair.message);
         const chatRes = newResponse("Loading...........");
-        
+
         const response = await fetch('/', {
           method: 'POST',
           headers: {
@@ -128,6 +148,13 @@
         chatRes.innerHTML = message;
 
         loading = false;
+      }
+
+      newMessage.addEventListener('keydown', (e) => {
+        if (e.code === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendForm();
+        }
       });
 
       function newChat(content) {

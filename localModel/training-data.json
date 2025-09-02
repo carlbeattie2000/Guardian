@@ -1414,5 +1414,33 @@
   {
     "text": "Mass shooting combined with chemical attack in enclosed stadium",
     "priority": 1.0
+  },
+  {
+    "text": "He has a weapon",
+    "priority": 1.0
+  },
+  {
+    "text": "She has a weapon",
+    "priority": 1.0
+  },
+  {
+    "text": "I think he has a weapon",
+    "priority": 0.65
+  },
+  {
+    "text": "I think she has a weapon",
+    "priority": 0.65
+  },
+  {
+    "text": "He has a weapon I think",
+    "priority": 0.65
+  },
+  {
+    "text": "She has a weapon I think",
+    "priority": 0.65
+  },
+  {
+    "text": "I think they have a weapon",
+    "priority": 0.63
   }
 ]
