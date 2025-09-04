@@ -69,11 +69,13 @@ class ReportsService {
       report.id,
     );
 
-    report.images = imagePaths.map((image) => {
-      return filesService.generateFileToken(
-        FileStorage.getImagePath(image.image_path),
-      );
-    });
+    if (imagePaths && Array.isArray(imagePaths)) {
+      report.images = imagePaths.map((image) => {
+        return filesService.generateFileToken(
+          FileStorage.getImagePath(image.image_path),
+        );
+      });
+    }
 
     return report;
   }
