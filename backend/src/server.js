@@ -30,4 +30,6 @@ app.use(rateLimitMiddleware());
 app.use(notFoundMiddleware);
 app.use(HttpErrorMiddleware);
 
-app.listen(PORT);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
