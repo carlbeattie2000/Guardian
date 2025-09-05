@@ -2,18 +2,14 @@ require("dotenv").config();
 const chai = require("chai");
 const sinon = require("sinon");
 const setupBaseModelStubs = require("../testing-utils/baseModelMocks");
-const reportsService = require("../../src/services/reports.service");
-const {
-  createMockFile,
-  sizes,
-  createMockFilesArray,
-} = require("../testing-utils/files");
+const { sizes, createMockFilesArray } = require("../testing-utils/files");
 const FileStorage = require("../../src/lib/file-storage");
 const ReportImagesModel = require("../../src/models/report-images.model");
 const ReportModel = require("../../src/models/report.model");
 const personalDetailsService = require("../../src/services/personal-details.service");
 const PersonalDetailsModel = require("../../src/models/personal-details.model");
 const UserModel = require("../../src/models/user.model");
+const database = require("../../src/config/database");
 const sinonChai = require("sinon-chai").default;
 const chaiAsPromised = require("chai-as-promised").default;
 chai.use(sinonChai);
@@ -24,6 +20,7 @@ const { expect } = chai;
 describe("ReportsService", () => {
   /** @type {import("../testing-utils/baseModelMocks").BaseModelStubs} */
   let baseModelStubs;
+  let reportsService;
 
   const reportDetails = {
     description: "test description",
@@ -44,6 +41,13 @@ describe("ReportsService", () => {
 
   beforeEach(() => {
     baseModelStubs = setupBaseModelStubs();
+
+    sinon.stub(database, "withTransaction").callsFake(async (cb) => {
+      return await cb();
+    });
+
+    delete require.cache[require.resolve("../../src/services/reports.service")];
+    reportsService = require("../../src/services/reports.service");
   });
 
   afterEach(() => {
