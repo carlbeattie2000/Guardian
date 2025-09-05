@@ -130,13 +130,6 @@ class ReportsService {
     return await ReportModel.findAllBy("user_id", userId, orderByDesc);
   }
 
-  /**
-   * @param {number} user_id
-   */
-  async getAllByUserId(user_id) {
-    return await ReportModel.findAllBy("user_id", user_id);
-  }
-
   async updateStatus(id, body) {
     const validatedBody = this.UpdateStatusValidation.parse(body);
 
