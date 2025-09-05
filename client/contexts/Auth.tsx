@@ -1,4 +1,3 @@
-import { routeToScreen } from "expo-router/build/useScreens";
 import {
 	createContext,
 	PropsWithChildren,
@@ -25,19 +24,19 @@ interface ProfileResponse {
 interface IAuthContext {
 	session: string | null;
 	isOfficer: boolean;
-	login: (accessToken: string, refreshToken: string) => void;
-	logout: () => void;
-	checkAuthed: () => void;
-	refreshToken: () => void;
+	login: (accessToken: string, refreshToken: string) => Promise<void>;
+	logout: () => Promise<void>;
+	checkAuthed: () => Promise<void>;
+	refreshToken: (ignoreTimeCheck: boolean) => Promise<boolean>;
 }
 
 export const AuthContext = createContext<IAuthContext>({
 	session: null,
 	isOfficer: false,
-	login: () => {},
-	logout: () => {},
-	checkAuthed: () => {},
-	refreshToken: () => {},
+	login: async () => {},
+	logout: async () => {},
+	checkAuthed: async () => {},
+	refreshToken: async () => false,
 });
 
 async function accessTokenIsValid(token: string | null): Promise<boolean> {
@@ -80,7 +79,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		[setAccessTokenSession, setRefreshTokenSession],
 	);
 
-	const logout = () => {};
+	const logout = async () => {};
 
 	const checkAuthed = async () => {
 		const request = await apiService.get("/api/v1/auth/is-authed");
@@ -115,7 +114,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	};
 
 	return (
-		<AuthContext
+		<AuthContext.Provider
 			value={{
 				session: accessTokenSession,
 				isOfficer,
@@ -126,6 +125,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			}}
 		>
 			{children}
-		</AuthContext>
+		</AuthContext.Provider>
 	);
 }

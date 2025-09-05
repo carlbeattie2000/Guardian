@@ -1,18 +1,18 @@
+import { useRouter } from "expo-router";
+import { apiService } from "~/services/apiService";
+import { use, useContext } from "react";
+
 import { View } from "react-native";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
 import { AlertTriangle } from "~/lib/icons/AlertTriangle";
-import { useRouter } from "expo-router";
-import { apiService } from "~/services/apiService";
-import { navigate } from "expo-router/build/global-state/routing";
-import { use } from "react";
-import { AuthContext } from "~/contexts/Auth";
 import { Separator } from "~/components/ui/separator";
+import { AuthContext } from "~/contexts/Auth";
 
 export default function Screen() {
 	const router = useRouter();
-	const { checkAuthed, isOfficer } = use(AuthContext);
+	const { checkAuthed, isOfficer } = useContext(AuthContext);
 
 	return (
 		<View className="flex-1 items-center gap-5 p-6 bg-secondary/30">
