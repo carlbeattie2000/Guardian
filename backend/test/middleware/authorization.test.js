@@ -115,7 +115,7 @@ describe("AuthorizationMiddleware", () => {
     const accessToken = jwt.sign({ sub: 1 }, process.env.JWT_ACCESS_SECRET);
     const refreshToken = jwt.sign({ sub: 1 }, process.env.JWT_REFRESH_SECRET);
 
-    req.setHeader("Authorization", "Bearer " + accessToken);
+    req.setHeader("authorization", "Bearer " + accessToken);
     req.setHeader("refresh-token", refreshToken);
 
     const jwtPayload = {
