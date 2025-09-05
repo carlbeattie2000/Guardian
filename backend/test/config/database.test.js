@@ -8,16 +8,12 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 
 const sqlite3 = require("sqlite3");
+const nodeEnvOrignal = process.env.NODE_ENV;
+process.env.NODE_ENV = "test";
+
 const { run, all, withTransaction, get } = require("../../src/config/database");
 
 describe("database config", async () => {
-  let nodeEnvOrignal;
-
-  before(() => {
-    nodeEnvOrignal = process.env.NODE_ENV;
-    process.env.NODE_ENV = "test";
-  });
-
   beforeEach(async () => {
     await run("DROP TABLE IF EXISTS books;");
     await run("DROP TABLE IF EXISTS authors;");
@@ -109,6 +105,37 @@ describe("database config", async () => {
       expect(books).to.be.lengthOf(1);
     });
 
+    it("should commit multiple transactions", async () => {
+      await expect(
+        withTransaction(async () => {
+          await run("INSERT INTO authors (name) VALUES (?);", "Mike");
+          await run("INSERT INTO books (title, author_id) VALUES (?, ?);", [
+            "Scary Story 01",
+            1,
+          ]);
+        }),
+      ).to.not.be.rejected;
+
+      await expect(
+        withTransaction(async () => {
+          await run("INSERT INTO authors (name) VALUES (?);", "John");
+          await run("INSERT INTO books (title, author_id) VALUES (?, ?);", [
+            "Scary Story 02",
+            2,
+          ]);
+        }),
+      ).to.not.be.rejected;
+
+      const authors = await all("SELECT * FROM authors;");
+      const books = await all("SELECT * FROM books;");
+
+      expect(Array.isArray(authors)).to.be.true;
+      expect(Array.isArray(books)).to.be.true;
+
+      expect(authors).to.be.lengthOf(2);
+      expect(books).to.be.lengthOf(2);
+    });
+
     it("should rollback when a statment throws", async () => {
       const runSpy = sinon.spy(sqlite3.Database.prototype, "run");
 
@@ -129,6 +156,34 @@ describe("database config", async () => {
       expect(books).to.be.lengthOf(0);
 
       expect(runSpy.getCall(3)).to.have.been.calledWith("ROLLBACK");
+    });
+
+    it("should commit transaction after previous transaction failed", async () => {
+      try {
+        await withTransaction(async () => {
+          await run("INSERT INTO authors (name) VALUES (?);", "John");
+          await run("INSERT INTO books");
+        });
+      } catch {}
+
+      await expect(
+        withTransaction(async () => {
+          await run("INSERT INTO authors (name) VALUES (?);", "John");
+          await run("INSERT INTO books (title, author_id) VALUES (?, ?);", [
+            "Scary Story 01",
+            1,
+          ]);
+        }),
+      ).to.not.be.rejected;
+
+      const authors = await all("SELECT * FROM authors;");
+      const books = await all("SELECT * FROM books;");
+
+      expect(Array.isArray(authors)).to.be.true;
+      expect(Array.isArray(books)).to.be.true;
+
+      expect(authors).to.be.lengthOf(1);
+      expect(books).to.be.lengthOf(1);
     });
 
     it("should propagate errors", async () => {

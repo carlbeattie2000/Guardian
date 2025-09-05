@@ -23,18 +23,23 @@ const all = promisify(database.all.bind(database));
 let transactionQueue = Promise.resolve();
 
 const withTransaction = async (callback) => {
-  transactionQueue = transactionQueue.then(async () => {
-    await run("BEGIN TRANSACTION");
+  transactionQueue = transactionQueue
+    .then(async () => {
+      await run("BEGIN TRANSACTION");
 
-    try {
-      const result = await callback();
-      await run("COMMIT");
-      return result;
-    } catch (error) {
-      await run("ROLLBACK");
+      try {
+        const result = await callback();
+        await run("COMMIT");
+        return result;
+      } catch (error) {
+        await run("ROLLBACK");
+        throw error;
+      }
+    })
+    .catch(async (error) => {
+      transactionQueue = Promise.resolve();
       throw error;
-    }
-  });
+    });
 
   return transactionQueue;
 };
