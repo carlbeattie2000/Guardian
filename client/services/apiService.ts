@@ -29,4 +29,3 @@ apiService.interceptors.request.use(async function (config) {
 });
 
 export { apiService, BASE_URL };
-

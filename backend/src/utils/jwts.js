@@ -42,7 +42,7 @@ function tryGetTokensFromAuthorisationHeader(req, type) {
   }
 
   let access = null;
-  const accessTokenHeader = req.headers.Authorization;
+  const accessTokenHeader = req.headers.authorization;
   if (accessTokenHeader && accessTokenHeader.startsWith("Bearer ")) {
     access = accessTokenHeader.substring(7);
   }
