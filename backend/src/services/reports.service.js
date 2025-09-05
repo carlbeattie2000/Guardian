@@ -54,6 +54,10 @@ class ReportsService {
    * @return {Promise<ReportModel | null>}
    */
   async getById(id) {
+    if (!id) {
+      throw new HttpError({ code: 400 });
+    }
+
     const report = await ReportModel.findById(id);
 
     if (report === null) {
@@ -95,6 +99,8 @@ class ReportsService {
     if (report && report.user_id === user_id) {
       return true;
     }
+
+    return false;
   }
 
   /**
