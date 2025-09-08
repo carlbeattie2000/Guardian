@@ -1,6 +1,4 @@
 const chai = require("chai");
-const multer = require("multer");
-const sinon = require("sinon");
 const {
   imageUpload,
   generateFileName,
@@ -29,9 +27,6 @@ describe("MulterConfig", () => {
   describe("fileFilter", () => {
     it("should return true for valid file mimetypes", (done) => {
       const mockFile = { mimetype: "image/jpeg" };
-      const invalidMockFile = {
-        mimetype: "image/webp",
-      };
 
       fileFilter({}, mockFile, (err, accepted) => {
         expect(err).to.be.null;
