@@ -1,5 +1,5 @@
 const filesService = require("../services/files.service");
-const HttpResponse = require("../utils/http-response-helper");
+const { resolve } = require("node:path");
 
 class FilesController {
   /**
@@ -9,7 +9,7 @@ class FilesController {
   async get(req, res) {
     const { token } = req.query;
     const filePath = filesService.getFileNameFromToken(token);
-    res.sendFile(filePath);
+    res.sendFile(resolve(filePath));
   }
 }
 

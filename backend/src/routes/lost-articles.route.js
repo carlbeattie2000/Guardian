@@ -1,10 +1,9 @@
 const { Router } = require("express");
-const multer = require("multer");
 const OfficerAuthenticationMiddleware = require("../middleware/officer-authorization.middleware");
-
 const lostArticlesControler = require("../controllers/lost-articles.controller");
-const upload = multer();
+const { imageUpload } = require("src/config/multer.config");
 
+const upload = imageUpload();
 const lostArticlesRouter = Router();
 
 lostArticlesRouter.post(

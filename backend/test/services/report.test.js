@@ -3,7 +3,6 @@ const chai = require("chai");
 const sinon = require("sinon");
 const setupBaseModelStubs = require("../testing-utils/baseModelMocks");
 const { sizes, createMockFilesArray } = require("../testing-utils/files");
-const FileStorage = require("../../src/lib/file-storage");
 const ReportImagesModel = require("../../src/models/report-images.model");
 const ReportModel = require("../../src/models/report.model");
 const personalDetailsService = require("../../src/services/personal-details.service");
@@ -80,31 +79,7 @@ describe("ReportsService", () => {
       expect(baseModelStubs.save).to.have.been.calledOnce;
     });
 
-    it("should call FileStorage.saveImage for the file", async () => {
-      const fileStorageSaveStub = sinon.stub(FileStorage, "saveImage");
-      await reportsService.create(genImg(2), reportDetails, 1);
-
-      expect(fileStorageSaveStub).to.have.been.calledOnce;
-      expect(baseModelStubs.save).to.have.been.callCount(2);
-    });
-
-    it("should call FileStorage.saveImage for each file", async () => {
-      const fileStorageSaveStub = sinon.stub(FileStorage, "saveImage");
-      await reportsService.create(genImg(2, 1.2, 3), reportDetails, 1);
-
-      expect(fileStorageSaveStub).to.have.been.callCount(3);
-      expect(baseModelStubs.save).to.have.been.callCount(4);
-    });
-
-    it("should propagate FileStorage errors", async () => {
-      sinon.stub(FileStorage, "saveImage").rejects();
-
-      await expect(reportsService.create(genImg(15), reportDetails, 1)).to.be
-        .rejected;
-    });
-
     it("should propagate BaseModel.save errors", async () => {
-      sinon.stub(FileStorage, "saveImage");
       baseModelStubs.save.rejects();
 
       await expect(reportsService.create(genImg(2), reportDetails, 1)).to.be

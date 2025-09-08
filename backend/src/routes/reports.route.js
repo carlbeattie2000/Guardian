@@ -1,13 +1,10 @@
 const { Router } = require("express");
-const FileStorage = require("../lib/file-storage");
 const OfficerAuthenticationMiddleware = require("../middleware/officer-authorization.middleware");
-
-const multer = require("multer");
 const reportsController = require("../controllers/reports.controller");
-const HttpResponse = require("../utils/http-response-helper");
+const { imageUpload } = require("src/config/multer.config");
 
+const upload = imageUpload();
 const reportsRouter = Router();
-const upload = multer();
 
 reportsRouter.get("/", reportsController.getAll);
 reportsRouter.get("/:id", reportsController.getById);

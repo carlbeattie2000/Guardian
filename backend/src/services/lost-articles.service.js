@@ -1,6 +1,5 @@
 const z = require("zod");
 const LostItemModel = require("../models/lost-item.model");
-const FileStorage = require("../lib/file-storage");
 const ReportImagesModel = require("../models/report-images.model");
 const personalDetailsService = require("./personal-details.service");
 
@@ -32,9 +31,7 @@ class LostArticleService {
 
     if (Array.isArray(files) && files.length > 0) {
       for (const file of files) {
-        const fileName = await FileStorage.saveImage(file);
-
-        new ReportImagesModel(lostArticle.id, fileName).save();
+        new ReportImagesModel(lostArticle.id, file.path).save();
       }
     }
 

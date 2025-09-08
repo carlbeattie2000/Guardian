@@ -1,6 +1,5 @@
 const z = require("zod");
 const ReportModel = require("../models/report.model");
-const FileStorage = require("../lib/file-storage");
 const ReportImagesModel = require("../models/report-images.model");
 const UserModel = require("../models/user.model");
 const personalDetailsService = require("./personal-details.service");
@@ -23,6 +22,7 @@ class ReportsService {
   });
 
   /**
+   * @param {File[]} files
    * @returns {Promise<ReportModel>}
    */
   async create(files, body, user_id) {
@@ -42,9 +42,7 @@ class ReportsService {
 
       if (Array.isArray(files) && files.length > 0) {
         for (const file of files) {
-          const fileName = await FileStorage.saveImage(file);
-
-          new ReportImagesModel(report.id, fileName).save();
+          new ReportImagesModel(report.id, file.path).save();
         }
       }
 
@@ -78,9 +76,7 @@ class ReportsService {
 
     if (imagePaths && Array.isArray(imagePaths)) {
       report.images = imagePaths.map((image) => {
-        return filesService.generateFileToken(
-          FileStorage.getImagePath(image.image_path),
-        );
+        return filesService.generateFileToken(image.image_path);
       });
     }
 
