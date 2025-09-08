@@ -191,6 +191,23 @@ class ExpressMockResponse {
       return {};
     }
   }
+
+  /**
+   * @param {boolean} [error=false]
+   * @param {{}} [data={}]
+   * @param {string} [message=""]
+   */
+  static createJsonResponseBody(error = false, data = {}, message = "") {
+    try {
+      return JSON.stringify({
+        status: error ? "error" : "success",
+        data,
+        message,
+      });
+    } catch {
+      return "";
+    }
+  }
 }
 
 module.exports = ExpressMockResponse;

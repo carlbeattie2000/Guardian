@@ -42,9 +42,7 @@ class ReportsController {
    * @param {import('express').Response} res
    */
   async getAll(req, res) {
-    const reports = await reportsService.getAll(
-      req.is_officer ? null : req.user,
-    );
+    const reports = await reportsService.getAll(req.officer ? null : req.user);
     new HttpResponse(200, reports).json(res);
   }
 
@@ -74,7 +72,7 @@ class ReportsController {
    */
   async updateStatus(req, res) {
     const { id } = req.params;
-    if (!req.is_officer) {
+    if (!req.officer) {
       throw new HttpError({ code: 401 });
     }
     const report = await reportsService.updateStatus(id, req.body);
@@ -87,11 +85,11 @@ class ReportsController {
    */
   async delete(req, res) {
     const { id } = req.params;
-    if (!req.is_officer) {
+    if (!req.officer) {
       throw new HttpError({ code: 401 });
     }
     await reportsService.delete(id);
-    return new HttpResponse(204).json(res);
+    return new HttpResponse(204).sendStatus(res);
   }
 }
 

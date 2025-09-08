@@ -19,7 +19,6 @@ const {
   REFRESH_TOKEN_WINDOW_SECONDS,
   ACCESS_TOKEN_WINDOW_SECONDS,
 } = require("../../src/constants/jwts");
-const BaseModel = require("../../src/models/base.model");
 
 const sinonChai = require("sinon-chai").default;
 const chaiAsPromised = require("chai-as-promised").default;
