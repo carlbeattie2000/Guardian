@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "test": "nyc mocha ./test/**/*.js",
+    "dev": "NODE_PATH=. nodemon src/server.js",
+    "test": "NODE_PATH=. nyc mocha ./test/**/*.js",
     "coverage": "nyc report --reporter=lcov"
   },
   "keywords": [],
