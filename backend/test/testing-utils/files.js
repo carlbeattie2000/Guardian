@@ -18,7 +18,7 @@ function createMockFilesArray({
   count = 1,
 }) {
   return new Array(count).fill(undefined).map(() => {
-    const file = createMockFile(size, fieldname, mimetype);
+    const file = createMockFile({ size, fieldname, mimetype });
     size = size * multiplySizeBy;
     return file;
   });

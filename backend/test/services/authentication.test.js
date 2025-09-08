@@ -24,7 +24,6 @@ describe("AuthenticationService", function () {
   let modelFindAllByStub;
   let modelDeleteStub;
   let userIsBlockedStub;
-  let clock;
 
   before(() => {
     process.env.JWT_ACCESS_SECRET = "fakesecret";
@@ -47,7 +46,7 @@ describe("AuthenticationService", function () {
         return this;
       });
     userIsBlockedStub = sinon.stub(authenticationService, "userIsLoginBlocked");
-    clock = sinon.useFakeTimers();
+    sinon.useFakeTimers();
   });
 
   afterEach(() => {

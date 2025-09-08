@@ -68,18 +68,11 @@ describe("ReportsController", () => {
         latitude: 0,
         longitude: 0,
       };
-      const report = new ReportModel(
-        reqBody.description,
-        reqBody.longitude,
-        reqBody.latitude,
-        1,
-        1,
-      );
 
       req.params = reqBody;
       req.user = 1;
 
-      const createReportStub = sinon.stub(reportsService, "create").rejects();
+      sinon.stub(reportsService, "create").rejects();
 
       await expect(reportsController.create(req, res)).to.be.rejected;
     });
@@ -110,7 +103,6 @@ describe("ReportsController", () => {
     it("should return a 401 response when user can't view report", async () => {
       const report = new ReportModel("description", 0, 0, 1, 1);
       const resPromise = Promise.resolve(report);
-      const resBody = ExpressMockResponse.createJsonResponseBody(false, report);
 
       req.params = {
         id: 1,
@@ -133,7 +125,7 @@ describe("ReportsController", () => {
         id: 1,
       };
 
-      const getReportStub = sinon.stub(reportsService, "getById").rejects();
+      sinon.stub(reportsService, "getById").rejects();
 
       await expect(reportsController.getById(req, res)).to.be.rejected;
     });
@@ -185,12 +177,6 @@ describe("ReportsController", () => {
     });
 
     it("should propagate errors", async () => {
-      const reports = [
-        new ReportModel("example report 1", 0, 0, 1, 1),
-        new ReportModel("example report 2", 1, 1, 1, 0.1),
-      ];
-      const resPromise = Promise.resolve(reports);
-
       req.user = 1;
       req.officer = 0;
 
@@ -247,7 +233,6 @@ describe("ReportsController", () => {
       req.params = {
         id: 1,
       };
-      const resBody = ExpressMockResponse.createJsonResponseBody(true);
 
       sinon.stub(reportsService, "canModify").returns(Promise.resolve(false));
 
@@ -298,7 +283,7 @@ describe("ReportsController", () => {
         .stub(reportsService, "updateStatus")
         .returns(resPromise);
 
-      const updatedStatus = await reportsController.updateStatus(req, res);
+      await reportsController.updateStatus(req, res);
 
       expect(updateStatusStub)
         .to.be.calledOnceWithExactly(1, req.body)
@@ -325,8 +310,6 @@ describe("ReportsController", () => {
 
     it("should propagate errors", async () => {
       it("should throw if user is not a officer", async () => {
-        const resPromise = Promise.resolve(null);
-
         req.params = {
           id: 1,
         };

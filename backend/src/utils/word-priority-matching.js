@@ -61,7 +61,7 @@ function getWordPriority(lookingForWord, word) {
  * @returns {string}
  */
 function removeSpeicalCharactersFromString(string) {
-  const replaceRegex = /[,\.?!@£$%^&*()-=_+[\[\]{};:'"\\|,<>\/]/gim;
+  const replaceRegex = /[,\.?!@£$%^&*()-=_+[\]{};:'"\\|,<>/]/gim;
   return string.replaceAll(replaceRegex, " ");
 }
 

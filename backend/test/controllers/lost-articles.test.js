@@ -58,8 +58,6 @@ describe("LostArticlesController", () => {
     });
 
     it("should propagate errors", async () => {
-      const resPromise = Promise.resolve(null);
-
       req.body = {
         name: "",
         description: "",

@@ -19,15 +19,19 @@ function tryGetTokensFromCookie(req, type) {
   const accessToken = req.cookies.accessToken;
   const refreshToken = req.cookies.refreshToken;
 
-  return type === "all"
-    ? !accessToken && !refreshToken
-      ? null
-      : { access: accessToken, refresh: refreshToken }
-    : type === "access" && accessToken
-      ? { access: accessToken, refresh: null }
-      : refreshToken
-        ? { access: null, refresh: refreshToken }
-        : null;
+  switch (type) {
+    case "access":
+      if (!accessToken) return null;
+      return { access: accessToken, refresh: null };
+    case "refresh":
+      if (!refreshToken) return null;
+      return { access: null, refresh: refreshToken };
+    case "all":
+      if (!accessToken && !refreshToken) return null;
+      return { access: accessToken, refresh: refreshToken };
+    default:
+      return null;
+  }
 }
 
 /**
@@ -43,7 +47,7 @@ function tryGetTokensFromAuthorisationHeader(req, type) {
 
   let access = null;
   const accessTokenHeader = req.headers.authorization;
-  if (accessTokenHeader && accessTokenHeader.startsWith("Bearer ")) {
+  if (accessTokenHeader?.startsWith("Bearer ")) {
     access = accessTokenHeader.substring(7);
   }
 

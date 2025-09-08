@@ -92,9 +92,7 @@ describe("AppError", () => {
       const error = new Error("Operation Error");
 
       async function throwingFunction() {
-        return new Promise((_, reject) => {
-          reject(error);
-        });
+        return Promise.reject(error);
       }
 
       await AppError.try(throwingFunction);

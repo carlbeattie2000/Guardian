@@ -99,11 +99,7 @@ class ReportsService {
 
     const report = await ReportModel.findById(id);
 
-    if (report && report.user_id === user_id) {
-      return true;
-    }
-
-    return false;
+    return report && report.user_id === user_id;
   }
 
   /**
