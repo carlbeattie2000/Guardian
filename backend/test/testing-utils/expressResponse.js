@@ -1,3 +1,5 @@
+const { isAbsolute: pathIsAbsolute } = require("node:path");
+
 const cookie = {};
 
 function serializeCookie(name, value, options = {}) {
@@ -43,6 +45,7 @@ cookie.serialize = serializeCookie;
  * @property {Function} type
  * @property {Function} status
  * @property {Function} sendStatus
+ * @property {Function} sendFile
  * @property {Function} json
  * @property {Function} cookie
  * @property {Function} clearCookie
@@ -108,6 +111,30 @@ class ExpressMockResponse {
         this.status(code);
         this.type("txt");
         return this.send(body);
+      },
+      sendFile(path, options, _) {
+        var opts = options || {};
+
+        if (!path) {
+          throw new TypeError("path argument is required to res.sendFile");
+        }
+
+        if (typeof path !== "string") {
+          throw new TypeError("path must be a string to res.sendFile");
+        }
+
+        if (typeof options === "function") {
+          done = options;
+          opts = {};
+        }
+
+        if (!opts.root && !pathIsAbsolute(path)) {
+          throw new TypeError(
+            "path must be absolute or specify root to res.sendFile",
+          );
+        }
+
+        return this.send(Buffer.alloc(10));
       },
       json(obj) {
         this.type("json");
