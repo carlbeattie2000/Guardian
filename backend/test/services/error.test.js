@@ -61,13 +61,21 @@ describe("ErrorService", () => {
 
   describe("handleZodError", () => {
     it("given a ZodError, transform it into a HttpError", () => {
-      const zodErr = new ZodError();
+      const zodErr = new ZodError([
+        {
+          expected: "string",
+          code: "invalid_type",
+          path: ["username"],
+          message: "Invalid input: expected string, received number",
+        },
+      ]);
 
       /** @type {HttpError} */
       const httpError = errorService.handleZodError(zodErr);
 
       expect(httpError).to.be.instanceOf(HttpError);
       expect(httpError.code).to.be.equal(400);
+      expect(httpError?.data?.properties).to.have.property("username");
     });
   });
 

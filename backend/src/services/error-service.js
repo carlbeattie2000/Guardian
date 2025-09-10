@@ -56,7 +56,7 @@ class ErrorService {
    * @param {Error} err
    */
   handleZodError(err) {
-    return new HttpError({ code: 400, data: err.issues }, err);
+    return new HttpError({ code: 400, data: z.treeifyError(err) }, err);
   }
 
   /**
