@@ -1,17 +1,12 @@
-const yaml = require('yamljs');
-const swaggerJsdoc = require("swagger-jsdoc");
+const yaml = require("yamljs");
 const swaggerUi = require("swagger-ui-express");
 
-const swaggerDocument = yaml.load('docs/openapi.yaml');
+const swaggerDocument = yaml.load("docs/openapi.yaml");
 
 function registerSwaggerForDevEnv(app) {
   if (process.env.NODE_ENV === "DEVELOPMENT") {
-    app.use(
-      "/api-docs",
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerDocument)
-    );
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 }
 
-module.exports = registerSwaggerForDevEnv
+module.exports = registerSwaggerForDevEnv;

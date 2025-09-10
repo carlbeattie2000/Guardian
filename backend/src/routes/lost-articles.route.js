@@ -13,7 +13,7 @@ lostArticlesRouter.post(
 );
 
 lostArticlesRouter.post(
-  "/add-personal-details/:id",
+  "/personal-details/:id",
   lostArticlesControler.createPersonalDetails,
 );
 

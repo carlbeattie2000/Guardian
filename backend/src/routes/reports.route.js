@@ -10,8 +10,8 @@ reportsRouter.get("/", reportsController.getAll);
 reportsRouter.get("/:id", reportsController.getById);
 
 reportsRouter.post("/", upload.array("photos", 12), reportsController.create);
-reportsRouter.post("/add-witness/:id", reportsController.createWitness);
-reportsRouter.post(
+reportsRouter.post("/witness/:id", reportsController.createWitness);
+reportsRouter.patch(
   "/update-status/:id",
   OfficerAuthenticationMiddleware,
   reportsController.updateStatus,
