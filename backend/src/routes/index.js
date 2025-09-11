@@ -19,6 +19,6 @@ router.use(
 );
 router.use("/api/v1/map-box", AuthorisationMiddleware, mapBoxRouter);
 router.use("/api/v1/files", fileRouter);
-router.use("/api/v1/dialogflow", dialogflowRouter);
+router.use("/api/v1/dialogflow", AuthorisationMiddleware, dialogflowRouter);
 
 module.exports = router;

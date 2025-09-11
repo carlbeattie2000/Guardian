@@ -219,7 +219,6 @@ paths:
         Gets the users profile
       security:
         - bearerAuth: []
-        - refreshToken: []
       responses:
         "200":
           description: Returned user profile
@@ -250,7 +249,6 @@ paths:
         Checks if the user has a valid access token
       security:
         - bearerAuth: []
-        - refreshToken: []
       responses:
         "204":
           description: User is authed
@@ -278,7 +276,6 @@ paths:
         If user is a citizen, only returns their own reports
       security:
         - bearerAuth: []
-        - refreshToken: []
       responses:
         "200":
           description: Returns all reports belonging to user or all if user is officer
@@ -308,7 +305,6 @@ paths:
         Creates a new report
       security:
         - bearerAuth: []
-        - refreshToken: []
       requestBody:
         required: true
         content:
@@ -360,7 +356,6 @@ paths:
         Get the report by it's ID
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: reportId
@@ -400,7 +395,6 @@ paths:
         Add a witness to a report
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: reportId
@@ -456,7 +450,6 @@ paths:
         Delete a witness from a report
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: reportId
@@ -497,7 +490,6 @@ paths:
         Allows officers to update a reports status
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: reportId
@@ -545,7 +537,6 @@ paths:
         Deletes a report
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: reportId
@@ -580,7 +571,6 @@ paths:
         Gets the MapBox Token
       security:
         - bearerAuth: []
-        - refreshToken: []
       responses:
         "200":
           description: Returns MapBox token
@@ -611,7 +601,6 @@ paths:
         Creates a lost article
       security:
         - bearerAuth: []
-        - refreshToken: []
       requestBody:
         required: true
         content:
@@ -645,6 +634,8 @@ paths:
       operationId: getLostArticle
       description: >
         Gets a lost article report
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: lostArticleId
@@ -681,7 +672,6 @@ paths:
         Deletes the lost article report
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: lostArticleId
@@ -715,7 +705,6 @@ paths:
         Adds personal details to a lost article for later identification
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: lostArticleId
@@ -759,7 +748,6 @@ paths:
         Delete the personal details from a lost article report
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: lostArticleId
@@ -800,7 +788,6 @@ paths:
         If user is a citizen, returns their own lost article reports
       security:
         - bearerAuth: []
-        - refreshToken: []
       responses:
         "200":
           description: Returns all lost articles
@@ -831,7 +818,6 @@ paths:
         Gets a file using a provided file access token
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: query
           name: token
@@ -870,7 +856,6 @@ paths:
         Gets all alerts
       security:
         - bearerAuth: []
-        - refreshToken: []
       responses:
         "200":
           description: Returns all active alerts
@@ -899,7 +884,6 @@ paths:
         Allows a officer to create a new alert
       security:
         - bearerAuth: []
-        - refreshToken: []
       requestBody:
         required: true
         content:
@@ -934,6 +918,8 @@ paths:
       operationId: getAlertById
       description: >
         Gets a alert by id
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: alertId
@@ -970,7 +956,6 @@ paths:
         Allows a officer to delete a alert
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: alertId
@@ -1004,7 +989,6 @@ paths:
         Create a note for a resource
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: resourceId
@@ -1046,7 +1030,6 @@ paths:
         Get all notes for a resource
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: resourceId
@@ -1084,7 +1067,6 @@ paths:
         Get a note by ID
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: noteId
@@ -1120,7 +1102,6 @@ paths:
         Update a note by it's ID
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: noteId
@@ -1163,7 +1144,6 @@ paths:
         Delete a note by ID
       security:
         - bearerAuth: []
-        - refreshToken: []
       parameters:
         - in: path
           name: noteId
@@ -1196,7 +1176,6 @@ paths:
         Allows the user to send a chat message to the chatbot
       security:
         - bearerAuth: []
-        - refreshToken: []
       requestBody:
         required: true
         content:
