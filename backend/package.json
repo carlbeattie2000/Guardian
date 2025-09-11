@@ -5,13 +5,14 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "NODE_PATH=. nodemon src/server.js",
-    "test": "NODE_PATH=. NODE_ENV=test nyc mocha ./test/**/*.js",
+    "test": "NODE_PATH=. NODE_ENV=test nyc mocha ./test/setup.js ./test/**/*.js",
     "coverage": "nyc report --reporter=lcov"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/dialogflow": "^7.2.0",
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",

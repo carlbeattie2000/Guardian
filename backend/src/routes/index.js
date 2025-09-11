@@ -6,6 +6,7 @@ const lostArticlesRouter = require("./lost-articles.route");
 const authenticationRouter = require("./authentication.route");
 const mapBoxRouter = require("./map-box.route");
 const fileRouter = require("./files.route");
+const dialogflowRouter = require("./dialogflow.route");
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use(
 );
 router.use("/api/v1/map-box", AuthorisationMiddleware, mapBoxRouter);
 router.use("/api/v1/files", fileRouter);
+router.use("/api/v1/dialogflow", dialogflowRouter);
 
 module.exports = router;

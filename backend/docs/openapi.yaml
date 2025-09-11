@@ -25,6 +25,8 @@ tags:
     description: Alerts endpoints
   - name: Notes
     description: Notes endpoints
+  - name: Dialogflow
+    description: Dialogflow endpoints
 
 paths:
   /auth/login:
@@ -1184,7 +1186,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalErrorResponse"
-
+  /dialogflow/chat:
+    post:
+      tags:
+        - Dialogflow
+      summary: Send a chat to dialogflow
+      operationId: chatBotSendMessage
+      description: >
+        Allows the user to send a chat message to the chatbot
+      security:
+        - bearerAuth: []
+        - refreshToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Dialogflow"
+      responses:
+        "200":
+          description: Returns the dialogflow response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DialogflowResponse"
+        "401":
+          description: Unauthorized error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalErrorResponse"
 components:
   securitySchemes:
     bearerAuth:
@@ -1230,6 +1267,39 @@ components:
         refreshToken:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    Dialogflow:
+      type: object
+      properties:
+        text:
+          type: string
+          example: "How do I add a report?"
+        languageCode:
+          type: string
+          example: "en"
+        sessionId:
+          type: string
+          example: 162e1d46-e59c-4d83-a556-5a16c1876d1c
+      required:
+        - text
+        - languageCode
+    DialogflowChat:
+      type: object
+      properties:
+        intent:
+          type: string
+          example: "FAQ - Attach Photos"
+        confidence:
+          type: number
+          example: 0.7
+        text:
+          type: string
+          example: 'To attach a photo, open the "Report Incident" form and select "Add Photo".'
+        sessionId:
+          type: string
+          example: dfe27943-32bd-4379-97b6-79b5b4fb8fba
+      required:
+        - text
+        - languageCode
     MapBoxToken:
       type: object
       properties:
@@ -1528,7 +1598,13 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Note"
-
+    DialogflowResponse:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/DialogflowChat"
     ZodErrorResponse:
       allOf:
         - $ref: "#/components/schemas/Response"
