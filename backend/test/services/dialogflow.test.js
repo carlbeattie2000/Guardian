@@ -9,6 +9,10 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 
 describe("DialogflowService", () => {
+  before(() => {
+    process.env.DF_PROJECT_ID = "example_project";
+  });
+
   describe("chat", () => {
     it("should send a chat to dialogflow SDK", async () => {
       const dialogflowService = require("src/services/dialogflow.service");
