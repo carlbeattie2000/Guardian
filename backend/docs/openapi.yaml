@@ -856,6 +856,22 @@ paths:
         Gets all alerts
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+          description: >
+            This is the offset from the limit.
+
+            When the limit is `20` and the page is `1` it will
+            fetch results starting at row `21` upto `40`.
+            <br>
+            To calculate the offset we do `LIMIT * PAGE = 20 * 1 = 20`
+            <br>
+            <br>
+            [More Info](https://www.sqlitetutorial.net/sqlite-limit/)
       responses:
         "200":
           description: Returns all active alerts

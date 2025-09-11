@@ -165,8 +165,8 @@ class BaseModel {
    * @param {number} limit
    * @returns {Promise<T[] | null>}
    */
-  static async all(limit, orderBy) {
-    const query = `SELECT * FROM ${this.table} ${orderBy} LIMIT ?`;
+  static async all({ limit = 100, page = 0, orderBy }) {
+    const query = `SELECT * FROM ${this.table} ${orderBy} LIMIT ${limit * page}, ?`;
     const instanceCore = new this();
     const keys = Object.keys(instanceCore);
     const results = await all(query, limit);
