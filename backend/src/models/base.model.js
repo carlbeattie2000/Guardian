@@ -245,6 +245,14 @@ class BaseModel {
 
     return await get(sql);
   }
+
+  static async runRaw(sql, values = null) {
+    if (values) {
+      return await run(sql, values);
+    }
+
+    return await run(sql);
+  }
 }
 
 module.exports = BaseModel;

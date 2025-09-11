@@ -11,6 +11,7 @@ coverage/
 *.env
 public/
 storage/
+uploads/
 *.log
 
 # Expo

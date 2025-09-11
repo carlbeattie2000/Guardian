@@ -46,6 +46,8 @@ class AuthenticationService {
       throw new HttpError({ code: 400, clientMessage: "Bad Login Request" });
     }
 
+    await this.updateLastSeen(user.id);
+
     return user;
   }
 
@@ -304,6 +306,17 @@ class AuthenticationService {
     }
 
     return loginAttempts.attempts >= process.env.ACCOUNT_LOCK_ATTEMPTS;
+  }
+
+  /**
+   * @param {number} id
+   */
+  async updateLastSeen(id) {
+    /** @type {UserModel} */
+    await UserModel.runRaw(
+      "UPDATE users SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?",
+      id,
+    );
   }
 }
 
