@@ -5,3 +5,5 @@ MAP_BOX_TOKEN=xxxxxxxxxxxxxxxx
 ACCOUNT_LOCKOUT_SECONDS=600
 ACCOUNT_LOCKOUT_ATTEMPTS=5
 DUMMY_HASH=$argon2id$v=19$m=6.................
+DF_PROJECT_ID=project_id
+GOOGLE_APPLICATION_CREDENTIALS=./path/to/application_creds.json
