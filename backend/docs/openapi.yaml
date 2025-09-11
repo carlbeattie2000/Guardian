@@ -1330,6 +1330,15 @@ components:
         priority:
           type: number
           example: 0.4
+        witnesses:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalDetails"
+        images:
+          type: array
+          items:
+            type: string
+            example: "44f7d9e1-0e90-460c-8671-d9ad8479dd0c"
         created_at:
           type: string
           format: date
@@ -1375,6 +1384,11 @@ components:
         model:
           type: string
           example: "PHONE_X44"
+        personal_details:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalDetails"
+
         created_at:
           type: string
           format: date

@@ -67,7 +67,7 @@ class ReportsService {
 
     const personalDetails = await personalDetailsService.findByReportId(id);
 
-    report.personal_details = personalDetails;
+    report.witnesses = personalDetails;
 
     const imagePaths = await ReportImagesModel.findAllBy(
       "report_id",

@@ -115,8 +115,8 @@ describe("ReportsService", () => {
       const report = await reportsService.getById(1);
 
       expect(findPersonalDetailsStub).to.have.been.calledOnce;
-      expect(Array.isArray(report.personal_details)).to.be.true;
-      expect(report.personal_details).to.have.lengthOf(1);
+      expect(Array.isArray(report.witnesses)).to.be.true;
+      expect(report.witnesses).to.have.lengthOf(1);
     });
 
     it("should return report model with attached image", async () => {
