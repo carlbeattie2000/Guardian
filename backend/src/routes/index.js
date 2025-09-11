@@ -8,6 +8,7 @@ const mapBoxRouter = require("./map-box.route");
 const fileRouter = require("./files.route");
 const alertsRouter = require("./alerts.route");
 const dialogflowRouter = require("./dialogflow.route");
+const notesRouter = require("./notes.route");
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use(
 router.use("/api/v1/map-box", AuthorisationMiddleware, mapBoxRouter);
 router.use("/api/v1/files", fileRouter);
 router.use("/api/v1/alerts", AuthorisationMiddleware, alertsRouter);
+router.use("/api/v1/notes", AuthorisationMiddleware, notesRouter);
 router.use("/api/v1/dialogflow", AuthorisationMiddleware, dialogflowRouter);
 
 module.exports = router;

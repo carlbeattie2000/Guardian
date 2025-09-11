@@ -229,6 +229,22 @@ class BaseModel {
 
     return instanceObjects;
   }
+
+  static async allRaw(sql, values = null) {
+    if (values) {
+      return await all(sql, values);
+    }
+
+    return await all(sql);
+  }
+
+  static async getRaw(sql, values = null) {
+    if (values) {
+      return await get(sql, values);
+    }
+
+    return await get(sql);
+  }
 }
 
 module.exports = BaseModel;

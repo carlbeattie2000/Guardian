@@ -1053,6 +1053,13 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the resource
+        - in: query
+          name: resourceType
+          schema:
+            type: string
+            example: report
+          required: true
+          description: String value that represents either `report` or `lost-article`
       responses:
         "200":
           description: Returns all the notes for a resource
@@ -1465,6 +1472,9 @@ components:
         resource_id:
           type: integer
           example: 1
+        resource_type:
+          type: string
+          example: report
         created_at:
           type: string
           format: date

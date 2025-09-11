@@ -13,7 +13,7 @@ chai.use(chaiAsPromised);
 
 const { expect } = chai;
 
-describe("Service", function () {
+describe("AlertsService", function () {
   /** @type {import("../testing-utils/baseModelMocks").BaseModelStubs} */
   let baseModelStubs;
 
@@ -128,7 +128,7 @@ describe("Service", function () {
       expect(deleted).to.be.true;
     });
 
-    it("should return false if report not found", async () => {
+    it("should return false if alert not found", async () => {
       baseModelStubs.deleteWhere.resolves({ lastID: 0, changes: 0 });
 
       const deleted = await alertsService.deleteById(1);
