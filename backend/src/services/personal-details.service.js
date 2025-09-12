@@ -35,6 +35,32 @@ class PersonalDetailsService {
   }
 
   /**
+   *  @param {number} reportId
+   *  @param {number} witnessId
+   *  @returns {Promise<boolean>}
+   */
+  async deleteReportWitness(reportId, witnessId) {
+    if (
+      !reportId ||
+      Number.isNaN(reportId) ||
+      !witnessId ||
+      Number.isNaN(witnessId)
+    ) {
+      throw new HttpError({
+        code: 400,
+        clientMessage: "ReportId and WitnessId must be included",
+      });
+    }
+
+    const result = await PersonalDetailsModel.deleteWhere(
+      ["id", "report_id"],
+      [witnessId, reportId],
+    );
+
+    return result?.changes !== 0;
+  }
+
+  /**
    * @returns {Promise<PersonalDetailsModel>}
    */
   async createLostArticlePersonalDetails(body, lost_article_id) {

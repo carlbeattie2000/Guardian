@@ -264,6 +264,60 @@ describe("ReportsController", () => {
     });
   });
 
+  describe("deleteWitness", () => {
+    it("should delete a witness from a report", async () => {
+      req.params = {
+        reportId: 1,
+        witnessId: 4,
+      };
+      const deletedWitnessPromise = Promise.resolve(true);
+
+      const deleteWitnessStub = sinon
+        .stub(personalDetailsService, "deleteReportWitness")
+        .returns(deletedWitnessPromise);
+
+      await reportsController.deleteWitness(req, res);
+
+      expect(deleteWitnessStub)
+        .to.be.calledOnceWithExactly(1, 4)
+        .returned(deletedWitnessPromise);
+      expect(res.statusCode).to.be.equal(204);
+    });
+
+    it("should return 404 when witness not found", async () => {
+      req.params = {
+        reportId: 1,
+        witnessId: 5,
+      };
+      const deletedWitnessPromise = Promise.resolve(false);
+
+      const deleteWitnessStub = sinon
+        .stub(personalDetailsService, "deleteReportWitness")
+        .returns(deletedWitnessPromise);
+
+      await reportsController.deleteWitness(req, res);
+
+      expect(deleteWitnessStub)
+        .to.be.calledOnceWithExactly(1, 5)
+        .returned(deletedWitnessPromise);
+      expect(res.statusCode).to.be.equal(404);
+    });
+
+    it("should propagate errors", async () => {
+      req.params = {
+        reportId: 1,
+        witnessId: 4,
+      };
+
+      const deleteWitnessStub = sinon
+        .stub(personalDetailsService, "deleteReportWitness")
+        .rejects();
+
+      await expect(reportsController.deleteWitness(req, res)).to.be.rejected;
+      expect(deleteWitnessStub).to.be.calledOnceWithExactly(1, 4);
+    });
+  });
+
   describe("updateStatus", () => {
     it("should update report status", async () => {
       const report = new ReportModel("example description", 0, 0, 1, 1);

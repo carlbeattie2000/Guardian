@@ -70,6 +70,25 @@ class ReportsController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
+  async deleteWitness(req, res) {
+    const { reportId, witnessId } = req.params;
+
+    const deleted = await personalDetailsService.deleteReportWitness(
+      reportId,
+      witnessId,
+    );
+
+    if (!deleted) {
+      return new HttpResponse(404).sendStatus(res);
+    }
+
+    new HttpResponse(204).sendStatus(res);
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async updateStatus(req, res) {
     const { id } = req.params;
     if (!req.officer) {

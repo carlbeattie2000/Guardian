@@ -11,6 +11,11 @@ reportsRouter.get("/:id", reportsController.getById);
 
 reportsRouter.post("/", upload.array("photos", 12), reportsController.create);
 reportsRouter.post("/witness/:id", reportsController.createWitness);
+reportsRouter.delete(
+  "/witness/:reportId/:witnessId",
+  OfficerAuthenticationMiddleware,
+  reportsController.deleteWitness,
+);
 reportsRouter.patch(
   "/update-status/:id",
   OfficerAuthenticationMiddleware,
