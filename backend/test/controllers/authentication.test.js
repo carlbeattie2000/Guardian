@@ -70,7 +70,14 @@ describe("AuthenticationController", () => {
         password: "example123",
       };
 
-      const fakeUser = new UserModel("example", "", "example123", 0);
+      const fakeUser = new UserModel(
+        "example",
+        "",
+        "example123",
+        "john",
+        "smith",
+        0,
+      );
       await fakeUser.hashPassword();
 
       baseModelStubs.findBy.resolves(fakeUser);
@@ -139,6 +146,8 @@ describe("AuthenticationController", () => {
       req.body = {
         username: "example",
         password: "example123",
+        first_name: "John",
+        last_name: "Smith",
       };
 
       await authenticationController.register(req, res);
@@ -150,6 +159,8 @@ describe("AuthenticationController", () => {
       req.body = {
         username: "example",
         password: "example123",
+        first_name: "John",
+        last_name: "Smith",
       };
 
       baseModelStubs.save.rejects(new Error("SQLITE_CONSTRAINT: UNIQUE"));
@@ -165,6 +176,8 @@ describe("AuthenticationController", () => {
       req.body = {
         username: "example",
         password: "example",
+        first_name: "John",
+        last_name: "Smith",
       };
 
       await expect(

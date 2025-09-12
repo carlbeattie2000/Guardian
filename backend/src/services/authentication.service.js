@@ -23,6 +23,8 @@ const UserRegister = z.object({
   username: z.string().min(5),
   password: z.string().min(8),
   email: z.string().optional(),
+  first_name: z.string(),
+  last_name: z.string(),
 });
 
 class AuthenticationService {
@@ -64,6 +66,8 @@ class AuthenticationService {
       validatdRegisterDetails.username,
       validatdRegisterDetails.email,
       validatdRegisterDetails.password,
+      validatdRegisterDetails.first_name,
+      validatdRegisterDetails.last_name,
       false,
     );
 

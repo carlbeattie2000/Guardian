@@ -106,13 +106,19 @@ paths:
               properties:
                 username:
                   type: string
-                  example: janedoe
+                  example: "johnsmith1988"
                 password:
                   type: string
-                  example: mysecret
+                  example: "examplepassword"
                 email:
                   type: string
                   example: jane@example.com
+                first_name:
+                  type: string
+                  example: "John"
+                last_name:
+                  type: string
+                  example: "Smith"
       responses:
         "204":
           description: User registered successfully
@@ -1347,13 +1353,6 @@ components:
         refreshToken:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-    RequireMFA:
-      type: object
-      properties:
-        token:
-          type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-
     Dialogflow:
       type: object
       properties:

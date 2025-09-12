@@ -21,6 +21,42 @@ class LostArticlesController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
+  async delete(req, res) {
+    const { lostArticleId } = req.params;
+
+    const deleted = await lostArticleService.deleteById(lostArticleId);
+
+    if (!deleted) {
+      return new HttpResponse(404).sendStatus(res);
+    }
+
+    new HttpResponse(204).sendStatus(res);
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async deletePersonalDetails(req, res) {
+    const { lostArticleId, personalDetailsId } = req.params;
+
+    const deleted =
+      await personalDetailsService.deleteLostArticlePersonalDetails(
+        lostArticleId,
+        personalDetailsId,
+      );
+
+    if (!deleted) {
+      return new HttpResponse(404).sendStatus(res);
+    }
+
+    new HttpResponse(204).sendStatus(res);
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async getById(req, res) {
     const id = req.params.id;
     const lostArticle = await lostArticleService.getById(id, req.user);

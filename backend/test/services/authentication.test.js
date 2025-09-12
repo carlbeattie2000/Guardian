@@ -133,6 +133,8 @@ describe("AuthenticationService", function () {
       const userDetails = {
         username: "testing123",
         password: "testing123",
+        first_name: "John",
+        last_name: "Smith",
       };
 
       await authenticationService.register(userDetails);

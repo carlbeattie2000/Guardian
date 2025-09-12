@@ -82,6 +82,23 @@ class LostArticleService {
       return true;
     }
   }
+
+  /**
+   * @param {number} id
+   * @returns {Promise<boolean>}
+   */
+  async deleteById(id) {
+    if (!id || Number.isNaN(id)) {
+      throw new HttpError({
+        code: 400,
+        clientMessage: "lostArticleId must be included",
+      });
+    }
+
+    const result = await LostItemModel.deleteWhere("id", id);
+
+    return result?.changes !== 0;
+  }
 }
 
 const lostArticleService = new LostArticleService();

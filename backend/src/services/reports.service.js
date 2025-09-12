@@ -1,14 +1,14 @@
 const z = require("zod");
+const HttpError = require("../utils/http-error");
+const { getTextPriority } = require("src/utils/local_priority_model");
+const { withTransaction } = require("../config/database");
+
 const ReportModel = require("../models/report.model");
 const ReportImagesModel = require("../models/report-images.model");
 const UserModel = require("../models/user.model");
+
 const personalDetailsService = require("./personal-details.service");
-const HttpError = require("../utils/http-error");
-const {
-  calculateReportPriorityFromDescription,
-} = require("../utils/word-priority-matching");
 const filesService = require("./files.service");
-const { withTransaction } = require("../config/database");
 
 class ReportsService {
   ReportValidation = z.object({
@@ -33,9 +33,7 @@ class ReportsService {
         reportDetailsValidated.longitude,
         reportDetailsValidated.latitude,
         user_id,
-        calculateReportPriorityFromDescription(
-          reportDetailsValidated.description,
-        ),
+        await getTextPriority(reportDetailsValidated.description),
       );
 
       await report.save();
