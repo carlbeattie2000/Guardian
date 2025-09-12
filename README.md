@@ -1,6 +1,6 @@
 # Guardian
 
-Guardian is a Australian community policing application, essentially a online portal to reporting crimes and contacting your local force.
+Guardian is a Australian community policing application, essentially a online portal which enables reporting crimes and contacting your local force.
 
 ### Running the backend for development
 - `git clone https://github.com/carlbeattie2000/Guardian.git ~/some/location/guardian`
