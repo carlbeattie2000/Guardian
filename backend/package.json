@@ -8,7 +8,7 @@
     "dev": "NODE_PATH=. nodemon src/server.js",
     "test": "NODE_PATH=. NODE_ENV=test nyc mocha ./test/setup.js ./test/**/*.js",
     "coverage": "nyc report --reporter=lcov",
-    "train": "node ./src/scripts/local_model_training.js"
+    "model:train": "node ./src/scripts/local_model_training.js"
   },
   "keywords": [],
   "author": "",
