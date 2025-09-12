@@ -1,4 +1,4 @@
-DEV_ENVIORMENT=DEVELOPMENT
+NODE_ENV=development
 JWT_ACCESS_SECRET=xxxxxxxxxxxxxxxx
 JWT_REFRESH_SECRET=xxxxxxxxxxxxxxxx
 JWT_MFA_SECRET=xxxxxxxxxxxxxxxxx
