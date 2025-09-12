@@ -1,3 +1,4 @@
+const mfaService = require("src/services/mfa.service");
 const cookieOptions = require("../config/cookie-options");
 const {
   ACCESS_TOKEN_COOKIE_NAME,
@@ -18,6 +19,17 @@ class AuthenticationController {
 
     if (!user) {
       return new HttpResponse(400, {}, "").json(res);
+    }
+
+    if (user.mfa_required) {
+      const token = await mfaService.generateToken(user.id, user.email);
+      return new HttpResponse(
+        200,
+        {
+          mfa_token: token,
+        },
+        "mfa_required",
+      ).json(res);
     }
 
     const [access, refresh] = await authenticationService.generateTokens(

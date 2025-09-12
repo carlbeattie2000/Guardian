@@ -27,6 +27,8 @@ tags:
     description: Notes endpoints
   - name: Dialogflow
     description: Dialogflow endpoints
+  - name: MFA
+    description: MFA endpoints
 
 paths:
   /auth/login:
@@ -35,7 +37,20 @@ paths:
         - Auth
       summary: Login user
       operationId: login
-      description: This path allows the user to login
+      description: |
+        Allows the user to login
+
+        `200` can also respond with:
+
+        ```json
+          {
+            "status": "success",
+            "data": {
+              "mfa_token": "e1d46-e59c-4d83-a556-5a16c1876d1c"
+            },
+            "message": "mfa_required"
+          }
+        ```
       requestBody:
         required: true
         content:
@@ -856,6 +871,22 @@ paths:
         Gets all alerts
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+          description: >
+            This is the offset from the limit.
+
+            When the limit is `20` and the page is `1` it will
+            fetch results starting at row `21` upto `40`.
+            <br>
+            To calculate the offset we do `LIMIT * PAGE = 20 * 1 = 20`
+            <br>
+            <br>
+            [More Info](https://www.sqlitetutorial.net/sqlite-limit/)
       responses:
         "200":
           description: Returns all active alerts
@@ -1037,6 +1068,13 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the resource
+        - in: query
+          name: resourceType
+          schema:
+            type: string
+            example: report
+          required: true
+          description: String value that represents either `report` or `lost-article`
       responses:
         "200":
           description: Returns all the notes for a resource
@@ -1201,6 +1239,69 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalErrorResponse"
+  /mfa/resend-code:
+    post:
+      tags:
+        - MFA
+      summary: Request MFA code
+      operationId: mfaRequestCode
+      description: >
+        Allows the user who has entered valid credentials to request a MFA code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MFARequest"
+      responses:
+        "200":
+          description: The code has been created and sent to email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MFAResendResponse"
+        "401":
+          description: Unauthorized error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalErrorResponse"
+  /mfa/verify-code:
+    post:
+      tags:
+        - MFA
+      summary: Request MFA code
+      operationId: mfaVerifyCode
+      description: >
+        Allows the user to verify the 2FA code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MFAVerifyRequest"
+      responses:
+        "204":
+          description: The code was verified
+        "401":
+          description: Unauthorized error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalErrorResponse"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1246,6 +1347,13 @@ components:
         refreshToken:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    RequireMFA:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+
     Dialogflow:
       type: object
       properties:
@@ -1330,6 +1438,15 @@ components:
         priority:
           type: number
           example: 0.4
+        witnesses:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalDetails"
+        images:
+          type: array
+          items:
+            type: string
+            example: "44f7d9e1-0e90-460c-8671-d9ad8479dd0c"
         created_at:
           type: string
           format: date
@@ -1375,6 +1492,11 @@ components:
         model:
           type: string
           example: "PHONE_X44"
+        personal_details:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalDetails"
+
         created_at:
           type: string
           format: date
@@ -1435,9 +1557,34 @@ components:
         resource_id:
           type: integer
           example: 1
+        resource_type:
+          type: string
+          example: report
         created_at:
           type: string
           format: date
+    MFARequest:
+      type: object
+      properties:
+        mfa_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    MFAResendResponse:
+      type: object
+      properties:
+        mfa_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    MFAVerifyRequest:
+      type: object
+      properties:
+        mfa_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        code:
+          type: string
+          example: "445543"
+
     ZodError:
       type: object
       properties:

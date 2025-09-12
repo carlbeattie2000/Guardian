@@ -15,6 +15,8 @@ chai.use(sinonChai);
  * @property {sinon.SinonStub} findBy
  * @property {sinon.SinonStub} all
  * @property {sinon.SinonStub} findAllBy
+ * @property {sinon.SinonStub} allRaw
+ * @property {sinon.SinonStub} getRaw
  */
 
 /**
@@ -37,6 +39,8 @@ function setupBaseModelStubs() {
   stubs.findBy = sinon.stub(BaseModel, "findBy").resolves(null);
   stubs.all = sinon.stub(BaseModel, "all").resolves([]);
   stubs.findAllBy = sinon.stub(BaseModel, "findAllBy").resolves([]);
+  stubs.allRaw = sinon.stub(BaseModel, "allRaw").resolves(null);
+  stubs.getRaw = sinon.stub(BaseModel, "getRaw").resolves(null);
 
   return stubs;
 }

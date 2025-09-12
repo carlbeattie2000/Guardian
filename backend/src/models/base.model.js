@@ -165,8 +165,8 @@ class BaseModel {
    * @param {number} limit
    * @returns {Promise<T[] | null>}
    */
-  static async all(limit, orderBy) {
-    const query = `SELECT * FROM ${this.table} ${orderBy} LIMIT ?`;
+  static async all({ limit = 100, page = 0, orderBy }) {
+    const query = `SELECT * FROM ${this.table} ${orderBy} LIMIT ${limit * page}, ?`;
     const instanceCore = new this();
     const keys = Object.keys(instanceCore);
     const results = await all(query, limit);
@@ -228,6 +228,45 @@ class BaseModel {
     });
 
     return instanceObjects;
+  }
+
+  static async allRaw(sql, values = null) {
+    if (values) {
+      return await all(sql, values);
+    }
+
+    return await all(sql);
+  }
+
+  static async getRaw(sql, values = null) {
+    if (values) {
+      return await get(sql, values);
+    }
+
+    return await get(sql);
+  }
+
+  static async runRaw(sql, values = null) {
+    if (values) {
+      return await run(sql, values);
+    }
+
+    return await run(sql);
+  }
+
+  /**
+   * @returns {BaseModel}
+   */
+  static mapResultToModel(result) {
+    const instance = new this();
+    const keys = Object.keys(instance);
+
+    if (!result) {
+      return null;
+    }
+
+    Object.assign(instance, pruneObject(result, keys));
+    return /** @type {T} */ (instance);
   }
 }
 
