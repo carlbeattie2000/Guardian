@@ -103,4 +103,39 @@ describe("PersonalDetailsService", function () {
         .rejected;
     });
   });
+
+  describe("deleteLostArticlePersonalDetails", () => {
+    it("should delete lost article personal details and return true", async () => {
+      baseModelStubs.deleteWhere.resolves({ lastID: 0, changes: 1 });
+
+      const deleted =
+        await personalDetailsService.deleteLostArticlePersonalDetails(1, 4);
+
+      expect(deleted).to.be.true;
+    });
+
+    it("should return false if lost article personal details not found", async () => {
+      baseModelStubs.deleteWhere.resolves({ lastID: 0, changes: 0 });
+
+      const deleted =
+        await personalDetailsService.deleteLostArticlePersonalDetails(1, 5);
+
+      expect(deleted).to.be.false;
+    });
+
+    it("should throw if lostArticleId or personalDetailsId  missing", async () => {
+      await expect(personalDetailsService.deleteLostArticlePersonalDetails(1))
+        .to.be.rejected;
+      await expect(personalDetailsService.deleteLostArticlePersonalDetails()).to
+        .be.rejected;
+    });
+
+    it("should propagate errors", async () => {
+      baseModelStubs.deleteWhere.rejects();
+
+      await expect(
+        personalDetailsService.deleteLostArticlePersonalDetails(1, 4),
+      ).to.rejected;
+    });
+  });
 });

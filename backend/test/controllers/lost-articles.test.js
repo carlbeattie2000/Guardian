@@ -129,6 +129,61 @@ describe("LostArticlesController", () => {
     });
   });
 
+  describe("deletePersonalDetails", () => {
+    it("should delete personal details from a lost article report", async () => {
+      req.params = {
+        lostArticleId: 1,
+        personalDetailsId: 4,
+      };
+      const deletedPersonalDetailsPromise = Promise.resolve(true);
+
+      const deletePersonalDetailsStub = sinon
+        .stub(personalDetailsService, "deleteLostArticlePersonalDetails")
+        .returns(deletedPersonalDetailsPromise);
+
+      await lostArticlesControler.deletePersonalDetails(req, res);
+
+      expect(deletePersonalDetailsStub)
+        .to.be.calledOnceWithExactly(1, 4)
+        .returned(deletedPersonalDetailsPromise);
+      expect(res.statusCode).to.be.equal(204);
+    });
+
+    it("should return 404 when personal details not found", async () => {
+      req.params = {
+        lostArticleId: 1,
+        personalDetailsId: 5,
+      };
+      const deletedPersonalDetailsPromise = Promise.resolve(false);
+
+      const deletePersonalDetailsStub = sinon
+        .stub(personalDetailsService, "deleteLostArticlePersonalDetails")
+        .returns(deletedPersonalDetailsPromise);
+
+      await lostArticlesControler.deletePersonalDetails(req, res);
+
+      expect(deletePersonalDetailsStub)
+        .to.be.calledOnceWithExactly(1, 5)
+        .returned(deletedPersonalDetailsPromise);
+      expect(res.statusCode).to.be.equal(404);
+    });
+
+    it("should propagate errors", async () => {
+      req.params = {
+        lostArticleId: 1,
+        personalDetailsId: 4,
+      };
+
+      const deletePersonalDetailsStub = sinon
+        .stub(personalDetailsService, "deleteLostArticlePersonalDetails")
+        .rejects();
+
+      await expect(lostArticlesControler.deletePersonalDetails(req, res)).to.be
+        .rejected;
+      expect(deletePersonalDetailsStub).to.be.calledOnceWithExactly(1, 4);
+    });
+  });
+
   describe("getById", () => {
     it("should get lost article report", async () => {
       const lostArticle = new LostItemModel(
