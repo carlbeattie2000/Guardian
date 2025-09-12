@@ -12,6 +12,12 @@ lostArticlesRouter.post(
   lostArticlesControler.create,
 );
 
+lostArticlesRouter.delete(
+  "/lostArticleId",
+  OfficerAuthenticationMiddleware,
+  lostArticlesControler.delete,
+);
+
 lostArticlesRouter.post(
   "/personal-details/:id",
   lostArticlesControler.createPersonalDetails,

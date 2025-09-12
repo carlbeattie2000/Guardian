@@ -78,6 +78,57 @@ describe("LostArticlesController", () => {
     });
   });
 
+  describe("delete", () => {
+    it("should delete a lost article report", async () => {
+      req.params = {
+        lostArticleId: 1,
+      };
+      const deletedLostArticlePromise = Promise.resolve(true);
+
+      const deleteLostArticleStub = sinon
+        .stub(lostArticleService, "deleteById")
+        .returns(deletedLostArticlePromise);
+
+      await lostArticlesControler.delete(req, res);
+
+      expect(deleteLostArticleStub)
+        .to.be.calledOnceWithExactly(1)
+        .returned(deletedLostArticlePromise);
+      expect(res.statusCode).to.be.equal(204);
+    });
+
+    it("should return 404 when lost article not found", async () => {
+      req.params = {
+        lostArticleId: 1,
+      };
+      const deletedLostArticlePromise = Promise.resolve(false);
+
+      const deleteLostArticleStub = sinon
+        .stub(lostArticleService, "deleteById")
+        .returns(deletedLostArticlePromise);
+
+      await lostArticlesControler.delete(req, res);
+
+      expect(deleteLostArticleStub)
+        .to.be.calledOnceWithExactly(1)
+        .returned(deletedLostArticlePromise);
+      expect(res.statusCode).to.be.equal(404);
+    });
+
+    it("should propagate errors", async () => {
+      req.params = {
+        lostArticleId: 1,
+      };
+
+      const deleteLostArticleStub = sinon
+        .stub(lostArticleService, "deleteById")
+        .rejects();
+
+      await expect(lostArticlesControler.delete(req, res)).to.be.rejected;
+      expect(deleteLostArticleStub).to.be.calledOnceWithExactly(1);
+    });
+  });
+
   describe("getById", () => {
     it("should get lost article report", async () => {
       const lostArticle = new LostItemModel(
