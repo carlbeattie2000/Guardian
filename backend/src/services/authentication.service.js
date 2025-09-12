@@ -12,6 +12,7 @@ const {
   REFRESH_TOKEN_ENABLED_WINDOW_SECONDS,
 } = require("../constants/jwts");
 const AppError = require("../utils/app-error");
+const mfaService = require("./mfa.service");
 
 const UserLogin = z.object({
   username: z.string(),
@@ -47,6 +48,12 @@ class AuthenticationService {
     }
 
     await this.updateLastSeen(user.id);
+
+    if (!user.mfa_required) {
+      const mfaRequired = mfaService.doesLoginRequireMfa(user);
+      user.mfa_required = mfaRequired;
+      await user.save();
+    }
 
     return user;
   }
@@ -317,6 +324,22 @@ class AuthenticationService {
       "UPDATE users SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?",
       id,
     );
+  }
+
+  /**
+   * @param {number} id
+   */
+  async mfaVerified(id) {
+    /** @type {UserModel} */
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return null;
+    }
+
+    user.mfa_required = 0;
+    await user.save();
+    return user;
   }
 }
 

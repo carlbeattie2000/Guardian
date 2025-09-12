@@ -253,6 +253,21 @@ class BaseModel {
 
     return await run(sql);
   }
+
+  /**
+   * @returns {BaseModel}
+   */
+  static mapResultToModel(result) {
+    const instance = new this();
+    const keys = Object.keys(instance);
+
+    if (!result) {
+      return null;
+    }
+
+    Object.assign(instance, pruneObject(result, keys));
+    return /** @type {T} */ (instance);
+  }
 }
 
 module.exports = BaseModel;

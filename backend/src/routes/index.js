@@ -10,6 +10,7 @@ const alertsRouter = require("./alerts.route");
 const dialogflowRouter = require("./dialogflow.route");
 const notesRouter = require("./notes.route");
 const LastSeenMiddleware = require("src/middleware/last-seen.middleware");
+const mfaRouter = require("./mfa.route");
 
 const router = Router();
 const routerAuthenticated = Router();
@@ -19,6 +20,7 @@ routerAuthenticated.use(LastSeenMiddleware);
 
 router.use("/api/v1/auth", authenticationRouter);
 router.use("/api/v1/files", fileRouter);
+router.use("/api/v1/mfa", mfaRouter);
 
 routerAuthenticated.use("/api/v1/reports", reportsRouter);
 routerAuthenticated.use("/api/v1/lost-articles", lostArticlesRouter);
