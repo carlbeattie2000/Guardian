@@ -3,6 +3,7 @@ import hash from "@adonisjs/core/services/hash";
 import { compose } from "@adonisjs/core/helpers";
 import { BaseModel, column } from "@adonisjs/lucid/orm";
 import { withAuthFinder } from "@adonisjs/auth/mixins/lucid";
+import { DbAccessTokensProvider } from "@adonisjs/auth/access_tokens";
 
 const AuthFinder = withAuthFinder(() => hash.use("scrypt"), {
 	uids: ["username"],
@@ -25,6 +26,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 	@column()
 	declare email: string | null;
 
+	@column()
+	public role: "user" | "officer" | "admin" = "user";
+
 	@column({ serializeAs: null })
 	declare password: string;
 
@@ -33,4 +37,20 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
 	@column.dateTime({ autoCreate: true, autoUpdate: true })
 	declare updatedAt: DateTime | null;
+
+	static accessToken = DbAccessTokensProvider.forModel(User, {
+		expiresIn: "15 minutes",
+		prefix: "oat_",
+		table: "auth_access_tokens",
+		type: "auth_token",
+		tokenSecretLength: 40,
+	});
+
+	static refreshToken = DbAccessTokensProvider.forModel(User, {
+		expiresIn: "30 days",
+		prefix: "ort_",
+		table: "refresh_access_tokens",
+		type: "refresh_token",
+		tokenSecretLength: 40,
+	});
 }
