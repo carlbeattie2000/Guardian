@@ -10,6 +10,9 @@
 import router from "@adonisjs/core/services/router";
 import { middleware } from "./kernel.js";
 
+const authenticationController = () =>
+	import("#controllers/authentication_controller");
+
 router.get("up", () => {
 	return "OK";
 });
@@ -20,17 +23,19 @@ router
 			.group(() => {
 				router
 					.group(() => {
-						router.post("login", () => {});
-						router.post("register", () => {});
+						router.post("login", [authenticationController, "store"]);
+						router.post("register", [authenticationController, "create"]);
 						router
 							.group(() => {
-								router.post("logout", () => {
-									return "no";
-								});
-								router.post("logout-all", () => {});
-								router.post("refresh", () => {});
+								router.post("logout", [authenticationController, "destroy"]);
+								router.post("logout-all", [
+									authenticationController,
+									"destroyAll",
+								]);
 							})
 							.use(middleware.auth());
+
+						router.post("refresh", [authenticationController, "refresh"]);
 					})
 					.prefix("authentication");
 
