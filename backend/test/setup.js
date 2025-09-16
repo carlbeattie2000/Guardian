@@ -1,3 +1,9 @@
+require("dotenv").config({
+  path: "../.env.test",
+});
+process.env.NODE_PATH = process.env.NODE_PATH || ".";
+require("node:module").Module._initPaths();
+
 const sinon = require("sinon");
 const dialogflow = require("@google-cloud/dialogflow");
 
