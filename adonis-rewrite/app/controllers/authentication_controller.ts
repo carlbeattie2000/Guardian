@@ -3,6 +3,7 @@ import type { HttpContext } from "@adonisjs/core/http";
 
 import User from "#models/user";
 import { AuthenticationService } from "#services/authentication_service";
+import db from "@adonisjs/lucid/services/db";
 
 export default class AuthenticationController {
 	#authenticationService = new AuthenticationService();
@@ -80,5 +81,18 @@ export default class AuthenticationController {
 		}
 	}
 
-	async destroyAll() {}
+	async destroyAll({ auth }: HttpContext) {
+		const user = auth.user as User;
+
+		await db.from("auth_access_tokens").where("tokenable_id", user.id).delete();
+		await db
+			.from("refresh_access_tokens")
+			.where("tokenable_id", user.id)
+			.delete();
+
+		return {
+			...(await User.accessToken.all(user)),
+			...(await User.refreshToken.all(user)),
+		};
+	}
 }
