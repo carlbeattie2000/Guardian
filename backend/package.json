@@ -8,7 +8,8 @@
     "dev": "nodemon start.js",
     "test": "nyc mocha ./test/setup.js ./test/**/*.js",
     "coverage": "nyc report --reporter=lcov",
-    "model:train": "node ./src/scripts/local_model_training.js"
+    "model:train": "node ./src/scripts/local_model_training.js",
+    "script:generateExampleData": "node ./src/scripts/create_example_data.js"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,7 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "chai": "^6.0.1",
     "chai-as-promised": "^8.0.2",
     "dotenv": "^17.2.1",
