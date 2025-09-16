@@ -13,14 +13,8 @@ export default class AuthenticationController {
 		const user = await User.verifyCredentials(username, password);
 
 		const accessToken = await auth.use("api").createToken(user);
-		const refreshToken = await User.refreshToken.create(user);
 
 		response.cookie("access_token", accessToken.value!.release(), {
-			secure: app.inProduction ? true : false,
-			httpOnly: true,
-			sameSite: "lax",
-		});
-		response.cookie("refresh_token", refreshToken.value!.release(), {
 			secure: app.inProduction ? true : false,
 			httpOnly: true,
 			sameSite: "lax",
@@ -28,7 +22,6 @@ export default class AuthenticationController {
 
 		return {
 			access_token: accessToken.value!.release(),
-			refresh_token: refreshToken.value!.release(),
 		};
 	}
 
@@ -47,52 +40,19 @@ export default class AuthenticationController {
 	}
 
 	async refresh(ctx: HttpContext) {
-		return this.#authenticationService.refreshTokens(ctx);
+		return this.#authenticationService.refreshToken(ctx);
 	}
 
 	async destroy({ auth, response }: HttpContext) {
-		let bothFailed = true;
-		let err: Error | null = null;
+		await auth.use("api").invalidateToken();
 
-		const setError = (newErr: Error) => {
-			if (err !== null) {
-				err = newErr;
-			}
-		};
-
-		try {
-			await auth.use("api").invalidateToken(true);
-			bothFailed = false;
-		} catch (error) {
-			setError(error);
-		}
-
-		try {
-			await auth.use("cookie").invalidateToken(true);
-			response.clearCookie("access_token");
-			response.clearCookie("refresh_token");
-			bothFailed = false;
-		} catch (error) {
-			setError(error);
-		}
-
-		if (bothFailed && err) {
-			throw err;
-		}
+		response.status(204);
 	}
 
-	async destroyAll({ auth }: HttpContext) {
+	async destroyAll({ auth, response }: HttpContext) {
 		const user = auth.user as User;
 
 		await db.from("auth_access_tokens").where("tokenable_id", user.id).delete();
-		await db
-			.from("refresh_access_tokens")
-			.where("tokenable_id", user.id)
-			.delete();
-
-		return {
-			...(await User.accessToken.all(user)),
-			...(await User.refreshToken.all(user)),
-		};
+		response.status(204);
 	}
 }

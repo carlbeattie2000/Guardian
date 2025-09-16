@@ -14,7 +14,7 @@ export default class AuthMiddleware {
 			guards?: (keyof Authenticators)[];
 		} = {},
 	) {
-		await ctx.auth.authenticateUsing(options.guards || ["cookie", "api"]);
+		await ctx.auth.authenticateUsing(options.guards);
 		return next();
 	}
 }

@@ -32,10 +32,10 @@ router
 									authenticationController,
 									"destroyAll",
 								]);
+								router.post("refresh", [authenticationController, "refresh"]);
 							})
+							.use(middleware.set_authorization_header())
 							.use(middleware.auth());
-
-						router.post("refresh", [authenticationController, "refresh"]);
 					})
 					.prefix("authentication");
 
@@ -119,6 +119,7 @@ router
 							})
 							.prefix("notes");
 					})
+					.use(middleware.set_authorization_header())
 					.use(middleware.auth());
 			})
 			.prefix("v1");
