@@ -3,7 +3,9 @@ const { promisify } = require("node:util");
 const { join } = require("node:path");
 
 const databasePath =
-  process.env.NODE_ENV === "test" ? ":memory:" : join(process.cwd(), "main.db");
+  process.env.NODE_ENV === "test"
+    ? ":memory:"
+    : join(process.cwd(), "data", "main.db");
 const database = new sqlite3.Database(databasePath);
 
 const run = (sql, params) => {

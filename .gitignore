@@ -6,11 +6,10 @@ sonar-project.properties
 coverage/
 
 #backend
+data/
 *.db
 .env
 *.env
-public/
-storage/
 uploads/
 *.log
 training-data.json
