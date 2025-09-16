@@ -2,11 +2,11 @@
   "name": "guardian-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "start.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "NODE_PATH=. nodemon src/server.js",
-    "test": "NODE_PATH=. NODE_ENV=test nyc mocha ./test/setup.js ./test/**/*.js",
+    "start": "node start.js",
+    "dev": "nodemon start.js",
+    "test": "nyc mocha ./test/setup.js ./test/**/*.js",
     "coverage": "nyc report --reporter=lcov",
     "model:train": "node ./src/scripts/local_model_training.js"
   },
