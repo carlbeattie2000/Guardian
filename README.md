@@ -20,6 +20,9 @@ vim .env
 # Train the model
 npm run model:train
 
+# Optionally generate fake example data (Takes 10-15 seconds)
+npm run script:generateExampleData
+
 # Start the development server
 npm run dev
 ```
