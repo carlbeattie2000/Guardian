@@ -12,7 +12,7 @@ data/
 *.env
 uploads/
 *.log
-training-data.json
+trained-model.json
 
 # Expo
 .expo/
