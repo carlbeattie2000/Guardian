@@ -12,6 +12,26 @@ const NoteModel = require("../models/note.model");
 const PersonalDetailsModel = require("../models/personal-details.model");
 const AlertModel = require("../models/alert.model");
 
+const failures = {
+  [UserModel.table]: 0,
+  [ReportModel.table]: 0,
+  [LostItemModel.table]: 0,
+  [NoteModel.table]: 0,
+  [PersonalDetailsModel.table]: 0,
+  [AlertModel.table]: 0,
+};
+
+async function trySave(model, arr, MODEL = null) {
+  try {
+    await model.save();
+    arr.push(model);
+  } catch {
+    if (MODEL) {
+      failures[MODEL.table]++;
+    }
+  }
+}
+
 async function createUsers(createUsersCount = 500) {
   console.info("Creating Users");
   const users = [];
@@ -38,9 +58,7 @@ async function createUsers(createUsersCount = 500) {
       password: user.password,
     });
 
-    await user.save();
-
-    users.push(user);
+    await trySave(user, users, UserModel);
   }
   console.log(
     "------------------------------USERS------------------------------",
@@ -69,9 +87,7 @@ async function createOfficers(createOfficersCount = 10) {
       password: officer.password,
     });
 
-    await officer.save();
-
-    officers.push(officer);
+    await trySave(officer, officers, UserModel);
   }
   console.log(
     "------------------------------OFFICERS------------------------------",
@@ -97,9 +113,7 @@ async function createReports(createReportsCount = 1000, users) {
       reportData.priority,
     );
 
-    await report.save();
-
-    reports.push(report);
+    await trySave(report, reports, ReportModel);
   }
   return reports;
 }
@@ -115,12 +129,23 @@ async function createLostItemReports(createLostItemsCount = 500, users) {
       faker.string.uuid(),
       faker.color.human(),
       faker.commerce.product(),
+      faker.location.longitude(),
+      faker.location.latitude(),
+      faker.helpers.arrayElement([
+        "PENDING",
+        "INVESTIGATING",
+        "FOUND",
+        "CLOSED",
+      ]),
+      faker.helpers.arrayElement([
+        "DENMAN POLICE STATION",
+        "NOWENDOC POLICE STATION",
+        "WOOLLOOMOOLOO POLICE STATION",
+      ]),
       faker.helpers.arrayElement(users).id,
     );
 
-    await lostItem.save();
-
-    lostItems.push(lostItem);
+    await trySave(lostItem, lostItems, LostItemModel);
   }
   return lostItems;
 }
@@ -137,9 +162,7 @@ async function createReportNotes(createReportNotesCount = 500, reports) {
       "report",
     );
 
-    await note.save();
-
-    notes.push(note);
+    await trySave(note, notes, NoteModel);
   }
 
   return notes;
@@ -157,9 +180,7 @@ async function createLostItemsNotes(createLostItemNotesCount = 500, lostItems) {
       "lost_article",
     );
 
-    await note.save();
-
-    notes.push(note);
+    await trySave(note, notes, NoteModel);
   }
 
   return notes;
@@ -179,9 +200,7 @@ async function createReportWitnesses(createWitnessesCount = 1500, reports) {
 
     witness.attachToReport(faker.helpers.arrayElement(reports).id);
 
-    await witness.save();
-
-    reportWitnesses.push(witness);
+    await trySave(witness, reportWitnesses, PersonalDetailsModel);
   }
 
   return reportWitnesses;
@@ -206,9 +225,7 @@ async function createLostItemPersonalDetails(
       faker.helpers.arrayElement(lostItems).id,
     );
 
-    await personalDetail.save();
-
-    personalDetails.push(personalDetail);
+    await trySave(personalDetail, personalDetails, PersonalDetailsModel);
   }
 
   return personalDetails;
@@ -231,9 +248,7 @@ async function createAlerts(createAlertsCount = 350) {
       faker.helpers.arrayElement(types),
     );
 
-    await alert.save();
-
-    alerts.push(alert);
+    await trySave(alert, alerts, AlertModel);
   }
 
   return alerts;
@@ -241,14 +256,17 @@ async function createAlerts(createAlertsCount = 350) {
 
 async function run() {
   const users = await createUsers(1000);
-  const officers = await createOfficers();
+  await createOfficers();
   const reports = await createReports(1500, users);
   const lostItems = await createLostItemReports(600, users);
-  const reportNotes = await createReportNotes(500, reports);
-  const lostItemNotes = await createLostItemsNotes(500, lostItems);
-  const witnesses = await createReportWitnesses(1500, reports);
-  const personalDetails = await createLostItemPersonalDetails(200, lostItems);
-  const alerts = await createAlerts();
+  await createReportNotes(500, reports);
+  await createLostItemsNotes(500, lostItems);
+  await createReportWitnesses(1500, reports);
+  await createLostItemPersonalDetails(200, lostItems);
+  await createAlerts();
+  
+  console.info('Failure Amount');
+  console.table(failures);
 }
 
 run();

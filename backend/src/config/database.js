@@ -11,7 +11,9 @@ let database = new sqlite3.Database(databasePath);
 
 function recreateDatabase() {
   if (process.env.NODE_ENV === "test") return;
-  rmSync(databasePath);
+  try {
+    rmSync(databasePath);
+  } catch {}
   database = new sqlite3.Database(databasePath);
 }
 

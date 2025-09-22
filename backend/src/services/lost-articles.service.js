@@ -10,20 +10,37 @@ class LostArticleService {
     serial_number: z.string().optional(),
     color: z.string().optional(),
     model: z.string().optional(),
+    longitude: z.preprocess((val) => Number(val), z.number()),
+    latitude: z.preprocess((val) => Number(val), z.number()),
+    status: z.enum(["PENDING", "INVESTIGATING", "FOUND", "CLOSED"]),
+    branch: z.string(),
   });
 
   /**
    * @returns {Promise<LostItemModel>}
    */
   async create(files, body, user_id) {
-    const { name, description, serial_number, color, model } =
-      this.articleValidation.parse(body);
+    const {
+      name,
+      description,
+      serial_number,
+      color,
+      model,
+      longitude,
+      latitude,
+      status,
+      branch,
+    } = this.articleValidation.parse(body);
     const lostArticle = new LostItemModel(
       name,
       description,
       serial_number,
       color,
       model,
+      longitude,
+      latitude,
+      status,
+      branch,
       user_id,
     );
 

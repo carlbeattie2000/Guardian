@@ -627,7 +627,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LostArticle"
+              $ref: "#/components/schemas/LostArticlePost"
       responses:
         "200":
           description: Returns created lost article
@@ -738,7 +738,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PersonalDetails"
+              $ref: "#/components/schemas/PersonalDetailsPost"
       responses:
         "200":
           description: Returns created lost article
@@ -926,7 +926,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Alert"
+              $ref: "#/components/schemas/AlertPost"
       responses:
         "200":
           description: Returns the created alert
@@ -1038,7 +1038,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Note"
+              $ref: "#/components/schemas/NotePost"
       responses:
         "200":
           description: Returns the created note
@@ -1158,7 +1158,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Note"
+              $ref: "#/components/schemas/NotePost"
       responses:
         "200":
           description: Returns the updated note
@@ -1491,14 +1491,58 @@ components:
         model:
           type: string
           example: "PHONE_X44"
+        longitude:
+          type: number
+          example: 44.4
+        latitude:
+          type: number
+          example: 33.2
+        status:
+          type: string
+          example: "CLAIMED"
+        branch:
+          type: string
+          example: "Some Station"
+        user_id:
+          type: number
+          example: 1
         personal_details:
           type: array
           items:
             $ref: "#/components/schemas/PersonalDetails"
-
         created_at:
           type: string
           format: date
+    LostArticlePost:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Phone 44"
+        description:
+          type: string
+          example: "Lost article description"
+        serial_number:
+          type: string
+          example: "xxxxxx"
+        color:
+          type: string
+          example: "red"
+        model:
+          type: string
+          example: "PHONE_X44"
+        longitude:
+          type: number
+          example: 44.4
+        latitude:
+          type: number
+          example: 33.2
+        status:
+          type: string
+          example: "CLAIMED"
+        branch:
+          type: string
+          example: "Some Station"
     PersonalDetails:
       type: object
       properties:
@@ -1523,6 +1567,21 @@ components:
         created_at:
           type: string
           format: date
+    PersonalDetailsPost:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Smith"
+        date_of_birth:
+          type: string
+          example: "2025-09-24"
+        contact_number:
+          type: string
+          example: "(02) 1234 5678"
     Alert:
       type: object
       properties:
@@ -1541,6 +1600,18 @@ components:
         created_at:
           type: string
           format: date
+    AlertPost:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "example alert title"
+        description:
+          type: string
+          example: "example alert description"
+        type:
+          type: string
+          example: "Missing Person"
     Note:
       type: object
       properties:
@@ -1562,6 +1633,16 @@ components:
         created_at:
           type: string
           format: date
+    NotePost:
+      type: object
+      properties:
+        subject:
+          type: string
+          example: "example subject"
+        content:
+          type: string
+          example: "example note content"
+
     MFARequest:
       type: object
       properties:
