@@ -94,17 +94,17 @@ class BaseModel {
    * @returns {Promise<*>} values
    */
   static async deleteWhere(fields, values) {
-    let statment = `DELETE FROM ${this.table} WHERE `;
+    let statement = `DELETE FROM ${this.table} WHERE `;
 
     if (Array.isArray(fields) || Array.isArray(values)) {
       validWhereClauseArray(fields, values);
 
-      statment += `${fields.map((field) => `${field} = ?`).join(" AND ")} LIMIT 1`;
-      return await run(statment, values);
+      statement += `${fields.map((field) => `${field} = ?`).join(" AND ")};`;
+      return await run(statement, values);
     }
 
-    statment += `${fields} = ?`;
-    return await run(statment, values);
+    statement += `${fields} = ?;`;
+    return await run(statement, values);
   }
 
   /**
@@ -199,7 +199,7 @@ class BaseModel {
       validWhereClauseArray(fields, values);
 
       query += `${fields.map((field) => `${field} = ?`).join(" AND ")} ${orderBy} LIMIT ?`;
-      const result = await all(query, [values, limit]);
+      const results = await all(query, [values, limit]);
 
       if (!result) {
         return null;
